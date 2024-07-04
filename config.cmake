@@ -3,42 +3,9 @@
 include(FetchContent)
 
 # Make sure SDL is present on the system.
-find_package(SDL2 REQUIRED CONFIG)
-
-if (NOT SDL2_FOUND)
-    FetchContent_Declare(
-        SDL2
-        GIT_REPOSITORY https://github.com/libsdl-org/SDL.git
-        GIT_TAG        release-2.30.5
-    )
-
-    FetchContent_MakeAvailable(SDL2)
-endif()
-
+find_package(SDL2       REQUIRED CONFIG)
 find_package(SDL2_image REQUIRED CONFIG)
-
-
-if (NOT SDL2_image_FOUND)
-    FetchContent_Declare(
-        SDL2_image
-        GIT_REPOSITORY https://github.com/libsdl-org/SDL_image.git
-        GIT_TAG        release-2.8.2
-    )
-
-    FetchContent_MakeAvailable(SDL2_image)
-endif()
-
-find_package(SDL2_ttf REQUIRED CONFIG)
-
-if (NOT SDL2_ttf_FOUND)
-    FetchContent_Declare(
-        SDL2_ttf
-        GIT_REPOSITORY https://github.com/libsdl-org/SDL_ttf.git
-        GIT_TAG        release-2.22.0
-    )
-
-    FetchContent_MakeAvailable(SDL2_ttf)
-endif()
+find_package(SDL2_ttf   REQUIRED CONFIG)
 
 # Include directores.
 set(HALCYON_INCLUDE_DIRS ${CMAKE_CURRENT_LIST_DIR}/include/)
