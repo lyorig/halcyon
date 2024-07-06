@@ -96,6 +96,11 @@ surface cv::resize(scaler scl) const
     return resize(scl(size()));
 }
 
+bool cv::must_lock() const
+{
+    return SDL_MUSTLOCK(get());
+}
+
 const_pixel_reference cv::operator[](pixel::point pos) const
 {
     HAL_ASSERT(pos.x < get()->w, "Out-of-range width");
@@ -136,6 +141,16 @@ void v::color_mod(color col)
 void v::alpha_mod(color::value_t val)
 {
     HAL_ASSERT_VITAL(::SDL_SetSurfaceAlphaMod(get(), val) == 0, debug::last_error());
+}
+
+void v::lock()
+{
+    HAL_ASSERT(::SDL_LockSurface(get()) == 0, debug::last_error());
+}
+
+void v::unlock()
+{
+    ::SDL_UnlockSurface(get());
 }
 
 pixel_reference v::operator[](pixel::point pos)

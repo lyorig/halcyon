@@ -75,6 +75,9 @@ namespace hal
         surface resize(pixel::point sz) const;
         surface resize(scaler scl) const;
 
+        // Whether the surface must be locked before reading/writing pixels.
+        bool must_lock() const;
+
         // Get pixel at position.
         // This functionality is exclusive to surfaces, as textures
         // are extremely slow to retrieve pixel information.
@@ -109,6 +112,8 @@ namespace hal
         // Get/set this surface's alpha modifier.
         using super::alpha_mod;
         void alpha_mod(color::value_t val);
+
+        void lock(), unlock();
 
         pixel_reference operator[](pixel::point pt);
     };
