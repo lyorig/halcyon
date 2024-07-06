@@ -69,6 +69,8 @@ target_link_libraries(Halcyon PUBLIC
 
 # Testing.
 if(Halcyon_BUILD_TESTS)
+    message("Halcyon: Enabled HalTest.")
+
     include(CTest)
 
     add_executable(HalTest test/main.cpp)
@@ -101,6 +103,8 @@ endif()
 
 # Examples.
 if(Halcyon_BUILD_EXAMPLES)
+    message("Halcyon: Enabled examples.")
+
     set(EXAMPLE_SOURCES
         audio.cpp
         invertor.cpp
@@ -115,7 +119,6 @@ if(Halcyon_BUILD_EXAMPLES)
 
     foreach(FILE IN LISTS EXAMPLE_SOURCES)
         cmake_path(GET FILE STEM TGT_NAME)
-        message("Got ${TGT_NAME}")
         add_executable(${TGT_NAME} ${FILE} $<TARGET_OBJECTS:Halcyon>)
         target_link_libraries(${TGT_NAME} PRIVATE Halcyon)
         set_target_properties(${TGT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin/)
