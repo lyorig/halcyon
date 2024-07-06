@@ -8,8 +8,8 @@ Halcyon is included into your project via CMake.
 1. Clone the repository into your project directory.
 > [!CAUTION]
 Do a shallow clone, as there was a time when actual MP3 and WAV files were stored here. I'll get around to removing these commits from the history eventually.
-2. In your CMakeLists.txt, `include(halcyon/config.cmake)`. This will ensure all necessary packages[^1] are installed.
-3. Several variables now exist: `HALCYON_INCLUDE_DIRS`, `HALCYON_SOURCES` and `HALCYON_LIBRARIES`. Use these with your project and you're good to go.
+2. In your CMakeLists.txt, `add_subdirectory(halcyon)`. This will ensure all necessary packages[^1] are installed.
+3. Link with `Halcyon::Halcyon`.
 
 # Usage
 Halcyon wraps SDL with several concepts:
