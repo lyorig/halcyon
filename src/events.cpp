@@ -107,6 +107,11 @@ bool proxy::events::poll(event::holder& eh)
     return static_cast<bool>(::SDL_PollEvent(eh.get(pass_key<subsystem> {})));
 }
 
+void proxy::events::pump()
+{
+    ::SDL_PumpEvents();
+}
+
 void proxy::events::push(const event::holder& eh)
 {
 #ifdef HAL_DEBUG_ENABLED
@@ -118,9 +123,19 @@ void proxy::events::push(const event::holder& eh)
     HAL_WARN_IF(ret == 0, "Pushed event of type ", eh.kind(), " was filtered");
 }
 
-bool proxy::events::pending()
+void proxy::events::flush(event::type t)
+{
+    ::SDL_FlushEvent(static_cast<Uint32>(t));
+}
+
+bool proxy::events::pending() const
 {
     return static_cast<bool>(::SDL_PollEvent(nullptr));
+}
+
+bool proxy::events::has(event::type t) const
+{
+    return ::SDL_HasEvent(static_cast<Uint32>(t)) == SDL_TRUE;
 }
 
 void proxy::events::text_input_start()

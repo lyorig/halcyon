@@ -45,6 +45,7 @@ namespace hal
 
     namespace detail
     {
+        // A system that represents the event queue.
         template <>
         class subsystem<system::events>
         {
@@ -55,12 +56,27 @@ namespace hal
             subsystem(pass_key<authority_t>);
             subsystem(pass_key<parent_t>);
 
+            // Collect pending events.
+            // This is usually not necessary - poll() calls it in an event loop.
+            void pump();
+
+            // Get and remove an event from the queue.
+            // Returns whether there are still events to process.
             bool poll(event::holder& eh);
 
+            // Push an event onto the queue.
             void push(const event::holder& eh);
 
-            bool pending();
+            // Remove all events of a given type from the queue.
+            void flush(event::type t);
 
+            // Check whether there are any events waiting to be processed.
+            bool pending() const;
+
+            // Check if there are any events of a given type in the queue.
+            bool has(event::type t) const;
+
+            // Start/stop text inputs.
             void text_input_start();
             void text_input_stop();
 

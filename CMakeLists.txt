@@ -1,5 +1,7 @@
 # Halcyon CMake target file. add_subdirectory() and you should be good to go.
 
+cmake_minimum_required(VERSION 3.20.0)
+
 project(Halcyon VERSION 1.0 LANGUAGES CXX)
 
 # Make sure SDL is present on the system.
@@ -7,8 +9,8 @@ find_package(SDL2 CONFIG REQUIRED)
 find_package(SDL2_image CONFIG REQUIRED)
 find_package(SDL2_ttf CONFIG REQUIRED)
 
-option(Halcyon_BUILD_TESTS "Build HalTest." FALSE)
-option(Halcyon_BUILD_EXAMPLES "Build Halcyon Examples." FALSE)
+option(Halcyon_BUILD_TESTS "Build HalTest.")
+option(Halcyon_BUILD_EXAMPLES "Build Halcyon Examples.")
 
 # Sources.
 set(Halcyon_SOURCES
