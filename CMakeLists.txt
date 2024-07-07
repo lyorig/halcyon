@@ -12,6 +12,10 @@ find_package(SDL2_ttf CONFIG REQUIRED)
 option(Halcyon_BUILD_TESTS "Build HalTest.")
 option(Halcyon_BUILD_EXAMPLES "Build Halcyon Examples.")
 
+# Halcyon requires C++23.
+set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 # Sources.
 set(Halcyon_SOURCES
     audio/device.cpp
@@ -43,10 +47,6 @@ set(Halcyon_SOURCES
 )
 
 list(TRANSFORM Halcyon_SOURCES PREPEND src/)
-
-# Halcyon uses C++23 features.
-set(CMAKE_CXX_STANDARD 23)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Create the library itself...
 add_library(Halcyon)
