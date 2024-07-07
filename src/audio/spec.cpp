@@ -1,5 +1,9 @@
 #include <halcyon/audio.hpp>
 
+#include <iostream>
+
+#include <halcyon/utility/printing.hpp>
+
 using namespace hal;
 
 using ass = audio::sdl::spec;

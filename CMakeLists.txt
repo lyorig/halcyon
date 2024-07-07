@@ -49,7 +49,7 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Create the library itself...
-add_library(Halcyon)
+add_library(Halcyon SHARED)
 add_library(Halcyon::Halcyon ALIAS Halcyon)
 
 target_include_directories(Halcyon PUBLIC include/)

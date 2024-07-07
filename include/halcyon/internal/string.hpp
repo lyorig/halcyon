@@ -1,5 +1,7 @@
 #pragma once
 
+#include <SDL_stdinc.h>
+
 #include <halcyon/internal/raii_object.hpp>
 #include <halcyon/utility/pass_key.hpp>
 
