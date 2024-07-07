@@ -12,7 +12,6 @@ find_package(SDL2_ttf CONFIG REQUIRED)
 option(Halcyon_BUILD_TESTS "Build HalTest.")
 option(Halcyon_BUILD_EXAMPLES "Build Halcyon Examples.")
 
-# Halcyon requires C++23.
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
@@ -57,8 +56,6 @@ target_include_directories(Halcyon PUBLIC include/)
 target_sources(Halcyon PRIVATE
     ${Halcyon_SOURCES}
 )
-
-unset(Halcyon_SOURCES)
 
 target_link_libraries(Halcyon PUBLIC
     SDL2::SDL2main
