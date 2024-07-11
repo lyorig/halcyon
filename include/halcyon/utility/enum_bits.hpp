@@ -4,7 +4,7 @@
 
 #include <halcyon/utility/concepts.hpp>
 
-// utility/enum_bitset.hpp:
+// utility/enum_bits.hpp:
 // Helper template class for bit manipulation with enums.
 // Aims to keep the safety of scoped enums while taking out the
 // annoying part of writing std::to_underlying() everywhere.
@@ -74,35 +74,36 @@ namespace hal
 
     public:
         using super::super;
-
+        
+        constexpr enum_bitmask(Enum e)
+            : super { static_cast<Value>(e) }
+        {
+        }
         constexpr enum_bitmask(std::initializer_list<Enum> il)
             : super { detail::to_bitmask<Value>(il) }
         {
         }
 
-        constexpr bool operator[](Enum e) const
+        constexpr bool operator[](enum_bitmask e) const
         {
-            if constexpr (std::is_pointer_v<Value>)
-                return static_cast<bool>(super::mask()[std::to_underlying(e)]);
-            else
-                return static_cast<bool>(super::mask() & std::to_underlying(e));
+            return static_cast<bool>(super::mask() & e.mask());
         }
 
-        constexpr enum_bitmask& operator+=(Enum e)
+        constexpr enum_bitmask& operator+=(enum_bitmask e)
         {
-            super::m_mask |= static_cast<Value>(e);
+            super::m_mask |= e.mask();
             return *this;
         }
 
-        constexpr enum_bitmask& operator-=(Enum e)
+        constexpr enum_bitmask& operator-=(enum_bitmask e)
         {
-            super::m_mask &= ~static_cast<Value>(e);
+            super::m_mask &= ~static_cast<Value>(e.mask());
             return *this;
         }
 
-        constexpr enum_bitmask& operator^=(Enum e)
+        constexpr enum_bitmask& operator^=(enum_bitmask e)
         {
-            super::m_mask ^= static_cast<Value>(e);
+            super::m_mask ^= static_cast<Value>(e.mask());
         }
     };
 

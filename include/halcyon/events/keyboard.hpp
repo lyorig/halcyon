@@ -210,7 +210,7 @@ namespace hal
         // A reference to the keyboard state. Unlike that mouse state,
         // you can keep this object around, as it always references the current
         // state as long as you keep polling for event in your application loop.
-        class state_reference : public enum_bitmask<button, const std::uint8_t*>
+        class state_reference
         {
         public:
             using authority_t = proxy::keyboard;
@@ -219,6 +219,9 @@ namespace hal
 
             // Extra operator to convert keys to buttons.
             bool operator[](key k) const;
+            
+        private:
+            const Uint8* m_arr;
         };
 
         class mod_state : public enum_bitmask<mod, SDL_Keymod>
