@@ -1,5 +1,6 @@
 #pragma once
 
+#include "halcyon/utility/metaprogramming.hpp"
 #include <utility>
 
 #include <halcyon/utility/concepts.hpp>
@@ -19,24 +20,28 @@ namespace hal
             requires std::is_enum_v<T>
         constexpr To to_bitmask(std::initializer_list<T> list)
         {
-            To mask { 0 };
+            using ut = meta::underlying_type<To>;
+
+            ut mask { 0 };
 
             for (const T value : list)
-                mask |= static_cast<To>(value);
+                mask |= static_cast<ut>(value);
 
-            return mask;
+            return static_cast<To>(mask);
         }
 
         template <meta::arithmetic To, typename T>
             requires std::is_enum_v<T>
         constexpr To to_bitset(std::initializer_list<T> list)
         {
-            To mask { 0 };
+            using ut = meta::underlying_type<To>;
+
+            ut mask { 0 };
 
             for (const T value : list)
-                mask |= (1 << static_cast<To>(value));
+                mask |= (1 << static_cast<ut>(value));
 
-            return mask;
+            return static_cast<To>(mask);
         }
 
         template <typename Enum, typename Value>
@@ -76,7 +81,7 @@ namespace hal
         using super::super;
         
         constexpr enum_bitmask(Enum e)
-            : super { static_cast<Value>(e) }
+            : enum_bitmask { e }
         {
         }
         constexpr enum_bitmask(std::initializer_list<Enum> il)
@@ -120,31 +125,36 @@ namespace hal
     public:
         using super::super;
 
+        constexpr enum_bitset(Enum e)
+            : enum_bitset { e }
+        {
+        }
+
         constexpr enum_bitset(std::initializer_list<Enum> il)
             : super { detail::to_bitset<Value>(il) }
         {
         }
 
-        constexpr bool operator[](Enum e) const
+        constexpr bool operator[](enum_bitset e) const
         {
-            return static_cast<bool>(super::mask() & (one << static_cast<Value>(e)));
+            return static_cast<bool>(super::mask() & e.mask());
         }
 
-        constexpr enum_bitset& operator+=(Enum e)
+        constexpr enum_bitset& operator+=(enum_bitset e)
         {
-            super::m_mask |= (one << static_cast<Value>(e));
+            super::m_mask |= e.mask();
             return *this;
         }
 
-        constexpr enum_bitset& operator-=(Enum e)
+        constexpr enum_bitset& operator-=(enum_bitset e)
         {
-            super::m_mask &= ~(one << static_cast<Value>(e));
+            super::m_mask &= ~e.mask();
             return *this;
         }
 
-        constexpr enum_bitset& operator^=(Enum e)
+        constexpr enum_bitset& operator^=(enum_bitset e)
         {
-            super::m_mask ^= (one << static_cast<Value>(e));
+            super::m_mask ^= e.mask();
             return *this;
         }
     };
