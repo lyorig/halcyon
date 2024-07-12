@@ -64,6 +64,8 @@ namespace hal
                 return m_mask;
             }
 
+            constexpr bool operator<=>(const enum_bit_base&) const = default;
+
         protected:
             Value m_mask;
         };
@@ -79,7 +81,7 @@ namespace hal
 
     public:
         using super::super;
-        
+
         constexpr enum_bitmask(Enum e)
             : enum_bitmask { e }
         {
