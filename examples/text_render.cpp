@@ -36,7 +36,7 @@ int main(int argc, char* argv[])
         const hal::font    fnt { tctx.load("assets/m5x7.ttf", font_size) };
         const hal::surface surf { fnt.render(argv[1]).fg(hal::palette::black)() };
 
-        tex = rnd.make_texture(surf);
+        tex = rnd.make_static_texture(surf);
 
         HAL_PRINT("Pixel format: ", tex.pixel_format(), ", type: ", hal::pixel::storage_of(tex.pixel_format()));
         HAL_PRINT("Must lock? ", surf.must_lock());

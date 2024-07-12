@@ -1,5 +1,7 @@
 #pragma once
 
+#include <span>
+
 #include <SDL_render.h>
 
 #include <halcyon/utility/pass_key.hpp>
@@ -60,7 +62,7 @@ namespace hal
     };
 
     // Common texture functionality.
-    class texture : public detail::raii_object<texture,&::SDL_DestroyTexture>
+    class texture : public detail::raii_object<texture, &::SDL_DestroyTexture>
     {
     protected:
         texture() = default;
@@ -77,7 +79,6 @@ namespace hal
     public:
         static_texture() = default;
 
-        // [private] Textures are created with renderer::load().
         static_texture(view<const renderer> rnd, view<const surface> surf);
     };
 
@@ -87,7 +88,13 @@ namespace hal
     public:
         target_texture() = default;
 
-        // [private] Target textures are created with renderer::load().
         target_texture(view<const renderer> rnd, pixel::format fmt, pixel::point size);
+    };
+
+    class streaming_texture : public texture {
+      public:
+        streaming_texture() = default;
+
+        streaming_texture(view<const renderer> rnd, pixel::format fmt, pixel::point size);
     };
 }

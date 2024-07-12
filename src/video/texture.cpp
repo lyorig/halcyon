@@ -105,3 +105,8 @@ target_texture::target_texture(view<const renderer> rnd, pixel::format fmt, pixe
     : texture { ::SDL_CreateTexture(rnd.get(), static_cast<Uint32>(fmt), SDL_TEXTUREACCESS_TARGET, size.x, size.y) }
 {
 }
+
+streaming_texture::streaming_texture(view<const renderer> rnd, pixel::format fmt, pixel::point size)
+    : texture { ::SDL_CreateTexture(rnd.get(), static_cast<Uint32>(fmt), SDL_TEXTUREACCESS_STREAMING, size.x, size.y) }
+{
+}

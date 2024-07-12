@@ -103,8 +103,9 @@ namespace hal
         view<class window> window();
 
         // Texture creation functions.
-        [[nodiscard]] static_texture make_texture(view<const surface> surf) &;
+        [[nodiscard]] static_texture make_static_texture(view<const surface> surf) &;
         [[nodiscard]] target_texture make_target_texture(pixel::point size) &;
+        [[nodiscard]] streaming_texture make_streaming_texture(pixel::point size) &;
 
         // Render a texture via a builder.
         [[nodiscard]] copyer render(view<const texture> tex);

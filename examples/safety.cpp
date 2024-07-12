@@ -50,7 +50,7 @@ int main(int, char*[])
     using enum hal::image::init_format;
     using namespace std::string_view_literals;
 
-    hal::static_texture tex { rnd.make_texture(img { png }.load("assets/file.png")) };
+    hal::static_texture tex { rnd, img { png }.load("assets/file.png") };
 
     // If you're in debug mode, and your program works up until this point – congrats!
     // Halcyon Debug checks every call that can fail, and – provided that you haven't explicitly

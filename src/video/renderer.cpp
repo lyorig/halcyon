@@ -118,20 +118,19 @@ view<window> v::window()
     return { *this, pass_key<v> {} };
 }
 
-static_texture v::make_texture(view<const surface> surf) &
+static_texture v::make_static_texture(view<const surface> surf) &
 {
     return { *this, surf };
 }
 
 target_texture v::make_target_texture(pixel::point size) &
 {
-    SDL_Window* wnd { ::SDL_RenderGetWindow(get()) };
-    HAL_ASSERT(wnd != nullptr, debug::last_error());
+    return { *this, window().pixel_format(), size };
+}
 
-    const pixel::format fmt { static_cast<pixel::format>(::SDL_GetWindowPixelFormat(wnd)) };
-    HAL_ASSERT(fmt != pixel::format::unknown, debug::last_error());
-
-    return { *this, fmt, size };
+streaming_texture v::make_streaming_texture(pixel::point size) &
+{
+    return { *this, window().pixel_format(), size};
 }
 
 void v::color(hal::color clr)
