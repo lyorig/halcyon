@@ -127,4 +127,30 @@ namespace hal
             }
         };
     }
+
+    template <typename T>
+    class view_test
+    {
+    public:
+        view_test()               = default;
+        view_test(std::nullptr_t) = delete;
+
+        view_test(T& obj)
+            : m_ptr { obj.get() }
+        {
+        }
+
+        T* operator->()
+        {
+            return reinterpret_cast<T*>(this);
+        }
+
+        const T* operator->() const
+        {
+            return reinterpret_cast<const T*>(this);
+        }
+
+    private:
+        std::conditional_t<std::is_const_v<T>, typename T::const_pointer, typename T::pointer> m_ptr;
+    };
 }
