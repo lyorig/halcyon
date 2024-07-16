@@ -28,9 +28,10 @@ namespace hal
     template <>
     class view<const font> : public detail::view_base<TTF_Font>
     {
-    public:
+    protected:
         using view_base::view_base;
 
+    public:
         // Render text to a surface.
         [[nodiscard]] builder::font_text render(std::string_view text) const;
 
@@ -55,7 +56,7 @@ namespace hal
     {
         using super = view<const font>;
 
-    public:
+    protected:
         using super::super;
     };
 

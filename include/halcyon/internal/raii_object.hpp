@@ -17,37 +17,21 @@ namespace hal
         public:
             using value_type = SDL_Type;
 
-            using pointer       = value_type*;
-            using const_pointer = const value_type*;
-
-            // Return the underlying pointer to the object. Intended for internal
-            // use, or for when you want to interface with SDL to use functions not
-            // yet implemented in Halcyon.
-            pointer get() const
-            {
-                return m_ptr;
-            }
-
-            // Check whether the object is valid and useable (a.k.a. non-null).
-            bool valid() const
-            {
-                return get() != nullptr;
-            }
+            using pointer = value_type*;
 
         protected:
-            view_base()
-                : m_ptr { nullptr }
-            {
-            }
-
-            view_base(std::nullptr_t) = delete;
-
             view_base(SDL_Type* ptr)
                 : m_ptr { ptr }
             {
                 HAL_ASSERT(valid(), debug::last_error());
             }
 
+            view_base(std::nullptr_t)
+                : m_ptr { nullptr }
+            {
+            }
+
+        public:
             view_base(const view_base&)            = default;
             view_base& operator=(const view_base&) = default;
 
@@ -65,14 +49,28 @@ namespace hal
                 return *this;
             }
 
+            // Return the underlying pointer to the object. Intended for internal
+            // use, or for when you want to interface with SDL to use functions not
+            // yet implemented in Halcyon.
+            pointer get() const
+            {
+                return m_ptr;
+            }
+
+            // Check whether the object is valid and useable (a.k.a. non-null).
+            bool valid() const
+            {
+                return get() != nullptr;
+            }
+
+        protected:
             SDL_Type* m_ptr;
         };
     }
 
     // A view is a non-owning SDL object.
-    // It contains non-modifying/querying (const-qualified) member functions,
-    // and is then extended by raii_object, which adds modifiers and
-    // a destructor that disposes of the contained pointer.
+    // It contains all member functions, and is extended by raii_object,
+    // which adds constructors and automatic deallocation.
     template <typename Halcyon_Type>
     class view;
 
@@ -86,9 +84,18 @@ namespace hal
         private:
             using super = view<Halcyon_Type>;
 
-        public:
-            using super::super;
+        protected:
+            raii_object()
+                : super { nullptr }
+            {
+            }
 
+            raii_object(super::pointer ptr)
+                : super { ptr }
+            {
+            }
+
+        public:
             raii_object(raii_object&&) = default;
 
             raii_object& operator=(raii_object&& o)
@@ -127,30 +134,4 @@ namespace hal
             }
         };
     }
-
-    template <typename T>
-    class view_test
-    {
-    public:
-        view_test()               = default;
-        view_test(std::nullptr_t) = delete;
-
-        view_test(T& obj)
-            : m_ptr { obj.get() }
-        {
-        }
-
-        T* operator->()
-        {
-            return reinterpret_cast<T*>(this);
-        }
-
-        const T* operator->() const
-        {
-            return reinterpret_cast<const T*>(this);
-        }
-
-    private:
-        std::conditional_t<std::is_const_v<T>, typename T::const_pointer, typename T::pointer> m_ptr;
-    };
 }

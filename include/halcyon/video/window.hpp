@@ -18,9 +18,10 @@ namespace hal
     template <>
     class view<const window> : public detail::view_base<SDL_Window>
     {
-    public:
+    protected:
         using view_base::view_base;
 
+    public:
         view(view<const renderer>, pass_key<view<const renderer>>);
 
         pixel::point pos() const;
@@ -48,9 +49,10 @@ namespace hal
     {
         using super = view<const window>;
 
-    public:
+    protected:
         using super::super;
 
+    public:
         view(view<renderer> rnd, pass_key<view<renderer>>);
 
         [[nodiscard]] renderer make_renderer(std::initializer_list<renderer::flags> flags = {}) &;
@@ -94,7 +96,7 @@ namespace hal
 
         window(proxy::video& sys, std::string_view title, pixel::point size, std::initializer_list<flags> flags = {});
 
-        // Create a window in fullscreen window.
+        // Create a window in fullscreen mode.
         // Warning: This has some issues on macOS due to its DPI scaling stuff.
         window(proxy::video& sys, std::string_view title, HAL_TAG_NAME(fullscreen));
     };

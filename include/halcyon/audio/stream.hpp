@@ -19,9 +19,10 @@ namespace hal
     template <>
     class view<const audio::stream> : public detail::view_base<SDL_AudioStream>
     {
-    public:
+    protected:
         using view_base::view_base;
 
+    public:
         i32 available() const;
 
         template <meta::buffer T>
@@ -41,9 +42,10 @@ namespace hal
     private:
         using super = view<const audio::stream>;
 
-    public:
+    protected:
         using super::super;
 
+    public:
         void flush();
 
         void clear();

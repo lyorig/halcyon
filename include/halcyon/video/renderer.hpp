@@ -42,9 +42,10 @@ namespace hal
     template <>
     class view<const renderer> : public detail::view_base<SDL_Renderer>
     {
-    public:
+    protected:
         using view_base::view_base;
 
+    public:
         hal::color color() const;
 
         blend_mode blend() const;
@@ -63,9 +64,10 @@ namespace hal
     {
         using super = view<const renderer>;
 
-    public:
+    protected:
         using super::super;
 
+    public:
         // Clear (fill) the render target with the current draw color.
         void clear();
 
@@ -103,8 +105,8 @@ namespace hal
         view<class window> window();
 
         // Texture creation functions.
-        [[nodiscard]] static_texture make_static_texture(view<const surface> surf) &;
-        [[nodiscard]] target_texture make_target_texture(pixel::point size) &;
+        [[nodiscard]] static_texture    make_static_texture(view<const surface> surf) &;
+        [[nodiscard]] target_texture    make_target_texture(pixel::point size) &;
         [[nodiscard]] streaming_texture make_streaming_texture(pixel::point size) &;
 
         // Render a texture via a builder.

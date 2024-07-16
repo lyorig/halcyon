@@ -40,9 +40,10 @@ namespace hal
     template <>
     class view<const surface> : public detail::view_base<SDL_Surface>
     {
-    public:
+    protected:
         using view_base::view_base;
 
+    public:
         // [private] Window surface views are obtained via window::surface().
         view(SDL_Surface* ptr, pass_key<view<const window>>);
 
@@ -89,9 +90,10 @@ namespace hal
     {
         using super = view<const surface>;
 
-    public:
+    protected:
         using super::super;
 
+    public:
         // Fill the entire surface with a color.
         void fill(color clr);
 

@@ -29,7 +29,7 @@ namespace hal
     template <>
     class view<detail::rwops> : public detail::view_base<SDL_RWops>
     {
-    public:
+    protected:
         using view_base::view_base;
     };
 

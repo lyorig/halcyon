@@ -21,9 +21,10 @@ namespace hal
     template <>
     class view<const texture> : public detail::view_base<SDL_Texture>
     {
-    public:
+    protected:
         using view_base::view_base;
 
+    public:
         pixel::point size() const;
 
         color::value_t opacity() const;
@@ -45,9 +46,10 @@ namespace hal
     {
         using super = view<const texture>;
 
-    public:
+    protected:
         using super::super;
 
+    public:
         using super::opacity;
         void opacity(color::value_t value);
 
@@ -91,8 +93,9 @@ namespace hal
         target_texture(view<const renderer> rnd, pixel::format fmt, pixel::point size);
     };
 
-    class streaming_texture : public texture {
-      public:
+    class streaming_texture : public texture
+    {
+    public:
         streaming_texture() = default;
 
         streaming_texture(view<const renderer> rnd, pixel::format fmt, pixel::point size);
