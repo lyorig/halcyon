@@ -17,6 +17,11 @@ keyboard::state_reference::state_reference(pass_key<authority_t>)
 {
 }
 
+bool keyboard::state_reference::operator[](button b) const
+{
+    return static_cast<bool>(m_arr[std::to_underlying(b)]);
+}
+
 bool keyboard::state_reference::operator[](key k) const
 {
     return static_cast<bool>(m_arr[::SDL_GetScancodeFromKey(static_cast<SDL_KeyCode>(k))]);

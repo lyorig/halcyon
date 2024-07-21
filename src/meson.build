@@ -1,0 +1,30 @@
+# Halcyon's sources.
+
+sources = files(
+  'audio/device.cpp',
+  'audio/spec.cpp',
+  'audio/stream.cpp',
+  'events/holder.cpp',
+  'events/keyboard.cpp',
+  'events/mouse.cpp',
+  'internal/rwops.cpp',
+  'internal/string.cpp',
+  'types/color.cpp',
+  'utility/strutil.cpp',
+  'utility/timer.cpp',
+  'video/display.cpp',
+  'video/driver.cpp',
+  'video/message_box.cpp',
+  'video/renderer.cpp',
+  'video/texture.cpp',
+  'video/window.cpp',
+  'audio.cpp',
+  'context.cpp',
+  'debug.cpp',
+  'events.cpp',
+  'image.cpp',
+  'surface.cpp',
+  'templates.cpp',
+  'ttf.cpp',
+  'video.cpp'
+)

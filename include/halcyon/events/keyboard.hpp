@@ -217,14 +217,14 @@ namespace hal
 
             state_reference(pass_key<authority_t>);
 
-            // Extra operator to convert keys to buttons.
+            bool operator[](button b) const;
             bool operator[](key k) const;
-            
+
         private:
             const Uint8* m_arr;
         };
 
-        class mod_state : public enum_bitmask<mod, SDL_Keymod>
+        class mod_state : public enum_bitmask<mod, meta::underlying_type<SDL_Keymod>>
         {
         public:
             using authority_t = proxy::keyboard;

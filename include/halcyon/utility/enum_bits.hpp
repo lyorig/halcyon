@@ -50,7 +50,6 @@ namespace hal
 
         constexpr static Value reduce(std::initializer_list<Enum> e)
         {
-
             Value mask { 0 };
 
             for (const Enum value : e)
