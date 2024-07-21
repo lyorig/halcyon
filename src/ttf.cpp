@@ -2,19 +2,23 @@
 
 using namespace hal;
 
-using cv = view<const font>;
-
-builder::font_text cv::render(std::string_view text) const
+font::font(accessor src, pt_t size, pass_key<ttf::context>)
+    : raii_object { ::TTF_OpenFontRW(src.use(pass_key<font> {}), true, size) }
 {
-    return { *this, text, pass_key<cv> {} };
+    HAL_WARN_IF(height() != skip(), '\"', family(), ' ', style(), "\" has different height (", height(), "px) & skip (", skip(), "px). size_text() might not return accurate vertical results.");
 }
 
-builder::font_glyph cv::render(char32_t glyph) const
+builder::font_text font::render(std::string_view text) const
 {
-    return { *this, glyph, pass_key<cv> {} };
+    return { *this, text, pass_key<font> {} };
 }
 
-pixel::point cv::size_text(const std::string_view& text) const
+builder::font_glyph font::render(char32_t glyph) const
+{
+    return { *this, glyph, pass_key<font> {} };
+}
+
+pixel::point font::size_text(const std::string_view& text) const
 {
     point<int> size;
 
@@ -23,35 +27,29 @@ pixel::point cv::size_text(const std::string_view& text) const
     return pixel::point(size);
 }
 
-pixel_t cv::height() const
+pixel_t font::height() const
 {
     return static_cast<pixel_t>(::TTF_FontHeight(get()));
 }
 
-pixel_t cv::skip() const
+pixel_t font::skip() const
 {
     return static_cast<pixel_t>(::TTF_FontLineSkip(get()));
 }
 
-std::string_view cv::family() const
+std::string_view font::family() const
 {
     return ::TTF_FontFaceFamilyName(get());
 }
 
-std::string_view cv::style() const
+std::string_view font::style() const
 {
     return ::TTF_FontFaceStyleName(get());
 }
 
-bool cv::mono() const
+bool font::mono() const
 {
     return ::TTF_FontFaceIsFixedWidth(get());
-}
-
-font::font(accessor src, pt_t size, pass_key<ttf::context>)
-    : raii_object { ::TTF_OpenFontRW(src.use(pass_key<font> {}), true, size) }
-{
-    HAL_WARN_IF(height() != skip(), '\"', family(), ' ', style(), "\" has different height (", height(), "px) & skip (", skip(), "px). size_text() might not return accurate vertical results.");
 }
 
 ttf::context::context()
@@ -84,7 +82,7 @@ bool ttf::context::initialized()
 
 using bft = builder::font_text;
 
-bft::font_text(cv fnt, std::string_view text, pass_key<cv> pk)
+bft::font_text(ref<const font> fnt, std::string_view text, pass_key<font> pk)
     : font_builder_base { fnt, pk }
     , m_text { text.data() }
     , m_wrapLength { invalid() }
@@ -107,16 +105,16 @@ surface bft::operator()(font::render_type rt)
         switch (rt)
         {
         case solid:
-            return { ::TTF_RenderUTF8_Solid(m_font.get(), m_text, static_cast<SDL_Color>(m_fg)), pass_key<font_text> {} };
+            return { ::TTF_RenderUTF8_Solid(m_font->get(), m_text, static_cast<SDL_Color>(m_fg)), pass_key<font_text> {} };
 
         case shaded:
-            return { ::TTF_RenderUTF8_Shaded(m_font.get(), m_text, static_cast<SDL_Color>(m_fg), static_cast<SDL_Color>(m_bg)), pass_key<font_text> {} };
+            return { ::TTF_RenderUTF8_Shaded(m_font->get(), m_text, static_cast<SDL_Color>(m_fg), static_cast<SDL_Color>(m_bg)), pass_key<font_text> {} };
 
         case blended:
-            return { ::TTF_RenderUTF8_Blended(m_font.get(), m_text, static_cast<SDL_Color>(m_fg)), pass_key<font_text> {} };
+            return { ::TTF_RenderUTF8_Blended(m_font->get(), m_text, static_cast<SDL_Color>(m_fg)), pass_key<font_text> {} };
 
         case lcd:
-            return { ::TTF_RenderUTF8_LCD(m_font.get(), m_text, static_cast<SDL_Color>(m_fg), static_cast<SDL_Color>(m_bg)), pass_key<font_text> {} };
+            return { ::TTF_RenderUTF8_LCD(m_font->get(), m_text, static_cast<SDL_Color>(m_fg), static_cast<SDL_Color>(m_bg)), pass_key<font_text> {} };
         }
     }
 
@@ -125,16 +123,16 @@ surface bft::operator()(font::render_type rt)
         switch (rt)
         {
         case solid:
-            return { ::TTF_RenderUTF8_Solid_Wrapped(m_font.get(), m_text, static_cast<SDL_Color>(m_fg), m_wrapLength), pass_key<font_text> {} };
+            return { ::TTF_RenderUTF8_Solid_Wrapped(m_font->get(), m_text, static_cast<SDL_Color>(m_fg), m_wrapLength), pass_key<font_text> {} };
 
         case shaded:
-            return { ::TTF_RenderUTF8_Shaded_Wrapped(m_font.get(), m_text, static_cast<SDL_Color>(m_fg), static_cast<SDL_Color>(m_bg), m_wrapLength), pass_key<font_text> {} };
+            return { ::TTF_RenderUTF8_Shaded_Wrapped(m_font->get(), m_text, static_cast<SDL_Color>(m_fg), static_cast<SDL_Color>(m_bg), m_wrapLength), pass_key<font_text> {} };
 
         case blended:
-            return { ::TTF_RenderUTF8_Blended_Wrapped(m_font.get(), m_text, static_cast<SDL_Color>(m_fg), m_wrapLength), pass_key<font_text> {} };
+            return { ::TTF_RenderUTF8_Blended_Wrapped(m_font->get(), m_text, static_cast<SDL_Color>(m_fg), m_wrapLength), pass_key<font_text> {} };
 
         case lcd:
-            return { ::TTF_RenderUTF8_LCD_Wrapped(m_font.get(), m_text, static_cast<SDL_Color>(m_fg), static_cast<SDL_Color>(m_bg), m_wrapLength), pass_key<font_text> {} };
+            return { ::TTF_RenderUTF8_LCD_Wrapped(m_font->get(), m_text, static_cast<SDL_Color>(m_fg), static_cast<SDL_Color>(m_bg), m_wrapLength), pass_key<font_text> {} };
         }
     }
 
@@ -143,7 +141,7 @@ surface bft::operator()(font::render_type rt)
 
 using bfg = builder::font_glyph;
 
-bfg::font_glyph(cv fnt, char32_t glyph, pass_key<cv> pk)
+bfg::font_glyph(ref<const font> fnt, char32_t glyph, pass_key<font> pk)
     : font_builder_base { fnt, pk }
     , m_glyph { glyph }
 {
@@ -156,16 +154,16 @@ surface bfg::operator()(font::render_type rt)
     switch (rt)
     {
     case solid:
-        return { ::TTF_RenderGlyph32_Solid(m_font.get(), m_glyph, static_cast<SDL_Color>(m_fg)), pass_key<font_glyph> {} };
+        return { ::TTF_RenderGlyph32_Solid(m_font->get(), m_glyph, static_cast<SDL_Color>(m_fg)), pass_key<font_glyph> {} };
 
     case shaded:
-        return { ::TTF_RenderGlyph32_Shaded(m_font.get(), m_glyph, static_cast<SDL_Color>(m_fg), static_cast<SDL_Color>(m_bg)), pass_key<font_glyph> {} };
+        return { ::TTF_RenderGlyph32_Shaded(m_font->get(), m_glyph, static_cast<SDL_Color>(m_fg), static_cast<SDL_Color>(m_bg)), pass_key<font_glyph> {} };
 
     case blended:
-        return { ::TTF_RenderGlyph32_Blended(m_font.get(), m_glyph, static_cast<SDL_Color>(m_fg)), pass_key<font_glyph> {} };
+        return { ::TTF_RenderGlyph32_Blended(m_font->get(), m_glyph, static_cast<SDL_Color>(m_fg)), pass_key<font_glyph> {} };
 
     case lcd:
-        return { ::TTF_RenderGlyph32_LCD(m_font.get(), m_glyph, static_cast<SDL_Color>(m_fg), static_cast<SDL_Color>(m_bg)), pass_key<font_glyph> {} };
+        return { ::TTF_RenderGlyph32_LCD(m_font->get(), m_glyph, static_cast<SDL_Color>(m_fg), static_cast<SDL_Color>(m_bg)), pass_key<font_glyph> {} };
     }
 
     return {};

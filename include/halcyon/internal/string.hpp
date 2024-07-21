@@ -7,45 +7,6 @@
 
 namespace hal
 {
-    class string;
-
-    template <>
-    class view<const string> : public detail::view_base<char>
-    {
-    public:
-        using view_base::view_base;
-
-        std::size_t size() const;
-
-        const char* begin() const;
-        const char* end() const;
-
-        const char* data() const;
-
-        const char* c_str() const;
-
-        operator std::string_view() const;
-    };
-
-    template <>
-    class view<string> : public view<const string>
-    {
-    private:
-        using super = view<const string>;
-
-    public:
-        using super::super;
-
-        using super::begin;
-        char* begin();
-
-        using super::end;
-        char* end();
-
-        using super::data;
-        char* data();
-    };
-
     namespace proxy
     {
         class clipboard;
@@ -54,12 +15,25 @@ namespace hal
     // SDL sometimes returns string pointers that we have to free via
     // its own function afterwards. This is a wrapper of that functionality
     // that attempts to mimic std::string as best as it can.
-    class string : public detail::raii_object<string, ::SDL_free>
+    class string : public detail::raii_object<char, ::SDL_free>
     {
     public:
         using authority_t = proxy::clipboard;
 
         string(char* ptr, pass_key<authority_t>);
+
+        const_pointer begin() const;
+        pointer       begin();
+
+        const_pointer end() const;
+        pointer       end();
+
+        std::size_t size() const;
+
+        const_pointer data() const;
+        pointer       data();
+
+        const_pointer c_str() const;
     };
 
     bool operator==(string lhs, std::string_view rhs);

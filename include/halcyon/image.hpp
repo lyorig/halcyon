@@ -76,7 +76,7 @@ namespace hal
 
             // Save a surface with a specified format.
             // JPEG files are currently saved at a hard-coded 90 quality.
-            void save(view<const surface>, save_format fmt, outputter dst) const;
+            void save(ref<const surface>, save_format fmt, outputter dst) const;
 
             // Check an image's format.
             // This modifies the accessor, but ultimately sets it back where it was.

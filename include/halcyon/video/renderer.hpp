@@ -39,35 +39,28 @@ namespace hal
         class renderer;
     }
 
-    template <>
-    class view<const renderer> : public detail::view_base<SDL_Renderer>
+    // A wrapper of SDL_Renderer. Essentially, this is the thing that does the rendering, and
+    // is attached to a window. Multiple renderers can exist for a single window, i.e. a hardware-
+    // accelerated one, plus a software fallback in case the former isn't available.
+    // By default, renderers use hardware acceleration. You can override this via renderer flags.
+    class renderer : public detail::raii_object<SDL_Renderer, &::SDL_DestroyRenderer>
     {
-    protected:
-        using view_base::view_base;
-
     public:
-        hal::color color() const;
+        enum class flags : u8
+        {
+            none           = 0,
+            software       = SDL_RENDERER_SOFTWARE,
+            accelerated    = SDL_RENDERER_ACCELERATED,
+            vsync          = SDL_RENDERER_PRESENTVSYNC,
+            target_texture = SDL_RENDERER_TARGETTEXTURE
+        };
 
-        blend_mode blend() const;
+        using flag_bitset = enum_bitmask<flags, decltype(SDL_RendererInfo::flags)>;
 
-        pixel::point size() const;
+        renderer() = default;
 
-        pixel::format pixel_format() const;
+        renderer(ref<window> wnd, std::initializer_list<flags> f);
 
-        info::sdl::renderer info() const;
-
-        view<const window> window() const;
-    };
-
-    template <>
-    class view<renderer> : public view<const renderer>
-    {
-        using super = view<const renderer>;
-
-    protected:
-        using super::super;
-
-    public:
         // Clear (fill) the render target with the current draw color.
         void clear();
 
@@ -88,56 +81,35 @@ namespace hal
         void fill();
 
         // Get/set the rendering target.
-        void target(target_texture& tx);
+        void target(ref<target_texture> tx);
         void reset_target();
 
-        using super::color;
-        void color(hal::color clr);
+        hal::color color() const;
+        void       color(hal::color clr);
 
-        using super::blend;
-        void blend(blend_mode bm);
+        blend_mode blend() const;
+        void       blend(blend_mode bm);
 
-        using super::size;
-        void size(pixel::point sz);
-        void size(scaler scl);
+        pixel::point size() const;
+        void         size(pixel::point sz);
+        void         size(scaler scl);
 
-        using super::window;
-        view<class window> window();
+        ref<const window> window() const;
+        ref<class window> window();
+
+        info::sdl::renderer info() const;
 
         // Texture creation functions.
-        [[nodiscard]] static_texture    make_static_texture(view<const surface> surf) &;
+        [[nodiscard]] static_texture    make_static_texture(ref<const surface> surf) &;
         [[nodiscard]] target_texture    make_target_texture(pixel::point size) &;
         [[nodiscard]] streaming_texture make_streaming_texture(pixel::point size) &;
 
         // Render a texture via a builder.
-        [[nodiscard]] copyer render(view<const texture> tex);
+        [[nodiscard]] copyer render(ref<const texture> tex);
 
     private:
         // Helper for setting the render target.
         void internal_target(SDL_Texture* target);
-    };
-
-    // A wrapper of SDL_Renderer. Essentially, this is the thing that does the rendering, and
-    // is attached to a window. Multiple renderers can exist for a single window, i.e. a hardware-
-    // accelerated one, plus a software fallback in case the former isn't available.
-    // By default, renderers use hardware acceleration. You can override this via renderer flags.
-    class renderer : public detail::raii_object<renderer, &::SDL_DestroyRenderer>
-    {
-    public:
-        enum class flags : u8
-        {
-            none           = 0,
-            software       = SDL_RENDERER_SOFTWARE,
-            accelerated    = SDL_RENDERER_ACCELERATED,
-            vsync          = SDL_RENDERER_PRESENTVSYNC,
-            target_texture = SDL_RENDERER_TARGETTEXTURE
-        };
-
-        using flag_bitset = enum_bitmask<flags, decltype(SDL_RendererInfo::flags)>;
-
-        renderer() = default;
-
-        renderer(view<const class window> wnd, std::initializer_list<flags> f);
     };
 
     namespace info
@@ -151,7 +123,7 @@ namespace hal
             public:
                 renderer() = default;
 
-                renderer(view<const hal::renderer> rnd, pass_key<view<const hal::renderer>>);
+                renderer(ref<const hal::renderer> rnd, pass_key<hal::renderer>);
 
                 std::string_view name() const;
 

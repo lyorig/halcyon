@@ -219,23 +219,23 @@ namespace test
         return EXIT_SUCCESS;
     }
 
-    int views()
+    int references()
     {
         hal::context       ctx;
         hal::system::video vid { ctx };
 
-        hal::window            wnd { vid, "HalTest Views", { 128, 128 } };
-        hal::view<hal::window> view = wnd;
+        hal::window           wnd { vid, "HalTest Views", { 128, 128 } };
+        hal::ref<hal::window> r1 = wnd;
 
-        HAL_ASSERT(wnd.get() == view.get(), "RAII and view pointers don't match.");
+        HAL_ASSERT(wnd.get() == r1->get(), "RAII and view pointers don't match.");
 
-        hal::view<hal::window> view_copy = view;
+        hal::ref<hal::window> r_cpy = r1;
 
-        HAL_ASSERT(view.get() == view_copy.get(), "View and its copy have different pointers");
+        HAL_ASSERT(r1->get() == r_cpy->get(), "View and its copy have different pointers");
 
-        hal::view<hal::window> view_move = std::move(view);
+        hal::ref<hal::window> r_mv = std::move(r1);
 
-        HAL_ASSERT(view.get() == nullptr && view_move.get() == wnd.get(), "View move has unexpected results");
+        HAL_ASSERT(!r1->valid() && r_mv->get() == wnd.get(), "View move has unexpected results");
 
         return EXIT_SUCCESS;
     }
@@ -341,7 +341,7 @@ int main(int argc, char* argv[])
         { "--scaler", test::scaler },
         { "--outputter", test::outputter },
         { "--png-check", test::png_check },
-        { "--views", test::views },
+        { "--references", test::references },
         { "--metaprogramming", test::metaprogramming },
         { "--audio-init", test::audio_init },
         { "--invalid-buffer", test::invalid_buffer },

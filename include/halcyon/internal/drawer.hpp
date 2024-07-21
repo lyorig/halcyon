@@ -35,10 +35,10 @@ namespace hal::detail
         consteval static U unset_pos() { return std::numeric_limits<U>::max(); }
 
     public:
-        [[nodiscard]] drawer(view<Pass> ths, view<T> src)
+        [[nodiscard]] drawer(ref<Pass> ths, ref<T> src)
             : m_pass { ths }
             , m_this { src }
-            , m_dst { tag::as_size, src.size() }
+            , m_dst { tag::as_size, src->size() }
         {
             m_src.pos.x = unset_pos<src_t>();
         }
@@ -122,8 +122,8 @@ namespace hal::detail
             return static_cast<this_ref>(*this);
         }
 
-        view<Pass> m_pass;
-        view<T>    m_this;
+        ref<Pass> m_pass;
+        ref<T>    m_this;
 
         dst_rect m_dst;
         src_rect m_src;

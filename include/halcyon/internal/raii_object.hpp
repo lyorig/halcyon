@@ -1,137 +1,142 @@
 #pragma once
 
 #include <halcyon/debug.hpp>
+#include <halcyon/utility/pass_key.hpp>
 
 // internal/raii_object.hpp:
-// SDL view and resource base classes.
-// The hierarchy goes like this:
-// view<const T> -> view<T> -> raii_object<T> -> T
+// SDL resource and reference base classes.
 
 namespace hal
 {
     namespace detail
     {
-        template <typename SDL_Type>
-        class view_base
+        template <typename SDL_Type, auto Deleter>
+            requires std::is_invocable_r_v<void, decltype(Deleter), SDL_Type*>
+        class raii_object
         {
         public:
-            using value_type = SDL_Type;
-
-            using pointer = value_type*;
+            using pointer       = SDL_Type*;
+            using const_pointer = const SDL_Type*;
 
         protected:
-            view_base(SDL_Type* ptr)
+            raii_object() = default;
+
+            raii_object(pointer ptr)
                 : m_ptr { ptr }
             {
-                HAL_ASSERT(valid(), debug::last_error());
+                HAL_ASSERT(valid(), "raii_object not valid after construction");
             }
 
-            view_base(std::nullptr_t)
-                : m_ptr { nullptr }
+            pointer release()
             {
+                return m_ptr.release();
             }
 
         public:
-            view_base(const view_base&)            = default;
-            view_base& operator=(const view_base&) = default;
-
-            view_base(view_base&& o)
-                : m_ptr { o.m_ptr }
+            void reset()
             {
-                o.m_ptr = nullptr;
+                m_ptr.reset();
             }
 
-            view_base& operator=(view_base&& o)
-            {
-                m_ptr   = o.m_ptr;
-                o.m_ptr = nullptr;
-
-                return *this;
-            }
-
-            // Return the underlying pointer to the object. Intended for internal
-            // use, or for when you want to interface with SDL to use functions not
-            // yet implemented in Halcyon.
             pointer get() const
             {
-                return m_ptr;
+                return m_ptr.get();
             }
 
-            // Check whether the object is valid and useable (a.k.a. non-null).
             bool valid() const
             {
                 return get() != nullptr;
             }
 
-        protected:
-            SDL_Type* m_ptr;
-        };
-    }
-
-    // A view is a non-owning SDL object.
-    // It contains all member functions, and is extended by raii_object,
-    // which adds constructors and automatic deallocation.
-    template <typename Halcyon_Type>
-    class view;
-
-    namespace detail
-    {
-        // An owning SDL object. Extends a view with modifiying functions.
-        template <typename Halcyon_Type, auto Deleter>
-            requires std::is_invocable_v<decltype(Deleter), typename view<Halcyon_Type>::pointer>
-        class raii_object : public view<Halcyon_Type>
-        {
         private:
-            using super = view<Halcyon_Type>;
-
-        protected:
-            raii_object()
-                : super { nullptr }
+            struct deleter
             {
-            }
+                void operator()(pointer ptr) { Deleter(ptr); }
+            };
 
-            raii_object(super::pointer ptr)
-                : super { ptr }
-            {
-            }
-
-        public:
-            raii_object(raii_object&&) = default;
-
-            raii_object& operator=(raii_object&& o)
-            {
-                reset();
-
-                super::m_ptr = o.m_ptr;
-                o.m_ptr      = nullptr;
-
-                return *this;
-            }
-
-            ~raii_object()
-            {
-                reset();
-            }
-
-            // Free the object.
-            void reset()
-            {
-                if (super::m_ptr)
-                    Deleter(super::m_ptr);
-
-                super::m_ptr = nullptr;
-            }
-
-        protected:
-            // Release the object.
-            super::pointer release()
-            {
-                auto ret { super::get() };
-
-                super::m_ptr = nullptr;
-
-                return ret;
-            }
+            std::unique_ptr<SDL_Type, deleter> m_ptr;
         };
-    }
+    };
+
+    class surface;
+    class window;
+    class renderer;
+
+    template <typename T>
+    class ref
+    {
+    public:
+        ref(T& obj)
+            : m_ptr { obj.get() }
+        {
+        }
+
+        // Specialized constructors:
+
+        // [private] Access a window's surface via window::surface().
+        ref(T::pointer ptr, pass_key<window>)
+            requires std::is_same_v<std::remove_const_t<T>, surface>
+            : ref { ptr }
+        {
+        }
+
+        // [private] Access a renderer's window via renderer::window().
+        ref(T::pointer ptr, pass_key<renderer>)
+            requires std::is_same_v<std::remove_const_t<T>, window>
+            : ref { ptr }
+        {
+        }
+
+        // [private] Access a window's renderer via window::renderer().
+        ref(T::pointer ptr, pass_key<window>)
+            requires std::is_same_v<std::remove_const_t<T>, renderer>
+            : ref { ptr }
+        {
+        }
+
+        ref(const ref&)            = default;
+        ref& operator=(const ref&) = default;
+
+        ref(ref&& other)
+            : m_ptr { other.m_ptr }
+        {
+            other.m_ptr = nullptr;
+        }
+
+        ref& operator=(ref&& other)
+        {
+            m_ptr       = other.m_ptr;
+            other.m_ptr = nullptr;
+        }
+
+        T& get()
+        {
+            return reinterpret_cast<T&>(*this);
+        }
+
+        const T& get() const
+        {
+            return reinterpret_cast<const T&>(*this);
+        }
+
+        T* operator->()
+        {
+            return reinterpret_cast<T*>(this);
+        }
+
+        const T* operator->() const
+        {
+            return reinterpret_cast<const T*>(this);
+        }
+
+    private:
+        // [private] For use with specialized constuctors.
+        ref(T::pointer ptr)
+            : m_ptr { ptr }
+        {
+            HAL_ASSERT(m_ptr != nullptr, "Reference invalid after construction");
+        }
+
+        T::pointer m_ptr;
+    };
 }

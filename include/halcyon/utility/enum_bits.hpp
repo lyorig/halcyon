@@ -111,6 +111,7 @@ namespace hal
         constexpr enum_bitmask& operator^=(enum_bitmask e)
         {
             super::m_mask ^= static_cast<Value>(e.mask());
+            return *this;
         }
     };
 

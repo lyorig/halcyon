@@ -1,10 +1,13 @@
 #pragma once
 
+#include <halcyon/internal/raii_object.hpp>
+
 #include <halcyon/types/color.hpp>
 #include <halcyon/video/types.hpp>
 
 // locks.hpp:
-// CTAD enabled locks.
+// RAII-based locks for various uses.
+// Not useable with CTAD since references are in play.
 
 namespace hal
 {
@@ -16,9 +19,9 @@ namespace hal
         class blend
         {
         public:
-            blend(T& obj, blend_mode bm)
+            blend(ref<T> obj, blend_mode bm)
                 : m_ref { obj }
-                , m_old { obj.blend() }
+                , m_old { obj->blend() }
             {
                 set(bm);
             }
@@ -30,11 +33,11 @@ namespace hal
 
             void set(blend_mode bm)
             {
-                m_ref.blend(bm);
+                m_ref->blend(bm);
             }
 
         private:
-            T&         m_ref;
+            ref<T>     m_ref;
             blend_mode m_old;
         };
 
@@ -42,9 +45,9 @@ namespace hal
         class color
         {
         public:
-            color(T& obj, hal::color c)
+            color(ref<T> obj, hal::color c)
                 : m_ref { obj }
-                , m_old { obj.color() }
+                , m_old { obj->color() }
             {
                 set(c);
             }
@@ -56,11 +59,11 @@ namespace hal
 
             void set(hal::color c)
             {
-                m_ref.color(c);
+                m_ref->color(c);
             }
 
         private:
-            T&         m_ref;
+            ref<T>     m_ref;
             hal::color m_old;
         };
 
@@ -68,7 +71,7 @@ namespace hal
         class target
         {
         public:
-            target(T& obj, target_texture& tex)
+            target(ref<T> obj, target_texture& tex)
                 : m_ref { obj }
             {
                 set(tex);
@@ -76,16 +79,16 @@ namespace hal
 
             ~target()
             {
-                m_ref.reset_target();
+                m_ref->reset_target();
             }
 
             void set(target_texture& c)
             {
-                m_ref.target(c);
+                m_ref->target(c);
             }
 
         private:
-            T& m_ref;
+            ref<T> m_ref;
         };
     }
 }

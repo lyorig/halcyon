@@ -37,15 +37,42 @@ namespace hal
         class font_glyph;
     }
 
-    template <>
-    class view<const surface> : public detail::view_base<SDL_Surface>
+    class surface : public detail::raii_object<SDL_Surface, ::SDL_FreeSurface>
     {
-    protected:
-        using view_base::view_base;
-
     public:
-        // [private] Window surface views are obtained via window::surface().
-        view(SDL_Surface* ptr, pass_key<view<const window>>);
+        static constexpr pixel::format default_pixel_format { pixel::format::rgba32 };
+
+        surface() = default;
+
+        // Create a sized surface with an optional pixel format.
+        surface(pixel::point sz, pixel::format fmt = default_pixel_format);
+
+        // Load a BMP image. This works natively without having to initialize anything.
+        surface(accessor src);
+
+        // [private] Surfaces are converted with view::surface::convert().
+        surface(SDL_Surface*, pass_key<surface>);
+
+        // [private] Images are loaded with image::context::load().
+        surface(SDL_Surface* ptr, pass_key<image::context>);
+
+        // [private] Text is rendered with ttf::font::render().
+        surface(SDL_Surface* ptr, pass_key<builder::font_text>);
+
+        // [private] Glyphs are rendered with ttf::font::render();
+        surface(SDL_Surface* ptr, pass_key<builder::font_glyph>);
+
+        // Fill the entire surface with a color.
+        void fill(color clr);
+
+        // Fill a rectangle with a color.
+        void fill(pixel::rect area, color clr);
+
+        // Fill an array of rectangles with a color.
+        void fill(std::span<const pixel::rect> areas, color clr);
+
+        void lock();
+        void unlock();
 
         // Save this surface in a BMP format.
         // More formats are made available by the image context.
@@ -65,12 +92,6 @@ namespace hal
         // Get this surface's pixel format.
         pixel::format pixel_format() const;
 
-        blend_mode blend() const;
-
-        color color_mod() const;
-
-        color::value_t alpha_mod() const;
-
         // Get a resized copy of the surface. Useful for saving
         // memory after converting to a texture.
         surface resize(pixel::point sz) const;
@@ -80,76 +101,28 @@ namespace hal
         bool must_lock() const;
 
         // Get pixel at position.
-        // This functionality is exclusive to surfaces, as textures
-        // are extremely slow to retrieve pixel information.
+        // It is recommended do manipulate pixels at the surface stage,
+        // as textures are very slow to retrieve pixel information.
         const_pixel_reference operator[](pixel::point pos) const;
-    };
-
-    template <>
-    class view<surface> : public view<const surface>
-    {
-        using super = view<const surface>;
-
-    protected:
-        using super::super;
-
-    public:
-        // Fill the entire surface with a color.
-        void fill(color clr);
-
-        // Fill a rectangle with a color.
-        void fill(pixel::rect area, color clr);
-
-        // Fill an array of rectangles with a color.
-        void fill(std::span<const pixel::rect> areas, color clr);
+        pixel_reference       operator[](pixel::point pt);
 
         // Get/set this surface's blend mode.
-        using super::blend;
-        void blend(blend_mode bm);
+        blend_mode blend() const;
+        void       blend(blend_mode bm);
 
         // Get/set this surface's color modifiers.
-        using super::color_mod;
-        void color_mod(color col);
+        color color_mod() const;
+        void  color_mod(color col);
 
         // Get/set this surface's alpha modifier.
-        using super::alpha_mod;
-        void alpha_mod(color::value_t val);
-
-        void lock(), unlock();
-
-        pixel_reference operator[](pixel::point pt);
-    };
-
-    class surface : public detail::raii_object<surface, ::SDL_FreeSurface>
-    {
-    public:
-        static constexpr pixel::format default_pixel_format { pixel::format::rgba32 };
-
-        surface() = default;
-
-        // Create a sized surface with an optional pixel format.
-        surface(pixel::point sz, pixel::format fmt = default_pixel_format);
-
-        // Load a BMP image. This works natively without having to initialize anything.
-        surface(accessor src);
-
-        // [private] Surfaces are converted with view::surface::convert().
-        surface(SDL_Surface*, pass_key<view<const surface>>);
-
-        // [private] Images are loaded with image::context::load().
-        surface(SDL_Surface* ptr, pass_key<image::context>);
-
-        // [private] Text is rendered with ttf::font::render().
-        surface(SDL_Surface* ptr, pass_key<builder::font_text>);
-
-        // [private] Glyphs are rendered with ttf::font::render();
-        surface(SDL_Surface* ptr, pass_key<builder::font_glyph>);
+        color::value_t alpha_mod() const;
+        void           alpha_mod(color::value_t val);
     };
 
     class const_pixel_reference
     {
     public:
-        const_pixel_reference(std::byte* pixels, int pitch, const SDL_PixelFormat* fmt, pixel::point pos, pass_key<view<const surface>>);
+        const_pixel_reference(std::byte* pixels, int pitch, const SDL_PixelFormat* fmt, pixel::point pos, pass_key<surface>);
 
         color color() const;
 
@@ -166,7 +139,7 @@ namespace hal
     class pixel_reference : public const_pixel_reference
     {
     public:
-        pixel_reference(std::byte* pixels, int pitch, const SDL_PixelFormat* fmt, pixel::point pos, pass_key<view<surface>>);
+        pixel_reference(std::byte* pixels, int pitch, const SDL_PixelFormat* fmt, pixel::point pos, pass_key<surface>);
 
         using const_pixel_reference::color;
         void color(hal::color c);
