@@ -2,7 +2,7 @@
 
 using namespace hal::image;
 
-context::context(enum_bitmask<init_format> formats)
+context::context(flag_bitset formats)
 {
     HAL_WARN_IF(initialized(), "Image context already exists");
 
@@ -106,7 +106,7 @@ load_format context::query(const accessor& src) const
     return unknown;
 }
 
-context::enum_bitset context::flags() const
+context::flag_bitset context::flags() const
 {
     return ::IMG_Init(0);
 }

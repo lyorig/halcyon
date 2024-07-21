@@ -58,10 +58,10 @@ namespace hal
         class context
         {
         public:
-            using enum_bitset = enum_bitmask<init_format, int>;
+            using flag_bitset = enum_bitmask<init_format, int>;
 
             // Initialize the image context with chosen types.
-            context(enum_bitmask<init_format> formats);
+            context(flag_bitset formats);
 
             context(const context&) = delete;
             context(context&&)      = delete;
@@ -82,7 +82,7 @@ namespace hal
             // This modifies the accessor, but ultimately sets it back where it was.
             load_format query(const accessor& src) const;
 
-            enum_bitset flags() const;
+            flag_bitset flags() const;
 
             static bool initialized();
         };
