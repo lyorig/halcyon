@@ -9,8 +9,8 @@
 
 using namespace hal;
 
-renderer::renderer(ref<class window> wnd, std::initializer_list<flags> f)
-    : raii_object { ::SDL_CreateRenderer(wnd->get(), -1, detail::to_bitmask<std::uint32_t>(f)) }
+renderer::renderer(ref<class window> wnd, flag_bitmask f)
+    : raii_object { ::SDL_CreateRenderer(wnd->get(), -1, f.mask()) }
 {
     HAL_PRINT("Created renderer for \"", wnd->title(), "\" ");
 }
@@ -167,7 +167,7 @@ std::string_view info::sdl::renderer::name() const
     return SDL_RendererInfo::name;
 }
 
-renderer::flag_bitset info::sdl::renderer::flags() const
+renderer::flag_bitmask info::sdl::renderer::flags() const
 {
     return SDL_RendererInfo::flags;
 }

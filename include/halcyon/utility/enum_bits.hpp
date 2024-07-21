@@ -1,6 +1,5 @@
 #pragma once
 
-#include "halcyon/utility/metaprogramming.hpp"
 #include <utility>
 
 #include <halcyon/utility/concepts.hpp>
@@ -14,36 +13,6 @@ namespace hal
 {
     namespace detail
     {
-        // OR together a set of values.
-        // The name stands for "initializer list to bit mask".
-        template <meta::arithmetic To, typename T>
-            requires std::is_enum_v<T>
-        constexpr To to_bitmask(std::initializer_list<T> list)
-        {
-            using ut = meta::underlying_type<To>;
-
-            ut mask { 0 };
-
-            for (const T value : list)
-                mask |= static_cast<ut>(value);
-
-            return static_cast<To>(mask);
-        }
-
-        template <meta::arithmetic To, typename T>
-            requires std::is_enum_v<T>
-        constexpr To to_bitset(std::initializer_list<T> list)
-        {
-            using ut = meta::underlying_type<To>;
-
-            ut mask { 0 };
-
-            for (const T value : list)
-                mask |= (1 << static_cast<ut>(value));
-
-            return static_cast<To>(mask);
-        }
-
         template <typename Enum, typename Value>
             requires std::is_enum_v<Enum>
         class enum_bit_base
@@ -79,6 +48,17 @@ namespace hal
     private:
         using super = detail::enum_bit_base<Enum, Value>;
 
+        constexpr static Value reduce(std::initializer_list<Enum> e)
+        {
+
+            Value mask { 0 };
+
+            for (const Enum value : e)
+                mask |= static_cast<Value>(value);
+
+            return mask;
+        }
+
     public:
         using super::super;
 
@@ -86,8 +66,9 @@ namespace hal
             : enum_bitmask { e }
         {
         }
+
         constexpr enum_bitmask(std::initializer_list<Enum> il)
-            : super { detail::to_bitmask<Value>(il) }
+            : super { reduce(il) }
         {
         }
 
@@ -123,6 +104,16 @@ namespace hal
     private:
         using super = detail::enum_bit_base<Enum, Value>;
 
+        constexpr static Value reduce(std::initializer_list<Enum> e)
+        {
+            Value mask { 0 };
+
+            for (const Enum value : e)
+                mask |= (1 << static_cast<Value>(value));
+
+            return mask;
+        }
+
         constexpr static Value one { 1 };
 
     public:
@@ -134,7 +125,7 @@ namespace hal
         }
 
         constexpr enum_bitset(std::initializer_list<Enum> il)
-            : super { detail::to_bitset<Value>(il) }
+            : super { reduce(il) }
         {
         }
 

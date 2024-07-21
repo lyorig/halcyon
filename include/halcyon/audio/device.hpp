@@ -8,6 +8,7 @@
 #include <halcyon/internal/subsystem.hpp>
 
 #include <halcyon/utility/concepts.hpp>
+#include <halcyon/utility/enum_bits.hpp>
 #include <halcyon/utility/pass_key.hpp>
 
 namespace hal
@@ -31,7 +32,7 @@ namespace hal
 
                 device& spec(const spec& s);
 
-                device& changes(std::initializer_list<change> vals);
+                device& changes(enum_bitmask<change> allowed_changes);
 
                 audio::device operator()();
                 audio::device operator()(sdl::spec& obtained);

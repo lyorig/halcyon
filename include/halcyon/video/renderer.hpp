@@ -49,17 +49,17 @@ namespace hal
         enum class flags : u8
         {
             none           = 0,
-            software       = SDL_RENDERER_SOFTWARE,
-            accelerated    = SDL_RENDERER_ACCELERATED,
-            vsync          = SDL_RENDERER_PRESENTVSYNC,
-            target_texture = SDL_RENDERER_TARGETTEXTURE
+            software       = SDL_RENDERER_SOFTWARE,     // Require a software renderer.
+            accelerated    = SDL_RENDERER_ACCELERATED,  // Require an accelerated (hardware) renderer.
+            vsync          = SDL_RENDERER_PRESENTVSYNC, // Require + enable Vsync.
+            target_texture = SDL_RENDERER_TARGETTEXTURE // Require support for rendering to a target texture.
         };
 
-        using flag_bitset = enum_bitmask<flags, decltype(SDL_RendererInfo::flags)>;
+        using flag_bitmask = enum_bitmask<flags, u32>;
 
         renderer() = default;
 
-        renderer(ref<window> wnd, std::initializer_list<flags> f);
+        renderer(ref<window> wnd, flag_bitmask f = {});
 
         // Clear (fill) the render target with the current draw color.
         void clear();
@@ -127,7 +127,7 @@ namespace hal
 
                 std::string_view name() const;
 
-                hal::renderer::flag_bitset flags() const;
+                hal::renderer::flag_bitmask flags() const;
 
                 std::span<const pixel::format> formats() const;
 
@@ -150,8 +150,8 @@ namespace hal
             std::string_view name;
             pixel::point     max_texture_size;
 
-            hal::renderer::flag_bitset flags;
-            buffer<pixel::format>      formats;
+            hal::renderer::flag_bitmask flags;
+            buffer<pixel::format>       formats;
         };
     }
 

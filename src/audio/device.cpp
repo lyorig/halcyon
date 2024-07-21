@@ -32,9 +32,9 @@ adb& adb::spec(const audio::spec& s)
     return *this;
 }
 
-adb& adb::changes(std::initializer_list<change> vals)
+adb& adb::changes(enum_bitmask<change> allowed_changes)
 {
-    m_allowedChanges = detail::to_bitmask<int>(vals);
+    m_allowedChanges = allowed_changes.mask();
     return *this;
 }
 

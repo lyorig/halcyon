@@ -4,8 +4,8 @@
 
 using namespace hal;
 
-window::window(proxy::video&, std::string_view title, pixel::point size, std::initializer_list<flags> flags)
-    : raii_object { ::SDL_CreateWindow(title.data(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, size.x, size.y, detail::to_bitmask<Uint32>(flags)) }
+window::window(proxy::video&, std::string_view title, pixel::point size, flag_bitmask f)
+    : raii_object { ::SDL_CreateWindow(title.data(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, size.x, size.y, f.mask()) }
 {
     HAL_PRINT(debug::severity::init, "Created window \"", title, "\" [ID: ", to_printable_int(id()), ']');
 }

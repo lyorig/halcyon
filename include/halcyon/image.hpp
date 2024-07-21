@@ -61,7 +61,7 @@ namespace hal
             using enum_bitset = enum_bitmask<init_format, int>;
 
             // Initialize the image context with chosen types.
-            context(std::initializer_list<init_format> types);
+            context(enum_bitmask<init_format> formats);
 
             context(const context&) = delete;
             context(context&&)      = delete;

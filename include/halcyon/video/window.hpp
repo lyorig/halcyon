@@ -34,9 +34,11 @@ namespace hal
             maximized             = SDL_WINDOW_MAXIMIZED
         };
 
+        using flag_bitmask = enum_bitmask<flags, u32>;
+
         window() = default;
 
-        window(proxy::video& sys, std::string_view title, pixel::point size, std::initializer_list<flags> flags = {});
+        window(proxy::video& sys, std::string_view title, pixel::point size, flag_bitmask f = {});
 
         // Create a window in fullscreen mode.
         // Warning: This has some issues on macOS due to its DPI scaling stuff.

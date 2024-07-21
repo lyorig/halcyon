@@ -10,6 +10,7 @@ namespace hal
 {
     namespace detail
     {
+        // An owning SDL object.
         template <typename SDL_Type, auto Deleter>
             requires std::is_invocable_r_v<void, decltype(Deleter), SDL_Type*>
         class raii_object
@@ -62,6 +63,9 @@ namespace hal
     class window;
     class renderer;
 
+    // Since a raii_object is nothing more than a pointer anyway, special
+    // references are implemented that copy said pointer. It is preferable
+    // to use this, since you might save one level of indirection.
     template <typename T>
     class ref
     {
