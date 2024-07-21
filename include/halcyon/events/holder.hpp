@@ -258,7 +258,9 @@ namespace hal
             // Check whether there are any pending event in the event queue.
             bool pending() const;
 
-            SDL_Event* get(pass_key<proxy::events>) const;
+            // This function uses const_cast since SDL doesn't use const pointers
+            // in some obviously non-mutating functions.
+            SDL_Event& get(pass_key<proxy::events>) const;
 
         private:
             // A union that impersonates SDL_Event.

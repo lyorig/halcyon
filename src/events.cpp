@@ -100,11 +100,14 @@ proxy::events::subsystem()
     {
         ::SDL_EventState(type, SDL_IGNORE);
     }
+
+    // TODO: Remove this in SDL3, it's gonna be done automatically.
+    text_input_stop();
 }
 
 bool proxy::events::poll(event::holder& eh)
 {
-    return static_cast<bool>(::SDL_PollEvent(eh.get(pass_key<subsystem> {})));
+    return static_cast<bool>(::SDL_PollEvent(&eh.get(pass_key<subsystem> {})));
 }
 
 void proxy::events::pump()
@@ -114,10 +117,12 @@ void proxy::events::pump()
 
 void proxy::events::push(const event::holder& eh)
 {
+    eh.get(pass_key<subsystem> {}).common.timestamp = ::SDL_GetTicks();
+
 #ifdef HAL_DEBUG_ENABLED
     const auto ret =
 #endif
-        ::SDL_PushEvent(eh.get(pass_key<subsystem> {}));
+        ::SDL_PushEvent(&eh.get(pass_key<subsystem> {}));
 
     HAL_ASSERT(ret >= 0, debug::last_error());
     HAL_WARN_IF(ret == 0, "Pushed event of type ", eh.kind(), " was filtered");

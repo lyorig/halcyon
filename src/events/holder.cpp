@@ -464,7 +464,7 @@ bool event::holder::pending() const
     return ::SDL_PollEvent(nullptr) == 1;
 }
 
-SDL_Event* event::holder::get(pass_key<proxy::events>) const
+SDL_Event& event::holder::get(pass_key<proxy::events>) const
 {
-    return reinterpret_cast<SDL_Event*>(const_cast<dummy_event*>(&m_event));
+    return reinterpret_cast<SDL_Event&>(const_cast<dummy_event&>(m_event));
 }
