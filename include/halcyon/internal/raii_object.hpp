@@ -75,8 +75,6 @@ namespace hal
         {
         }
 
-        ref(T&& obj) = delete;
-
         // Specialized constructors:
 
         // [private] Access a window's surface via window::surface().
@@ -144,5 +142,15 @@ namespace hal
         }
 
         T::pointer m_ptr;
+    };
+
+    // Const lvalue reference. Cannot be bound to an rvalue.
+    template <typename T>
+    class clref : public ref<const T>
+    {
+    public:
+        using ref<const T>::ref;
+
+        clref(T&&) = delete;
     };
 }

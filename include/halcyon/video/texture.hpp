@@ -48,7 +48,7 @@ namespace hal
     public:
         static_texture() = default;
 
-        static_texture(ref<const renderer> rnd, ref<const surface> surf);
+        static_texture(clref<renderer> rnd, ref<const surface> surf);
     };
 
     // A texture that can be drawn onto.
@@ -57,7 +57,7 @@ namespace hal
     public:
         target_texture() = default;
 
-        target_texture(ref<const renderer> rnd, pixel::point size, pixel::format fmt = texture::default_pixel_format);
+        target_texture(clref<renderer> rnd, pixel::point size, pixel::format fmt = texture::default_pixel_format);
     };
 
     class streaming_texture : public texture
@@ -65,7 +65,7 @@ namespace hal
     public:
         streaming_texture() = default;
 
-        streaming_texture(ref<const renderer> rnd, pixel::point size, pixel::format fmt = texture::default_pixel_format);
+        streaming_texture(clref<renderer> rnd, pixel::point size, pixel::format fmt = texture::default_pixel_format);
 
         struct data
         {
