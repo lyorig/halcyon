@@ -22,7 +22,8 @@ namespace hal
             class device
             {
             public:
-                device(proxy::audio& sys);
+                device(const proxy::audio& sys);
+                device(const proxy::audio&& sys) = delete;
 
                 // Choose a specific audio device.
                 device& name(std::string_view name);

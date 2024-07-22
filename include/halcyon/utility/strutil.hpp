@@ -1,9 +1,6 @@
 #pragma once
 
-#include <iomanip>
 #include <sstream>
-
-#include <halcyon/utility/concepts.hpp>
 
 // strutil.hpp:
 // String utility functions.

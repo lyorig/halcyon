@@ -27,7 +27,8 @@ namespace hal
             // Default constructor. Creates an invalid stream.
             stream() = default;
 
-            stream(proxy::audio& sys, config src, config dst);
+            stream(const proxy::audio& sys, config src, config dst);
+            stream(const proxy::audio&& sys, config src, config dst) = delete;
 
             void flush();
 
