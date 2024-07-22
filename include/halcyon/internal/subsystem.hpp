@@ -114,12 +114,12 @@ namespace hal
 
         sysref(T&&) = delete;
 
-        T& get()
+        T& operator()()
         {
             return m_obj;
         }
 
-        const T& get() const
+        const T& operator()() const
         {
             return m_obj;
         }

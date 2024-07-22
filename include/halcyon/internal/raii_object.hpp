@@ -101,24 +101,12 @@ namespace hal
         ref(const ref&)            = default;
         ref& operator=(const ref&) = default;
 
-        ref(ref&& other)
-            : m_ptr { other.m_ptr }
-        {
-            other.m_ptr = nullptr;
-        }
-
-        ref& operator=(ref&& other)
-        {
-            m_ptr       = other.m_ptr;
-            other.m_ptr = nullptr;
-        }
-
-        T& get()
+        T& operator()()
         {
             return reinterpret_cast<T&>(*this);
         }
 
-        const T& get() const
+        const T& operator()() const
         {
             return reinterpret_cast<const T&>(*this);
         }
@@ -144,7 +132,7 @@ namespace hal
         T::pointer m_ptr;
     };
 
-    // Const lvalue reference. Cannot be bound to an rvalue.
+    // Const lvalue reference to an SDL resource. Cannot be bound to an rvalue.
     template <typename T>
     class clref : public ref<const T>
     {
