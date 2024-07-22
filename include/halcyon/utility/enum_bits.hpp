@@ -98,7 +98,7 @@ namespace hal
             return *this;
         }
 
-        constexpr bool operator<=>(const enum_bitmask&) const = default;
+        constexpr auto operator<=>(const enum_bitmask&) const = default;
 
     private:
         Value m_mask;
