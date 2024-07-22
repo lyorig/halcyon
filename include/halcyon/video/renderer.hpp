@@ -59,7 +59,7 @@ namespace hal
 
         renderer() = default;
 
-        renderer(ref<window> wnd, flag_bitmask f = {});
+        renderer(ref<const window> wnd, flag_bitmask f = {});
 
         // Clear (fill) the render target with the current draw color.
         void clear();

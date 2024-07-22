@@ -75,6 +75,8 @@ namespace hal
         {
         }
 
+        ref(T&& obj) = delete;
+
         // Specialized constructors:
 
         // [private] Access a window's surface via window::surface().

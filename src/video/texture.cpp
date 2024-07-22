@@ -71,17 +71,17 @@ void texture::query(Uint32* format, int* access, int* w, int* h) const
     HAL_ASSERT_VITAL(::SDL_QueryTexture(get(), format, access, w, h) == 0, debug::last_error());
 }
 
-static_texture::static_texture(ref<renderer> rnd, ref<const surface> surf)
+static_texture::static_texture(ref<const renderer> rnd, ref<const surface> surf)
     : texture { ::SDL_CreateTextureFromSurface(rnd->get(), surf->get()) }
 {
 }
 
-target_texture::target_texture(ref<renderer> rnd, pixel::point size, pixel::format fmt)
+target_texture::target_texture(ref<const renderer> rnd, pixel::point size, pixel::format fmt)
     : texture { ::SDL_CreateTexture(rnd->get(), static_cast<Uint32>(fmt), SDL_TEXTUREACCESS_TARGET, size.x, size.y) }
 {
 }
 
-streaming_texture::streaming_texture(ref<renderer> rnd, pixel::point size, pixel::format fmt)
+streaming_texture::streaming_texture(ref<const renderer> rnd, pixel::point size, pixel::format fmt)
     : texture { ::SDL_CreateTexture(rnd->get(), static_cast<Uint32>(fmt), SDL_TEXTUREACCESS_STREAMING, size.x, size.y) }
 {
 }
