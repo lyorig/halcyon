@@ -101,8 +101,8 @@ namespace hal
 
         // Texture creation functions.
         [[nodiscard]] static_texture    make_static_texture(ref<const surface> surf) &;
-        [[nodiscard]] target_texture    make_target_texture(pixel::point size) &;
-        [[nodiscard]] streaming_texture make_streaming_texture(pixel::point size) &;
+        [[nodiscard]] target_texture    make_target_texture(pixel::point size, pixel::format fmt = texture::default_pixel_format) &;
+        [[nodiscard]] streaming_texture make_streaming_texture(pixel::point size, pixel::format fmt = texture::default_pixel_format) &;
 
         // Render a texture via a builder.
         [[nodiscard]] copyer render(ref<const texture> tex);

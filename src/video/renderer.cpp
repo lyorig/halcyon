@@ -135,14 +135,14 @@ static_texture renderer::make_static_texture(ref<const surface> surf) &
     return { *this, surf };
 }
 
-target_texture renderer::make_target_texture(pixel::point size) &
+target_texture renderer::make_target_texture(pixel::point size, pixel::format fmt) &
 {
-    return { *this, window()->pixel_format(), size };
+    return { *this, size, fmt };
 }
 
-streaming_texture renderer::make_streaming_texture(pixel::point size) &
+streaming_texture renderer::make_streaming_texture(pixel::point size, pixel::format fmt) &
 {
-    return { *this, window()->pixel_format(), size };
+    return { *this, size, fmt };
 }
 
 copyer renderer::render(ref<const texture> tex)

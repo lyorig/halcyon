@@ -1,4 +1,4 @@
-project('Halcyon', 'cpp', default_options: ['cpp_std=c++latest'])
+project('Halcyon', 'cpp', default_options: ['cpp_std=c++23'])
 
 sources = files(
   'src/audio/device.cpp',

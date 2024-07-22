@@ -1,10 +1,6 @@
 #pragma once
 
-#include <span>
-
 #include <SDL_render.h>
-
-#include <halcyon/utility/pass_key.hpp>
 
 #include <halcyon/internal/raii_object.hpp>
 #include <halcyon/types/color.hpp>
@@ -21,11 +17,11 @@ namespace hal
     class texture : public detail::raii_object<SDL_Texture, &::SDL_DestroyTexture>
     {
     protected:
-        texture() = default;
-
-        texture(SDL_Texture* ptr);
+        using raii_object::raii_object;
 
     public:
+        static constexpr pixel::format default_pixel_format { pixel::format::rgba32 };
+
         pixel::point size() const;
 
         color::value_t alpha_mod() const;
@@ -61,7 +57,7 @@ namespace hal
     public:
         target_texture() = default;
 
-        target_texture(ref<renderer> rnd, pixel::format fmt, pixel::point size);
+        target_texture(ref<renderer> rnd, pixel::point size, pixel::format fmt = texture::default_pixel_format);
     };
 
     class streaming_texture : public texture
@@ -69,6 +65,15 @@ namespace hal
     public:
         streaming_texture() = default;
 
-        streaming_texture(ref<renderer> rnd, pixel::format fmt, pixel::point size);
+        streaming_texture(ref<renderer> rnd, pixel::point size, pixel::format fmt = texture::default_pixel_format);
+
+        struct data
+        {
+            std::byte* pixels;
+            int        pitch;
+        };
+
+        data lock(pixel::rect area);
+        void unlock();
     };
 }

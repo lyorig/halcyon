@@ -6,12 +6,6 @@
 
 using namespace hal;
 
-texture::texture(SDL_Texture* ptr)
-    : raii_object { ptr }
-{
-    this->blend(blend_mode::blend);
-}
-
 pixel::point texture::size() const
 {
     point<int> size;
@@ -82,12 +76,26 @@ static_texture::static_texture(ref<renderer> rnd, ref<const surface> surf)
 {
 }
 
-target_texture::target_texture(ref<renderer> rnd, pixel::format fmt, pixel::point size)
+target_texture::target_texture(ref<renderer> rnd, pixel::point size, pixel::format fmt)
     : texture { ::SDL_CreateTexture(rnd->get(), static_cast<Uint32>(fmt), SDL_TEXTUREACCESS_TARGET, size.x, size.y) }
 {
 }
 
-streaming_texture::streaming_texture(ref<renderer> rnd, pixel::format fmt, pixel::point size)
+streaming_texture::streaming_texture(ref<renderer> rnd, pixel::point size, pixel::format fmt)
     : texture { ::SDL_CreateTexture(rnd->get(), static_cast<Uint32>(fmt), SDL_TEXTUREACCESS_STREAMING, size.x, size.y) }
 {
+}
+
+streaming_texture::data streaming_texture::lock(pixel::rect area)
+{
+    data ret;
+
+    HAL_ASSERT_VITAL(::SDL_LockTexture(get(), area.addr(), reinterpret_cast<void**>(&ret.pixels), &ret.pitch) == 0, debug::last_error());
+
+    return ret;
+}
+
+void streaming_texture::unlock()
+{
+    ::SDL_UnlockTexture(get());
 }
