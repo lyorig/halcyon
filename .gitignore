@@ -2,11 +2,9 @@
 .cache/
 
 build/
-Testing/
 
 bin/*
 !bin/assets/
 
 .DS_Store
 .clangd
-CMakeSettings.json
