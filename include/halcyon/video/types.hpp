@@ -15,11 +15,11 @@ namespace hal
 {
     enum class blend_mode : u8
     {
-        none  = SDL_BLENDMODE_NONE,
-        add   = SDL_BLENDMODE_ADD,
-        mod   = SDL_BLENDMODE_MOD,
-        mul   = SDL_BLENDMODE_MUL,
-        blend = SDL_BLENDMODE_BLEND
+        none           = SDL_BLENDMODE_NONE,
+        alpha          = SDL_BLENDMODE_BLEND,
+        additive       = SDL_BLENDMODE_ADD,
+        color_modulate = SDL_BLENDMODE_MOD,
+        color_multiply = SDL_BLENDMODE_MUL
     };
 
     constexpr std::string_view to_string(blend_mode bm)
@@ -29,19 +29,19 @@ namespace hal
             using enum blend_mode;
 
         case none:
-            return "None";
+            return "No blend";
 
-        case blend:
-            return "Blend";
+        case alpha:
+            return "Alpha";
 
-        case add:
-            return "Add";
+        case additive:
+            return "Additive";
 
-        case mod:
-            return "Mod";
+        case color_modulate:
+            return "Color modulate";
 
-        case mul:
-            return "Mul";
+        case color_multiply:
+            return "Color multiply";
 
         default:
             return "[unknown]";
