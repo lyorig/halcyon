@@ -26,6 +26,7 @@ set(Halcyon_SOURCES
     internal/rwops.cpp
     internal/string.cpp
     types/color.cpp
+    utility/strutil.cpp
     utility/timer.cpp
     video/display.cpp
     video/driver.cpp

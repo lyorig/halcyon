@@ -148,9 +148,93 @@ namespace hal
             array_f32 = SDL_PIXELTYPE_ARRAYF32
         };
 
+        enum class bitmap_order
+        {
+            none  = SDL_BITMAPORDER_NONE,
+            _4321 = SDL_BITMAPORDER_4321,
+            _1234 = SDL_BITMAPORDER_1234,
+        };
+
+        enum class packed_order
+        {
+            none = SDL_PACKEDORDER_NONE,
+            xrgb = SDL_PACKEDORDER_XRGB,
+            rgbx = SDL_PACKEDORDER_RGBX,
+            argb = SDL_PACKEDORDER_ARGB,
+            rgba = SDL_PACKEDORDER_RGBA,
+            xbgr = SDL_PACKEDORDER_XBGR,
+            bgrx = SDL_PACKEDORDER_BGRX,
+            abgr = SDL_PACKEDORDER_ABGR,
+            bgra = SDL_PACKEDORDER_BGRA,
+        };
+
+        enum class array_order
+        {
+            none = SDL_ARRAYORDER_NONE,
+            rgb  = SDL_ARRAYORDER_RGB,
+            rgba = SDL_ARRAYORDER_RGBA,
+            argb = SDL_ARRAYORDER_ARGB,
+            bgr  = SDL_ARRAYORDER_BGR,
+            bgra = SDL_ARRAYORDER_BGRA,
+            abgr = SDL_ARRAYORDER_ABGR
+        };
+
+        enum class packed_layout
+        {
+            none     = SDL_PACKEDLAYOUT_NONE,
+            _332     = SDL_PACKEDLAYOUT_332,
+            _4444    = SDL_PACKEDLAYOUT_4444,
+            _1555    = SDL_PACKEDLAYOUT_1555,
+            _5551    = SDL_PACKEDLAYOUT_5551,
+            _565     = SDL_PACKEDLAYOUT_565,
+            _8888    = SDL_PACKEDLAYOUT_8888,
+            _2101010 = SDL_PACKEDLAYOUT_2101010,
+            _1010102 = SDL_PACKEDLAYOUT_1010102
+        };
+
         constexpr storage storage_of(format fmt)
         {
             return static_cast<storage>(SDL_PIXELTYPE(static_cast<SDL_PixelFormatEnum>(fmt)));
+        }
+
+        constexpr bitmap_order bitmap_order_of(format fmt)
+        {
+            return static_cast<bitmap_order>(SDL_PIXELORDER(static_cast<SDL_PixelFormatEnum>(fmt)));
+        }
+
+        constexpr packed_order packed_order_of(format fmt)
+        {
+            return static_cast<packed_order>(SDL_PIXELORDER(static_cast<SDL_PixelFormatEnum>(fmt)));
+        }
+
+        constexpr array_order array_order_of(format fmt)
+        {
+            return static_cast<array_order>(SDL_PIXELORDER(static_cast<SDL_PixelFormatEnum>(fmt)));
+        }
+
+        constexpr packed_layout packed_layout_of(format fmt)
+        {
+            return static_cast<packed_layout>(SDL_PIXELLAYOUT(static_cast<SDL_PixelFormatEnum>(fmt)));
+        }
+
+        constexpr std::size_t bits_per_pixel_of(format fmt)
+        {
+            return SDL_BITSPERPIXEL(static_cast<SDL_PixelFormatEnum>(fmt));
+        }
+
+        constexpr std::size_t bytes_per_pixel_of(format fmt)
+        {
+            return SDL_BYTESPERPIXEL(static_cast<SDL_PixelFormatEnum>(fmt));
+        }
+
+        constexpr bool is_indexed(format fmt)
+        {
+            return SDL_ISPIXELFORMAT_INDEXED(static_cast<SDL_PixelFormatEnum>(fmt));
+        }
+
+        constexpr bool has_alpha(format fmt)
+        {
+            return SDL_ISPIXELFORMAT_ALPHA(static_cast<SDL_PixelFormatEnum>(fmt));
         }
     }
 
@@ -335,6 +419,131 @@ namespace hal
 
         default:
             return "[unknown]";
+        }
+    }
+
+    constexpr std::string_view to_string(pixel::bitmap_order o)
+    {
+        using enum pixel::bitmap_order;
+
+        switch (o)
+        {
+        case none:
+            return "None";
+
+        case _4321:
+            return "4321";
+
+        case _1234:
+            return "1234";
+
+        default:
+            return "[unknown]";
+        }
+    }
+
+    constexpr std::string_view to_string(pixel::packed_order o)
+    {
+        using enum pixel::packed_order;
+
+        switch (o)
+        {
+        case none:
+            return "None";
+
+        case xrgb:
+            return "XRGB";
+
+        case rgbx:
+            return "RGBX";
+
+        case argb:
+            return "ARGB";
+
+        case rgba:
+            return "RGBA";
+
+        case xbgr:
+            return "XBGR";
+
+        case bgrx:
+            return "BGRX";
+
+        case abgr:
+            return "ABGR";
+
+        case bgra:
+            return "BGRA";
+
+        default:
+            return "[unknown]";
+        }
+    }
+
+    constexpr std::string_view to_string(pixel::array_order o)
+    {
+        using enum pixel::array_order;
+
+        switch (o)
+        {
+        case none:
+            return "None";
+
+        case rgb:
+            return "RGB";
+
+        case rgba:
+            return "RGBA";
+
+        case argb:
+            return "ARGB";
+
+        case bgr:
+            return "BGR";
+
+        case bgra:
+            return "BGRA";
+
+        case abgr:
+            return "ABGR";
+
+        default:
+            return "[unknown]";
+        }
+    }
+
+    constexpr std::string_view to_string(pixel::packed_layout pl)
+    {
+        using enum pixel::packed_layout;
+
+        switch (pl)
+        {
+        case none:
+            return "None";
+
+        case _332:
+            return "332";
+
+        case _4444:
+            return "4444";
+
+        case _1555:
+            return "1555";
+
+        case _5551:
+            return "5551";
+
+        case _565:
+            return "565";
+
+        case _8888:
+            return "8888";
+
+        case _2101010:
+            return "2101010";
+
+        case _1010102:
+            return "1010102";
         }
     }
 

@@ -1,24 +1,8 @@
-#define _CRT_SECURE_NO_WARNINGS
-
 #include <halcyon/internal/rwops.hpp>
 
 #include <halcyon/utility/strutil.hpp>
 
 using namespace hal;
-
-namespace
-{
-    std::unique_ptr<char[]> wide_to_multibyte(const wchar_t* path)
-    {
-        const std::size_t len { hal::strlen(path) * sizeof(wchar_t) };
-
-        auto str { std::make_unique<char[]>(len + 1) };
-
-        HAL_ASSERT_VITAL(std::wcstombs(str.get(), path, len) != static_cast<std::size_t>(-1), "RWops: std::wcstombs() returned error value");
-
-        return str;
-    }
-}
 
 accessor::accessor(const char* path)
     : rwops { ::SDL_RWFromFile(path, "r") }
