@@ -7,9 +7,11 @@
 
 namespace hal
 {
-    // String equality check.
-    bool streq(const char* lhs, const char* rhs);
-    bool streq(const wchar_t* lhs, const wchar_t* rhs);
+    template <typename CharT>
+    constexpr std::size_t strlen(const CharT* str)
+    {
+        return std::char_traits<CharT>::length(str);
+    }
 
     // Input all arguments into a stringstream and return them as a string.
     template <typename... Args>

@@ -36,16 +36,23 @@ namespace hal
     class accessor : public detail::rwops
     {
     public:
-        // Access a file.
+        // File accessors:
+
         accessor(const char* path);
+        accessor(const wchar_t* path);
+
         accessor(std::nullptr_t) = delete;
 
-        // Access a file.
         accessor(std::string_view path);
+        accessor(std::wstring_view path);
+
         accessor(const std::string& path);
+        accessor(const std::wstring& path);
+
         accessor(const std::filesystem::path& path);
 
-        // Access a buffer.
+        // Memory accessors:
+
         template <std::size_t Size>
         accessor(std::span<const std::byte, Size> buffer)
             : rwops { ::SDL_RWFromConstMem(buffer.data(), buffer.size_bytes()) }
@@ -72,16 +79,23 @@ namespace hal
     class outputter : public detail::rwops
     {
     public:
-        // Output to a file.
+        // File outputters:
+
         outputter(const char* path);
+        outputter(const wchar_t* path);
+
         outputter(std::nullptr_t) = delete;
 
-        // Output to a file.
         outputter(std::string_view path);
+        outputter(std::wstring_view path);
+
         outputter(const std::string& path);
+        outputter(const std::wstring& path);
+
         outputter(const std::filesystem::path& path);
 
-        // Output to an array.
+        // Memory outputters:
+
         template <std::size_t Size>
         outputter(std::span<std::byte, Size> buffer)
             : rwops { ::SDL_RWFromMem(buffer.data(), buffer.size_bytes()) }

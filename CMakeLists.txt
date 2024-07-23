@@ -26,7 +26,6 @@ set(Halcyon_SOURCES
     internal/rwops.cpp
     internal/string.cpp
     types/color.cpp
-    utility/strutil.cpp
     utility/timer.cpp
     video/display.cpp
     video/driver.cpp
@@ -71,7 +70,7 @@ if(Halcyon_BUILD_TESTS)
 
     include(CTest)
 
-    add_executable(HalTest test/main.cpp)
+    add_executable(HalTest WIN32 test/main.cpp)
 
 	target_link_libraries(HalTest PUBLIC Halcyon)
 
@@ -117,7 +116,7 @@ if(Halcyon_BUILD_EXAMPLES)
 
     foreach(FILE IN LISTS EXAMPLE_SOURCES)
         cmake_path(GET FILE STEM TGT_NAME)
-        add_executable(${TGT_NAME} ${FILE} $<TARGET_OBJECTS:Halcyon>)
+        add_executable(${TGT_NAME} WIN32 ${FILE} $<TARGET_OBJECTS:Halcyon>)
         target_link_libraries(${TGT_NAME} PRIVATE Halcyon)
         set_target_properties(${TGT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin/)
     endforeach()
