@@ -19,6 +19,7 @@
         #include <fstream>
     #endif
 
+    #include <iomanip>
     #include <iostream>
 
     #include <halcyon/utility/printing.hpp>

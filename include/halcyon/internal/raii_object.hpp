@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include <halcyon/debug.hpp>
 #include <halcyon/utility/pass_key.hpp>
 
