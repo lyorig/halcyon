@@ -1,4 +1,3 @@
-#include <SDL_render.h>
 #include <halcyon/video/renderer.hpp>
 
 #include <halcyon/surface.hpp>

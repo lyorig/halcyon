@@ -1,4 +1,5 @@
 #include <cstdlib>
+
 #include <halcyon/audio.hpp>
 #include <halcyon/video.hpp>
 
@@ -291,7 +292,7 @@ namespace test
         // Failure should occur here.
         const hal::surface s { ictx.load(hal::as_bytes(data)) };
 
-        return EXIT_SUCCESS;
+        return EXIT_FAILURE;
     }
 
     // Drawing a null texture.

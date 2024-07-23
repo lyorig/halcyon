@@ -73,7 +73,7 @@ if(Halcyon_BUILD_TESTS)
 
     add_executable(HalTest test/main.cpp)
 
-    target_link_libraries(HalTest PRIVATE Halcyon)
+	target_link_libraries(HalTest PUBLIC Halcyon)
 
     set(ExeName $<TARGET_FILE:HalTest>)
 

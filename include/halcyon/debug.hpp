@@ -38,6 +38,7 @@
 
 // Necessary include files.
 #include <string_view>
+#include <utility>
 
 namespace hal
 {
@@ -202,7 +203,7 @@ namespace hal
 #else
 
     #define HAL_PRINT(...) (static_cast<void>(0))
-    #define HAL_PANIC(...) std::unreachable()
+    #define HAL_PANIC(...) (std::unreachable())
 
     #define HAL_WARN(...) (static_cast<void>(0))
 
