@@ -94,7 +94,7 @@ namespace hal
         constexpr auto operator<=>(const enum_bitmask&) const = default;
 
     private:
-        enum_bitmask(Value v)
+        constexpr enum_bitmask(Value v)
             : m_mask { v }
         {
         }
