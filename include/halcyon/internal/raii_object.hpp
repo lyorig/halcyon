@@ -27,7 +27,7 @@ namespace hal
             raii_object(pointer ptr)
                 : m_ptr { ptr }
             {
-                HAL_ASSERT(valid(), "raii_object not valid after construction");
+                HAL_ASSERT(valid(), debug::last_error());
             }
 
             pointer release()
@@ -142,7 +142,6 @@ namespace hal
         ref(T::pointer ptr)
             : m_ptr { ptr }
         {
-            HAL_ASSERT(m_ptr != nullptr, "Reference invalid after construction");
         }
 
         T::pointer m_ptr;

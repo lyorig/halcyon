@@ -1,5 +1,6 @@
 #pragma once
 
+#include <filesystem>
 #include <span>
 
 #include <SDL_rwops.h>
@@ -41,6 +42,8 @@ namespace hal
 
         // Access a file.
         accessor(std::string_view path);
+        accessor(const std::string& path);
+        accessor(const std::filesystem::path& path);
 
         // Access a buffer.
         template <std::size_t Size>
@@ -75,6 +78,8 @@ namespace hal
 
         // Output to a file.
         outputter(std::string_view path);
+        outputter(const std::string& path);
+        outputter(const std::filesystem::path& path);
 
         // Output to an array.
         template <std::size_t Size>

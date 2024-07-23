@@ -13,6 +13,16 @@ accessor::accessor(std::string_view path)
 {
 }
 
+accessor::accessor(const std::string& path)
+    : accessor { path.data() }
+{
+}
+
+accessor::accessor(const std::filesystem::path& path)
+    : accessor { path.c_str() }
+{
+}
+
 SDL_RWops* accessor::get(pass_key<image::context>) const
 {
     return raii_object::get();
@@ -41,6 +51,16 @@ outputter::outputter(const char* path)
 
 outputter::outputter(std::string_view path)
     : outputter { path.data() }
+{
+}
+
+outputter::outputter(const std::string& path)
+    : outputter { path.data() }
+{
+}
+
+outputter::outputter(const std::filesystem::path& path)
+    : outputter { path.c_str() }
 {
 }
 
