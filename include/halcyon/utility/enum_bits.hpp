@@ -1,7 +1,5 @@
 #pragma once
 
-#include <utility>
-
 #include <halcyon/utility/concepts.hpp>
 
 // utility/enum_bits.hpp:
@@ -68,9 +66,15 @@ namespace hal
             return mask() ^ b.mask();
         }
 
+        constexpr enum_bitmask operator~() const
+        {
+            return ~mask();
+        }
+
+        // Returns true if the bits match exactly.
         constexpr bool operator[](enum_bitmask e) const
         {
-            return static_cast<bool>(mask() & e.mask());
+            return (mask() & e.mask()) == e.mask();
         }
 
         constexpr enum_bitmask& operator+=(enum_bitmask e)
@@ -81,17 +85,34 @@ namespace hal
 
         constexpr enum_bitmask& operator-=(enum_bitmask e)
         {
-            m_mask &= ~static_cast<Value>(e.mask());
+            m_mask &= ~e.mask();
+            return *this;
+        }
+
+        constexpr enum_bitmask& operator&=(enum_bitmask e)
+        {
+            m_mask &= e.mask();
+            return *this;
+        }
+
+        constexpr enum_bitmask& operator|=(enum_bitmask e)
+        {
+            m_mask |= e.mask();
             return *this;
         }
 
         constexpr enum_bitmask& operator^=(enum_bitmask e)
         {
-            m_mask ^= static_cast<Value>(e.mask());
+            m_mask ^= e.mask();
             return *this;
         }
 
-        constexpr auto operator<=>(const enum_bitmask&) const = default;
+        constexpr std::strong_ordering operator<=>(const enum_bitmask&) const = default;
+
+        constexpr operator bool() const
+        {
+            return mask() != 0;
+        }
 
     private:
         constexpr enum_bitmask(Value v)
