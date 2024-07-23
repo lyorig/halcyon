@@ -4,7 +4,7 @@ Performance is the main priority here, but work has also been put into making su
 Namespaces are not cluttered, everything is neatly organized - proper C++ design, plain and simple.  
 
 # Installation
-Halcyon is included into your project via CMake.
+Halcyon is included into your project via CMake (or, experimentally, Meson).
 1. Clone the repository into your project directory.
 > [!CAUTION]
 Do a shallow clone, as there was a time when actual MP3 and WAV files were stored here. I'll get around to removing these commits from the history eventually.
