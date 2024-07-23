@@ -84,6 +84,13 @@ namespace hal
         void target(ref<target_texture> tx);
         void reset_target();
 
+        // Read pixels from the rendering target.
+        void read_pixels(int pitch, std::byte* pixels, pixel::format fmt = static_cast<pixel::format>(0));
+
+        // Read pixels from an area of the rendering target.
+        void read_pixels(pixel::rect area, int pitch, std::byte* pixels, pixel::format fmt = static_cast<pixel::format>(0));
+
+        // Get/set the color used for draw/fill operations.
         hal::color color() const;
         void       color(hal::color clr);
 

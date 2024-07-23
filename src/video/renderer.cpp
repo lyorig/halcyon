@@ -1,3 +1,4 @@
+#include <SDL_render.h>
 #include <halcyon/video/renderer.hpp>
 
 #include <halcyon/surface.hpp>
@@ -64,6 +65,16 @@ void renderer::target(ref<target_texture> tx)
 void renderer::reset_target()
 {
     this->internal_target(nullptr);
+}
+
+void renderer::read_pixels(int pitch, std::byte* pixels, pixel::format fmt)
+{
+    HAL_ASSERT_VITAL(::SDL_RenderReadPixels(get(), nullptr, static_cast<Uint32>(fmt), pixels, pitch) == 0, debug::last_error());
+}
+
+void renderer::read_pixels(pixel::rect area, int pitch, std::byte* pixels, pixel::format fmt)
+{
+    HAL_ASSERT_VITAL(::SDL_RenderReadPixels(get(), area.addr(), static_cast<Uint32>(fmt), pixels, pitch) == 0, debug::last_error());
 }
 
 color renderer::color() const
