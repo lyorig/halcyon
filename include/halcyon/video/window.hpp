@@ -23,7 +23,7 @@ namespace hal
 
         using authority_t = hal::proxy::video;
 
-        enum class flags : u16
+        enum class flag : u16
         {
             none                  = 0,
             fullscreen            = SDL_WINDOW_FULLSCREEN,
@@ -34,7 +34,7 @@ namespace hal
             maximized             = SDL_WINDOW_MAXIMIZED
         };
 
-        using flag_bitmask = enum_bitmask<flags, u32>;
+        using flag_bitmask = enum_bitmask<flag, u32>;
 
         window() = default;
 

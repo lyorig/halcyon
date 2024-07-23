@@ -108,7 +108,7 @@ load_format context::query(const accessor& src) const
 
 context::flag_bitset context::flags() const
 {
-    return ::IMG_Init(0);
+    return static_cast<init_format>(::IMG_Init(0));
 }
 
 bool context::initialized()

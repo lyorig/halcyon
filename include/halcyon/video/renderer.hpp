@@ -46,7 +46,7 @@ namespace hal
     class renderer : public detail::raii_object<SDL_Renderer, &::SDL_DestroyRenderer>
     {
     public:
-        enum class flags : u8
+        enum class flag : u8
         {
             none           = 0,
             software       = SDL_RENDERER_SOFTWARE,     // Require a software renderer.
@@ -55,7 +55,7 @@ namespace hal
             target_texture = SDL_RENDERER_TARGETTEXTURE // Require support for rendering to a target texture.
         };
 
-        using flag_bitmask = enum_bitmask<flags, u32>;
+        using flag_bitmask = enum_bitmask<flag, u32>;
 
         renderer() = default;
 

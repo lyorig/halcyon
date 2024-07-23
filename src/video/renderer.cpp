@@ -169,7 +169,7 @@ std::string_view info::sdl::renderer::name() const
 
 renderer::flag_bitmask info::sdl::renderer::flags() const
 {
-    return SDL_RendererInfo::flags;
+    return static_cast<hal::renderer::flag>(SDL_RendererInfo::flags);
 }
 
 std::span<const pixel::format> info::sdl::renderer::formats() const

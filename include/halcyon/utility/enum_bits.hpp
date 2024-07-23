@@ -34,13 +34,6 @@ namespace hal
         {
         }
 
-        // Construct from an integral value.
-        // This is mostly used by Halcyon internally.
-        constexpr enum_bitmask(Value v)
-            : m_mask { v }
-        {
-        }
-
         // Construct from a single enum.
         constexpr enum_bitmask(Enum e)
             : enum_bitmask { e }
@@ -101,6 +94,11 @@ namespace hal
         constexpr auto operator<=>(const enum_bitmask&) const = default;
 
     private:
+        enum_bitmask(Value v)
+            : m_mask { v }
+        {
+        }
+
         Value m_mask;
     };
 }

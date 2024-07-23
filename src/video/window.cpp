@@ -11,7 +11,7 @@ window::window(sysref<const proxy::video>, std::string_view title, pixel::point 
 }
 
 window::window(sysref<const proxy::video> sys, std::string_view title, HAL_TAG_NAME(fullscreen))
-    : window { sys, title, sys->displays[0].size(), { flags::fullscreen } }
+    : window { sys, title, sys->displays[0].size(), { flag::fullscreen } }
 {
 }
 
@@ -40,7 +40,7 @@ window::id_t window::id() const
 
 window::flag_bitmask window::flags() const
 {
-    return ::SDL_GetWindowFlags(get());
+    return static_cast<enum flag>(::SDL_GetWindowFlags(get()));
 }
 
 hal::pixel::point window::pos() const
@@ -90,14 +90,14 @@ void window::title(std::string_view val)
 
 bool window::fullscreen() const
 {
-    return flags()[{ flags::fullscreen, flags::fullscreen_borderless }];
+    return flags()[{ flag::fullscreen, flag::fullscreen_borderless }];
 }
 
 void window::fullscreen(bool set)
 {
     HAL_ASSERT_VITAL(::SDL_SetWindowFullscreen(
                          get(),
-                         set * std::to_underlying(window::flags::fullscreen))
+                         set * std::to_underlying(window::flag::fullscreen))
             == 0,
         debug::last_error());
 }
