@@ -71,6 +71,8 @@ namespace hal
     template <typename T>
     class ref
     {
+        static_assert(sizeof(T) == sizeof(typename T::pointer));
+
     public:
         ref(T& obj)
             : m_ptr { obj.get() }
@@ -135,6 +137,11 @@ namespace hal
         const T* operator->() const
         {
             return reinterpret_cast<const T*>(this);
+        }
+
+        T::pointer get() const
+        {
+            return m_ptr;
         }
 
     private:

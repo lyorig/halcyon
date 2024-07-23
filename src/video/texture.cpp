@@ -72,17 +72,17 @@ void texture::query(Uint32* format, int* access, int* w, int* h) const
 }
 
 static_texture::static_texture(clref<renderer> rnd, ref<const surface> surf)
-    : texture { ::SDL_CreateTextureFromSurface(rnd->get(), surf->get()) }
+    : texture { ::SDL_CreateTextureFromSurface(rnd.get(), surf.get()) }
 {
 }
 
 target_texture::target_texture(clref<renderer> rnd, pixel::point size, pixel::format fmt)
-    : texture { ::SDL_CreateTexture(rnd->get(), static_cast<Uint32>(fmt), SDL_TEXTUREACCESS_TARGET, size.x, size.y) }
+    : texture { ::SDL_CreateTexture(rnd.get(), static_cast<Uint32>(fmt), SDL_TEXTUREACCESS_TARGET, size.x, size.y) }
 {
 }
 
 streaming_texture::streaming_texture(clref<renderer> rnd, pixel::point size, pixel::format fmt)
-    : texture { ::SDL_CreateTexture(rnd->get(), static_cast<Uint32>(fmt), SDL_TEXTUREACCESS_STREAMING, size.x, size.y) }
+    : texture { ::SDL_CreateTexture(rnd.get(), static_cast<Uint32>(fmt), SDL_TEXTUREACCESS_STREAMING, size.x, size.y) }
 {
 }
 

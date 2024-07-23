@@ -246,9 +246,9 @@ void pixel_reference::set_mapped(Uint32 mapped)
 void blitter::operator()()
 {
     HAL_ASSERT_VITAL(::SDL_BlitScaled(
-                         m_this->get(),
+                         m_this.get(),
                          m_src.pos.x == unset_pos<src_t>() ? nullptr : reinterpret_cast<const SDL_Rect*>(m_src.addr()),
-                         m_pass->get(),
+                         m_pass.get(),
                          m_dst.pos.x == unset_pos<dst_t>() ? nullptr : reinterpret_cast<SDL_Rect*>(m_dst.addr()))
             == 0,
         debug::last_error());
@@ -259,9 +259,9 @@ void blitter::operator()(HAL_TAG_NAME(keep_dst)) const
     pixel::rect copy { m_dst };
 
     HAL_ASSERT_VITAL(::SDL_BlitScaled(
-                         m_this->get(),
+                         m_this.get(),
                          m_src.pos.x == unset_pos<src_t>() ? nullptr : m_src.addr(),
-                         m_pass->get(),
+                         m_pass.get(),
                          m_dst.pos.x == unset_pos<dst_t>() ? nullptr : copy.addr())
             == 0,
         debug::last_error());

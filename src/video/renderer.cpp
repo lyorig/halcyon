@@ -10,7 +10,7 @@
 using namespace hal;
 
 renderer::renderer(clref<class window> wnd, flag_bitmask f)
-    : raii_object { ::SDL_CreateRenderer(wnd->get(), -1, f.mask()) }
+    : raii_object { ::SDL_CreateRenderer(wnd.get(), -1, f.mask()) }
 {
     HAL_PRINT("Created renderer for \"", wnd->title(), "\" ");
 }
@@ -58,7 +58,7 @@ void renderer::fill()
 
 void renderer::target(ref<target_texture> tx)
 {
-    this->internal_target(tx->get());
+    this->internal_target(tx.get());
 }
 
 void renderer::reset_target()
@@ -177,7 +177,7 @@ void renderer::internal_target(SDL_Texture* target)
 
 info::sdl::renderer::renderer(ref<const hal::renderer> rnd, pass_key<hal::renderer>)
 {
-    HAL_ASSERT_VITAL(::SDL_GetRendererInfo(rnd->get(), static_cast<SDL_RendererInfo*>(this)) == 0, debug::last_error());
+    HAL_ASSERT_VITAL(::SDL_GetRendererInfo(rnd.get(), static_cast<SDL_RendererInfo*>(this)) == 0, debug::last_error());
 }
 
 std::string_view info::sdl::renderer::name() const
@@ -265,7 +265,7 @@ copyer& copyer::outline(color c)
 
 void copyer::operator()()
 {
-    HAL_ASSERT_VITAL(::SDL_RenderCopyExF(m_pass->get(), m_this->get(),
+    HAL_ASSERT_VITAL(::SDL_RenderCopyExF(m_pass.get(), m_this.get(),
                          m_src.pos.x == unset_pos<src_t>() ? nullptr : m_src.addr(),
                          m_dst.pos.x == unset_pos<dst_t>() ? nullptr : m_dst.addr(),
                          m_angle, nullptr, static_cast<SDL_RendererFlip>(m_flip))

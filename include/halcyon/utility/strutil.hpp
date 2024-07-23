@@ -12,7 +12,7 @@ namespace hal
     {
         return std::char_traits<CharT>::length(str);
     }
-
+    
     std::unique_ptr<char[]> wide_to_multibyte(const wchar_t* ptr);
 
     // Input all arguments into a stringstream and return them as a string.
