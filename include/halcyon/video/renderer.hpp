@@ -85,10 +85,10 @@ namespace hal
         void reset_target();
 
         // Read pixels from the rendering target.
-        surface read_pixels(pixel::format fmt);
+        surface read_pixels(pixel::format fmt) const;
 
         // Read pixels from an area of the rendering target.
-        surface read_pixels(pixel::rect area, pixel::format fmt);
+        surface read_pixels(pixel::rect area, pixel::format fmt) const;
 
         // Get/set the color used for draw/fill operations.
         hal::color color() const;

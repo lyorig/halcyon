@@ -66,7 +66,7 @@ void renderer::reset_target()
     this->internal_target(nullptr);
 }
 
-surface renderer::read_pixels(pixel::format fmt)
+surface renderer::read_pixels(pixel::format fmt) const
 {
     hal::surface surf { size(), fmt };
 
@@ -75,7 +75,7 @@ surface renderer::read_pixels(pixel::format fmt)
     return surf;
 }
 
-surface renderer::read_pixels(pixel::rect area, pixel::format fmt)
+surface renderer::read_pixels(pixel::rect area, pixel::format fmt) const
 {
     hal::surface surf { area.size, fmt };
 
