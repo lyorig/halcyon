@@ -67,14 +67,22 @@ void renderer::reset_target()
     this->internal_target(nullptr);
 }
 
-void renderer::read_pixels(int pitch, std::byte* pixels, pixel::format fmt)
+surface renderer::read_pixels(pixel::format fmt)
 {
-    HAL_ASSERT_VITAL(::SDL_RenderReadPixels(get(), nullptr, static_cast<Uint32>(fmt), pixels, pitch) == 0, debug::last_error());
+    hal::surface surf { size(), fmt };
+
+    HAL_ASSERT_VITAL(::SDL_RenderReadPixels(get(), nullptr, static_cast<Uint32>(fmt), surf.get()->pixels, surf.get()->pitch) == 0, debug::last_error());
+
+    return surf;
 }
 
-void renderer::read_pixels(pixel::rect area, int pitch, std::byte* pixels, pixel::format fmt)
+surface renderer::read_pixels(pixel::rect area, pixel::format fmt)
 {
-    HAL_ASSERT_VITAL(::SDL_RenderReadPixels(get(), area.addr(), static_cast<Uint32>(fmt), pixels, pitch) == 0, debug::last_error());
+    hal::surface surf { area.size, fmt };
+
+    HAL_ASSERT_VITAL(::SDL_RenderReadPixels(get(), area.addr(), static_cast<Uint32>(fmt), surf.get()->pixels, surf.get()->pitch) == 0, debug::last_error());
+
+    return surf;
 }
 
 color renderer::color() const

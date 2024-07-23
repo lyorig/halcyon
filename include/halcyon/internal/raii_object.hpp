@@ -101,6 +101,20 @@ namespace hal
         ref(const ref&)            = default;
         ref& operator=(const ref&) = default;
 
+        ref(ref&& other)
+            : m_ptr { other.m_ptr }
+        {
+            other.m_ptr = nullptr;
+        }
+
+        ref& operator=(ref&& other)
+        {
+            m_ptr       = other.m_ptr;
+            other.m_ptr = nullptr;
+
+            return *this;
+        }
+
         T& operator()()
         {
             return reinterpret_cast<T&>(*this);

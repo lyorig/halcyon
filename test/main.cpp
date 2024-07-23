@@ -1,3 +1,4 @@
+#include <cstdlib>
 #include <halcyon/audio.hpp>
 #include <halcyon/video.hpp>
 
