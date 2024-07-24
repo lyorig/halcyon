@@ -17,7 +17,18 @@ namespace hal
     class texture : public detail::raii_object<SDL_Texture, &::SDL_DestroyTexture>
     {
     protected:
-        using raii_object::raii_object;
+        enum class access
+        {
+            static_   = SDL_TEXTUREACCESS_STATIC,
+            target    = SDL_TEXTUREACCESS_TARGET,
+            streaming = SDL_TEXTUREACCESS_STREAMING
+        };
+
+        texture() = default;
+
+        texture(SDL_Texture* ptr);
+
+        texture(clref<renderer> rnd, pixel::format fmt, access a, pixel::point size);
 
     public:
         static constexpr pixel::format default_pixel_format { pixel::format::rgba32 };
@@ -42,30 +53,42 @@ namespace hal
     // Forward declarations for parameters and return types.
     class renderer;
 
-    // A texture that cannot be drawn onto, only reassigned.
+    // A texture that cannot be drawn onto or otherwise manipulated.
+    // Use if you don't intend to change it often.
     class static_texture : public texture
     {
     public:
         static_texture() = default;
 
+        static_texture(clref<renderer> rnd, pixel::point size, pixel::format fmt);
         static_texture(clref<renderer> rnd, ref<const surface> surf);
+
+        void update(ref<const surface> surf);
+        void update(ref<const surface> surf, pixel::point pos);
+        void update(ref<const surface> surf, pixel::rect area);
+
+    private:
+        void common_update(ref<const surface> surf, const SDL_Rect* area);
     };
 
     // A texture that can be drawn onto.
+    // Use if you want to draw textures onto it.
     class target_texture : public texture
     {
     public:
         target_texture() = default;
 
-        target_texture(clref<renderer> rnd, pixel::point size, pixel::format fmt = texture::default_pixel_format);
+        target_texture(clref<renderer> rnd, pixel::point size, pixel::format fmt);
     };
 
+    // A texture whose pixels can be accessed.
+    // Use if you want to directly manipulate pixels.
     class streaming_texture : public texture
     {
     public:
         streaming_texture() = default;
 
-        streaming_texture(clref<renderer> rnd, pixel::point size, pixel::format fmt = texture::default_pixel_format);
+        streaming_texture(clref<renderer> rnd, pixel::point size, pixel::format fmt);
 
         struct data
         {
@@ -73,7 +96,12 @@ namespace hal
             int        pitch;
         };
 
+        data lock();
         data lock(pixel::rect area);
+
         void unlock();
+
+    private:
+        data common_lock(const SDL_Rect* area);
     };
 }

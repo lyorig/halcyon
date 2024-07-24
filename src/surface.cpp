@@ -5,7 +5,7 @@
 
 #include <SDL_image.h>
 
-#include <halcyon/utility/locks.hpp>
+#include <halcyon/utility/guard.hpp>
 
 using namespace hal;
 

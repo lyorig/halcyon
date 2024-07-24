@@ -5,13 +5,15 @@
 #include <halcyon/video/texture.hpp>
 #include <halcyon/video/window.hpp>
 
-#include <halcyon/utility/locks.hpp>
+#include <halcyon/utility/guard.hpp>
 
 using namespace hal;
 
 renderer::renderer(clref<class window> wnd, flag_bitmask f)
     : raii_object { ::SDL_CreateRenderer(wnd.get(), -1, f.mask()) }
 {
+    clear();
+
     HAL_PRINT("Created renderer for \"", wnd->title(), "\" ");
 }
 
@@ -259,7 +261,7 @@ copyer& copyer::outline()
 
 copyer& copyer::outline(color c)
 {
-    lock::color<renderer> _ { m_pass, c };
+    guard::color<renderer> _ { m_pass, c };
     return outline();
 }
 

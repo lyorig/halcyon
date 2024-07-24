@@ -105,6 +105,7 @@ if(Halcyon_BUILD_EXAMPLES)
 
     set(EXAMPLE_SOURCES
         audio.cpp
+		basic.cpp
         invertor.cpp
         message_box.cpp
         metaprogramming.cpp
