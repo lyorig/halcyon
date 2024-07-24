@@ -76,6 +76,8 @@ namespace hal
         // Outline a rectangle with the current color.
         void draw(coord::rect area);
 
+        [[nodiscard]] copyer draw(ref<const texture> tx);
+
         void fill(coord::rect area);
         void fill(std::span<const coord::rect> areas);
         void fill();
@@ -116,12 +118,9 @@ namespace hal
         [[nodiscard]] streaming_texture make_streaming_texture(pixel::point size, pixel::format fmt = texture::default_pixel_format) const&;
         [[nodiscard]] streaming_texture make_streaming_texture(pixel::point size, pixel::format fmt = texture::default_pixel_format) const&& = delete;
 
-        // Render a texture via a builder.
-        [[nodiscard]] copyer render(ref<const texture> tex);
-
     private:
         // Helper for setting the render target.
-        void internal_target(SDL_Texture* target);
+        void common_target(SDL_Texture* target);
     };
 
     namespace info

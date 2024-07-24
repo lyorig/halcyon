@@ -93,6 +93,7 @@ static_texture::static_texture(clref<renderer> rnd, ref<const surface> surf)
 
 void static_texture::update(ref<const surface> surf)
 {
+    HAL_ASSERT(surf->size() >= size(), "The surface must be >= to the texture size");
     common_update(surf, nullptr);
 }
 
@@ -103,13 +104,13 @@ void static_texture::update(ref<const surface> surf, pixel::point pos)
 
 void static_texture::update(ref<const surface> surf, pixel::rect area)
 {
+    HAL_ASSERT(surf->size() >= area.size, "The surface must be >= to the area");
     common_update(surf, area.addr());
 }
 
 void static_texture::common_update(ref<const surface> surf, const SDL_Rect* area)
 {
     HAL_ASSERT(pixel_format() == surf->pixel_format(), "The surface and texture must have matching pixel formats");
-    HAL_ASSERT(surf->size() >= size(), "Surface size must be >= texture size in both dimensions");
 
     HAL_ASSERT_VITAL(::SDL_UpdateTexture(get(), area, surf.get()->pixels, surf.get()->pitch) == 0, debug::last_error());
 }

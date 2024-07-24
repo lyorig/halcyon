@@ -43,6 +43,11 @@ void renderer::draw(coord::rect area)
     HAL_ASSERT_VITAL(::SDL_RenderDrawRectF(get(), area.addr()) == 0, debug::last_error());
 }
 
+copyer renderer::draw(ref<const texture> tx)
+{
+    return { *this, tx };
+}
+
 void renderer::fill(coord::rect area)
 {
     HAL_ASSERT_VITAL(::SDL_RenderFillRectF(get(), area.addr()) == 0, debug::last_error());
@@ -60,12 +65,12 @@ void renderer::fill()
 
 void renderer::target(ref<target_texture> tx)
 {
-    this->internal_target(tx.get());
+    this->common_target(tx.get());
 }
 
 void renderer::reset_target()
 {
-    this->internal_target(nullptr);
+    this->common_target(nullptr);
 }
 
 surface renderer::read_pixels(pixel::format fmt) const
@@ -165,12 +170,7 @@ streaming_texture renderer::make_streaming_texture(pixel::point size, pixel::for
     return { *this, size, fmt };
 }
 
-copyer renderer::render(ref<const texture> tex)
-{
-    return { *this, tex };
-}
-
-void renderer::internal_target(SDL_Texture* target)
+void renderer::common_target(SDL_Texture* target)
 {
     HAL_ASSERT_VITAL(::SDL_SetRenderTarget(get(), target) == 0, debug::last_error());
 }

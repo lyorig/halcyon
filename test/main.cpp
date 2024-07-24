@@ -308,7 +308,7 @@ namespace test
         hal::static_texture tex;
 
         // Failure should occur here.
-        rnd.render(tex)();
+        rnd.draw(tex)();
 
         return EXIT_SUCCESS;
     }
