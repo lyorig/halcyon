@@ -44,6 +44,13 @@ namespace hal
         {
         }
 
+        template <typename OtherValue>
+            requires(sizeof(OtherValue) <= sizeof(Value))
+        constexpr enum_bitmask(enum_bitmask<Enum, OtherValue> eb)
+            : enum_bitmask { static_cast<Value>(eb.mask()) }
+        {
+        }
+
         constexpr Value mask() const
         {
             return m_mask;

@@ -128,7 +128,7 @@ namespace hal
         };
 
         // Ways in which pixels are stored.
-        enum class storage
+        enum class storage : u8
         {
             unknown = SDL_PIXELTYPE_UNKNOWN,
 
@@ -148,14 +148,14 @@ namespace hal
             array_f32 = SDL_PIXELTYPE_ARRAYF32
         };
 
-        enum class bitmap_order
+        enum class bitmap_order : u8
         {
             none  = SDL_BITMAPORDER_NONE,
             _4321 = SDL_BITMAPORDER_4321,
             _1234 = SDL_BITMAPORDER_1234,
         };
 
-        enum class packed_order
+        enum class packed_order : u8
         {
             none = SDL_PACKEDORDER_NONE,
             xrgb = SDL_PACKEDORDER_XRGB,
@@ -168,7 +168,7 @@ namespace hal
             bgra = SDL_PACKEDORDER_BGRA,
         };
 
-        enum class array_order
+        enum class array_order : u8
         {
             none = SDL_ARRAYORDER_NONE,
             rgb  = SDL_ARRAYORDER_RGB,
@@ -179,7 +179,7 @@ namespace hal
             abgr = SDL_ARRAYORDER_ABGR
         };
 
-        enum class packed_layout
+        enum class packed_layout : u8
         {
             none     = SDL_PACKEDLAYOUT_NONE,
             _332     = SDL_PACKEDLAYOUT_332,
