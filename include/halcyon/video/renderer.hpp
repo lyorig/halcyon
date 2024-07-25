@@ -112,11 +112,11 @@ namespace hal
         [[nodiscard]] static_texture make_static_texture(ref<const surface> surf) const&;
         [[nodiscard]] static_texture make_static_texture(ref<const surface> surf) const&& = delete;
 
-        [[nodiscard]] target_texture make_target_texture(pixel::point size, pixel::format fmt = texture::default_pixel_format) const&;
-        [[nodiscard]] target_texture make_target_texture(pixel::point size, pixel::format fmt = texture::default_pixel_format) const&& = delete;
+        [[nodiscard]] target_texture make_target_texture(pixel::point size, pixel::format) const&;
+        [[nodiscard]] target_texture make_target_texture(pixel::point size, pixel::format) const&& = delete;
 
-        [[nodiscard]] streaming_texture make_streaming_texture(pixel::point size, pixel::format fmt = texture::default_pixel_format) const&;
-        [[nodiscard]] streaming_texture make_streaming_texture(pixel::point size, pixel::format fmt = texture::default_pixel_format) const&& = delete;
+        [[nodiscard]] streaming_texture make_streaming_texture(pixel::point size, pixel::format fmt) const&;
+        [[nodiscard]] streaming_texture make_streaming_texture(pixel::point size, pixel::format fmt) const&& = delete;
 
     private:
         // Helper for setting the render target.

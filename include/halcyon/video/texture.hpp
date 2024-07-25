@@ -6,6 +6,8 @@
 #include <halcyon/types/color.hpp>
 #include <halcyon/video/types.hpp>
 
+#include <halcyon/utility/non_null.hpp>
+
 // video/texture.cpp:
 // Proper textures that can be drawn to a window (or a target texture).
 
@@ -13,7 +15,7 @@ namespace hal
 {
     class surface;
 
-    // Common texture functionality.
+    // Common texture functionality. Cannot be constructed, instead use static, target, or streaming textures.
     class texture : public detail::raii_object<SDL_Texture, &::SDL_DestroyTexture>
     {
     protected:
@@ -31,8 +33,6 @@ namespace hal
         texture(clref<renderer> rnd, pixel::format fmt, access a, pixel::point size);
 
     public:
-        static constexpr pixel::format default_pixel_format { pixel::format::rgba32 };
-
         pixel::point size() const;
 
         color::value_t alpha_mod() const;
@@ -63,12 +63,20 @@ namespace hal
         static_texture(clref<renderer> rnd, pixel::point size, pixel::format fmt);
         static_texture(clref<renderer> rnd, ref<const surface> surf);
 
-        void update(ref<const surface> surf);
-        void update(ref<const surface> surf, pixel::point pos);
+        // Update the texture with your own pixel buffer. These pixels' format
+        // must match the texture's.
+        void update(non_null<const std::byte> pixel_buffer, int pitch);
+        void update(non_null<const std::byte> pixel_buffer, int pitch, pixel::rect area);
+
+        // Update the texture with pixels of a surface. The surface's pixel format must match the texture's.
+        void update(ref<const surface> surf, pixel::point pos = { 0, 0 });
+
+        // Update the textzre with pixels of a surface and stretch them to a certain area.
+        // The surface's pixel format must match the texture's, and its size must be >= the area's.
         void update(ref<const surface> surf, pixel::rect area);
 
     private:
-        void common_update(ref<const surface> surf, const SDL_Rect* area);
+        void common_update(const SDL_Rect* area, non_null<const void> pixels, int pitch);
     };
 
     // A texture that can be drawn onto.

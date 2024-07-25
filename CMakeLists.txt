@@ -105,13 +105,13 @@ if(Halcyon_BUILD_EXAMPLES)
 
     set(EXAMPLE_SOURCES
         audio.cpp
-		basic.cpp
         invertor.cpp
         message_box.cpp
         metaprogramming.cpp
         safety.cpp
         events.cpp
         text_render.cpp
+		update.cpp
     )
 
     list(TRANSFORM EXAMPLE_SOURCES PREPEND examples/)

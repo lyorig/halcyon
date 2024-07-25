@@ -91,10 +91,14 @@ static_texture::static_texture(clref<renderer> rnd, ref<const surface> surf)
 {
 }
 
-void static_texture::update(ref<const surface> surf)
+void static_texture::update(non_null<const std::byte> pixel_buffer, int pitch)
 {
-    HAL_ASSERT(surf->size() >= size(), "The surface must be >= to the texture size");
-    common_update(surf, nullptr);
+    common_update(nullptr, pixel_buffer, pitch);
+}
+
+void static_texture::update(non_null<const std::byte> pixel_buffer, int pitch, pixel::rect area)
+{
+    common_update(area.addr(), pixel_buffer, pitch);
 }
 
 void static_texture::update(ref<const surface> surf, pixel::point pos)
@@ -105,14 +109,13 @@ void static_texture::update(ref<const surface> surf, pixel::point pos)
 void static_texture::update(ref<const surface> surf, pixel::rect area)
 {
     HAL_ASSERT(surf->size() >= area.size, "The surface must be >= to the area");
-    common_update(surf, area.addr());
+
+    common_update(area.addr(), surf.get()->pixels, surf.get()->pitch);
 }
 
-void static_texture::common_update(ref<const surface> surf, const SDL_Rect* area)
+void static_texture::common_update(const SDL_Rect* area, non_null<const void> pixels, int pitch)
 {
-    HAL_ASSERT(pixel_format() == surf->pixel_format(), "The surface and texture must have matching pixel formats");
-
-    HAL_ASSERT_VITAL(::SDL_UpdateTexture(get(), area, surf.get()->pixels, surf.get()->pitch) == 0, debug::last_error());
+    HAL_ASSERT_VITAL(::SDL_UpdateTexture(get(), area, pixels.get(), pitch) == 0, debug::last_error());
 }
 
 target_texture::target_texture(clref<renderer> rnd, pixel::point size, pixel::format fmt)
