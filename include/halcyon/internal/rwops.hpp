@@ -10,8 +10,6 @@
 #include <halcyon/utility/concepts.hpp>
 #include <halcyon/utility/pass_key.hpp>
 
-struct SDL_Surface;
-
 namespace hal
 {
     class surface;
@@ -39,15 +37,10 @@ namespace hal
         // File accessors:
 
         accessor(const char* path);
-        accessor(const wchar_t* path);
-
         accessor(std::nullptr_t) = delete;
 
         accessor(std::string_view path);
-        accessor(std::wstring_view path);
-
         accessor(const std::string& path);
-        accessor(const std::wstring& path);
 
         accessor(const std::filesystem::path& path);
 
@@ -82,15 +75,10 @@ namespace hal
         // File outputters:
 
         outputter(const char* path);
-        outputter(const wchar_t* path);
-
         outputter(std::nullptr_t) = delete;
 
         outputter(std::string_view path);
-        outputter(std::wstring_view path);
-
         outputter(const std::string& path);
-        outputter(const std::wstring& path);
 
         outputter(const std::filesystem::path& path);
 

@@ -44,12 +44,11 @@ namespace hal
             return *this;
         }
 
-        clock::time_point time_point() const
-        {
-            return m_epoch;
-        }
+        clock::time_point time_point() const;
 
     private:
         clock::time_point m_epoch;
     };
+
+    std::ostream& operator<<(std::ostream& str, timer t);
 }

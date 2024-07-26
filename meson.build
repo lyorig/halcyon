@@ -10,7 +10,6 @@ sources = files(
   'src/internal/rwops.cpp',
   'src/internal/string.cpp',
   'src/types/color.cpp',
-  'src/utility/strutil.cpp',
   'src/utility/timer.cpp',
   'src/video/display.cpp',
   'src/video/driver.cpp',

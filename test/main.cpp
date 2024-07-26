@@ -199,7 +199,7 @@ namespace test
         s[{ 0, 1 }].color(0x00A4EF);
         s[{ 1, 1 }].color(0xFFB900);
 
-        s.save(L"DontSueMeDaddyGates.bmp");
+        s.save("DontSueMeDaddyGates.bmp");
 
         std::byte buf[1000];
 

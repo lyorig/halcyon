@@ -200,6 +200,8 @@ namespace hal
     #define HAL_ASSERT_VITAL(cond, ...) \
         ::hal::debug::verify(cond, #cond, __PRETTY_FUNCTION__, __FILE_NAME__, __LINE__, __VA_ARGS__)
 
+    #define HAL_DEBUG_TIMER(init) ::hal::timer init
+
 #else
 
     #define HAL_PRINT(...) (static_cast<void>(0))
@@ -212,5 +214,7 @@ namespace hal
 
     #define HAL_ASSERT(...)             (static_cast<void>(0))
     #define HAL_ASSERT_VITAL(cond, ...) (static_cast<void>(cond))
+
+    #define HAL_DEBUG_TIMER(...) (static_cast<void>(0))
 
 #endif

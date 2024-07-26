@@ -15,8 +15,6 @@ namespace hal
         return std::char_traits<CharT>::length(str);
     }
 
-    std::unique_ptr<char[]> wide_to_multibyte(non_null<const wchar_t> ptr);
-
     // Input all arguments into a stringstream and return them as a string.
     template <typename... Args>
     std::string string_from_pack(Args&&... args)
