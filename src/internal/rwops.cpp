@@ -1,4 +1,3 @@
-#include <__iterator/permutable.h>
 #include <halcyon/internal/rwops.hpp>
 
 #include <halcyon/utility/strutil.hpp>
@@ -7,24 +6,21 @@ using namespace hal;
 
 namespace
 {
-    template <typename CharT = std::filesystem::path::value_type>
-    class path2char
+    template <typename CharT>
+    class path_to_cstring
     {
     private:
-        using path = std::filesystem::path;
-
         static constexpr bool is_narrow { std::is_same_v<CharT, char> };
-
         using storage = std::conditional_t<is_narrow, const char*, std::string>;
 
     public:
-        path2char(const path& p)
+        path_to_cstring(const std::filesystem::path& p)
             requires is_narrow
             : m_str { p.c_str() }
         {
         }
 
-        path2char(const path& p)
+        path_to_cstring(const std::filesystem::path& p)
             requires(!is_narrow)
             : m_str { p.string() }
         {
@@ -36,6 +32,7 @@ namespace
             {
                 return m_str;
             }
+
             else
             {
                 return m_str.c_str();
@@ -45,6 +42,8 @@ namespace
     private:
         storage m_str;
     };
+
+    using p2c = path_to_cstring<std::filesystem::path::value_type>;
 }
 
 accessor::accessor(const char* path)
@@ -64,7 +63,7 @@ accessor::accessor(const std::string& path)
 }
 
 accessor::accessor(const std::filesystem::path& path)
-    : accessor { path2char { path }() }
+    : accessor { p2c { path }() }
 {
 }
 
@@ -105,7 +104,7 @@ outputter::outputter(const std::string& path)
 }
 
 outputter::outputter(const std::filesystem::path& path)
-    : outputter { path2char { path }() }
+    : outputter { p2c { path }() }
 {
 }
 
