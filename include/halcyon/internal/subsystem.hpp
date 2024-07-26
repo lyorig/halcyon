@@ -1,7 +1,5 @@
 #pragma once
 
-#include <cstdint>
-
 #include <SDL.h>
 
 #include <halcyon/debug.hpp>
@@ -9,6 +7,9 @@
 #include <halcyon/types/numeric.hpp>
 
 #include <halcyon/utility/pass_key.hpp>
+
+// internal/subsystem.hpp:
+// SDL subsystem proxies and RAII managers.
 
 namespace hal
 {

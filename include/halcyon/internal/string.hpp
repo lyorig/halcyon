@@ -18,9 +18,7 @@ namespace hal
     class string : public detail::raii_object<char, ::SDL_free>
     {
     public:
-        using authority_t = proxy::clipboard;
-
-        string(char* ptr, pass_key<authority_t>);
+        string(char* ptr, pass_key<proxy::clipboard>);
 
         const_pointer begin() const;
         pointer       begin();

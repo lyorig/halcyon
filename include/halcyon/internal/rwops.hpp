@@ -7,7 +7,7 @@
 
 #include <halcyon/internal/raii_object.hpp>
 
-#include <halcyon/utility/concepts.hpp>
+#include <halcyon/utility/metaprogramming.hpp>
 #include <halcyon/utility/pass_key.hpp>
 
 namespace hal
@@ -60,6 +60,12 @@ namespace hal
         SDL_RWops* use(pass_key<font>);           // Font loading.
         SDL_RWops* use(pass_key<image::context>); // Image loading.
     };
+
+    namespace meta
+    {
+        template <typename T>
+        concept buffer = requires(const T& x) { std::begin(x); std::end(x); std::size(x); std::data(x); };
+    }
 
     // Shorthand for creating a readable byte span from a compatible array-like object.
     template <meta::buffer T>

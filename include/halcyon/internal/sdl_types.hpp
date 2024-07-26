@@ -3,7 +3,6 @@
 #include <SDL_rect.h>
 
 #include <halcyon/internal/literals.hpp>
-#include <halcyon/utility/concepts.hpp>
 
 // internal/sdl_types.hpp:
 // Type aliases for underlying library types.

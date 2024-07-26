@@ -3,7 +3,7 @@
 #include <ostream>
 
 #include <halcyon/types/numeric.hpp>
-#include <halcyon/utility/concepts.hpp>
+#include <halcyon/utility/metaprogramming.hpp>
 
 // printing.hpp:
 // Extra utility stuff for printing.

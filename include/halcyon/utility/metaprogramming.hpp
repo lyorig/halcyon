@@ -108,9 +108,12 @@ namespace hal
             requires is_present<What, Where...>
         constexpr inline std::size_t find { detail::find<0, What, Where...>::value };
 
-        // Check if a type is "bare", as in, it is not a pointer, reference, and has no cv-qualifiers.
+        // Check if a type is "innermost", as in, it is not a pointer, reference, and has no cv-qualifiers.
         template <typename T>
-        constexpr inline bool is_bare { !(std::is_const_v<T> || std::is_reference_v<T> || std::is_pointer_v<T> || std::is_volatile_v<T>)};
+        constexpr inline bool is_innermost { !(std::is_const_v<T> || std::is_reference_v<T> || std::is_pointer_v<T> || std::is_volatile_v<T>)};
+
+        template <typename T>
+        concept innermost = is_innermost<T>;
 
         // Get the type residing at an index in a parameter pack.
         template <std::size_t I, typename... Ts>
@@ -200,5 +203,11 @@ namespace hal
         // you must explicitly return an exit code - it doesn't have main's implicit "return 0".
         template <auto MainFunc>
         constexpr bool is_correct_main { std::is_same_v<decltype(MainFunc), func_ptr<int, int, char**>> };
+
+        template <typename T>
+        concept arithmetic = std::is_arithmetic_v<T> || std::is_enum_v<T>;
+
+        template <typename T, typename... Ts>
+        concept one_of = is_present<T, Ts...>;
     }
 }

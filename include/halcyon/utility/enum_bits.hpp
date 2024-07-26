@@ -1,6 +1,8 @@
 #pragma once
 
-#include <halcyon/utility/concepts.hpp>
+#include <initializer_list>
+
+#include <halcyon/utility/metaprogramming.hpp>
 
 // utility/enum_bits.hpp:
 // Helper template class for bit manipulation with enums.

@@ -201,7 +201,7 @@ Uint32 const_pixel_reference::get_mapped() const
 {
     Uint32 ret { 0 };
 
-    if constexpr (compile_settings::byte_order == hal::byte_order::lil_endian)
+    if constexpr (compile_settings::endianness == endian::lil)
     {
         std::memcpy(&ret, m_ptr, m_fmt->BytesPerPixel);
     }
@@ -229,7 +229,7 @@ void pixel_reference::color(struct color c)
 
 void pixel_reference::set_mapped(Uint32 mapped)
 {
-    if constexpr (compile_settings::byte_order == byte_order::lil_endian)
+    if constexpr (compile_settings::endianness == endian::lil)
     {
         std::memcpy(m_ptr, &mapped, m_fmt->BytesPerPixel);
     }

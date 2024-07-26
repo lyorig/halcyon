@@ -3,7 +3,7 @@
 #include <memory>
 #include <span>
 
-#include <halcyon/utility/concepts.hpp>
+#include <halcyon/utility/metaprogramming.hpp>
 
 namespace hal
 {
