@@ -32,7 +32,7 @@ int main(int, char*[])
     else
         var.emplace<joined::back>(nullptr);
 
-    std::cout << "Variant holds a {}" << (std::holds_alternative<int>(var) ? "number" : "pointer");
+    std::cout << "Variant holds a " << (std::holds_alternative<int>(var) ? "number" : "pointer") << '\n';
 
     return EXIT_SUCCESS;
 }
