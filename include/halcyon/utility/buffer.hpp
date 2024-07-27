@@ -18,6 +18,12 @@ namespace hal
         {
         }
 
+        constexpr buffer(std::uintptr_t sz)
+            : m_arr { std::make_unique<T[]>(sz) }
+            , m_size { sz }
+        {
+        }
+
         // Copy data from a span.
         constexpr buffer(std::span<const T> span)
             : m_arr { std::make_unique<T[]>(span.size()) }
@@ -61,8 +67,18 @@ namespace hal
             return begin() + size();
         }
 
+        constexpr T* data()
+        {
+            return m_arr.get();
+        }
+
+        constexpr const T* data() const
+        {
+            return m_arr.get();
+        }
+
     private:
         std::unique_ptr<T[]> m_arr;
-        std::size_t          m_size;
+        std::uintptr_t       m_size;
     };
 }

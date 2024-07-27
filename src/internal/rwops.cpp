@@ -1,49 +1,40 @@
 #include <halcyon/internal/rwops.hpp>
 
-#include <halcyon/utility/strutil.hpp>
+#include <halcyon/utility/buffer.hpp>
 
 using namespace hal;
 
 namespace
 {
-    template <typename CharT>
-    class path_to_cstring
+    // If filesystem paths are narrow, don't bother.
+    const char* path_cvt(const char* path)
     {
-    private:
-        static constexpr bool is_narrow { std::is_same_v<CharT, char> };
-        using storage = std::conditional_t<is_narrow, const char*, std::string>;
+        return path;
+    }
 
+    class wchar_cvt
+    {
     public:
-        path_to_cstring(const std::filesystem::path& p)
-            requires is_narrow
-            : m_str { p.c_str() }
+        wchar_cvt(const wchar_t* path)
+            : m_buf { std::wcslen(path) * sizeof(wchar_t) + 1 }
         {
+            HAL_ASSERT_VITAL(std::wcstombs(m_buf.data(), path, m_buf.size()) != -1, "Couldn't convert wchar_t string to char string");
         }
 
-        path_to_cstring(const std::filesystem::path& p)
-            requires(!is_narrow)
-            : m_str { p.string() }
+        operator const char*() const
         {
-        }
-
-        const char* operator()() const
-        {
-            if constexpr (is_narrow)
-            {
-                return m_str;
-            }
-
-            else
-            {
-                return m_str.c_str();
-            }
+            return m_buf.data();
         }
 
     private:
-        storage m_str;
+        buffer<char> m_buf;
     };
 
-    using p2c = path_to_cstring<std::filesystem::path::value_type>;
+    // Otherwise, do indeed bother, and do it in the simplest way possible.
+    wchar_cvt path_cvt(const wchar_t* path)
+    {
+        return path;
+    }
 }
 
 accessor::accessor(const char* path)
@@ -63,7 +54,7 @@ accessor::accessor(const std::string& path)
 }
 
 accessor::accessor(const std::filesystem::path& path)
-    : accessor { p2c { path }() }
+    : accessor { path_cvt(path.c_str()) }
 {
 }
 
@@ -104,7 +95,7 @@ outputter::outputter(const std::string& path)
 }
 
 outputter::outputter(const std::filesystem::path& path)
-    : outputter { p2c { path }() }
+    : outputter { path_cvt(path.c_str()) }
 {
 }
 
