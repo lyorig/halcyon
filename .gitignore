@@ -8,5 +8,3 @@ bin/*
 
 .DS_Store
 .clangd
-
-type.txt
