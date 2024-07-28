@@ -1,5 +1,6 @@
 #pragma once
 
+#include <compare>
 #include <initializer_list>
 
 #include <halcyon/utility/metaprogramming.hpp>
@@ -83,7 +84,7 @@ namespace hal
         // Returns true if the bits match exactly.
         constexpr bool operator[](enum_bitmask e) const
         {
-            return mask() & e.mask();
+            return (mask() & e.mask()) == e.mask();
         }
 
         constexpr enum_bitmask& operator+=(enum_bitmask e)
