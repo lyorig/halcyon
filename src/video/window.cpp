@@ -90,7 +90,7 @@ void window::title(std::string_view val)
 
 bool window::fullscreen() const
 {
-    return flags()[{ flag::fullscreen, flag::fullscreen_borderless }];
+    return flags().any({ flag::fullscreen, flag::fullscreen_borderless });
 }
 
 void window::fullscreen(bool set)

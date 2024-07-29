@@ -34,7 +34,7 @@ namespace hal
             maximized             = SDL_WINDOW_MAXIMIZED
         };
 
-        using flag_bitmask = enum_bitmask<flag, u32>;
+        using flag_bitmask = enum_bitmask<flag>;
 
         window() = default;
 

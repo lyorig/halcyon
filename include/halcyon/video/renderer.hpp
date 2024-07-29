@@ -55,7 +55,7 @@ namespace hal
             target_texture = SDL_RENDERER_TARGETTEXTURE // Require support for rendering to a target texture.
         };
 
-        using flag_bitmask = enum_bitmask<flag, u32>;
+        using flag_bitmask = enum_bitmask<flag>;
 
         renderer() = default;
 
