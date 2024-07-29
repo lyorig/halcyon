@@ -9,8 +9,8 @@ find_package(SDL2 CONFIG REQUIRED)
 find_package(SDL2_image CONFIG REQUIRED)
 find_package(SDL2_ttf CONFIG REQUIRED)
 
-option(Halcyon_BUILD_TESTS "Build HalTest.")
-option(Halcyon_BUILD_EXAMPLES "Build Halcyon Examples.")
+option(Halcyon_BUILD_TESTS "Build HalTest." OFF)
+option(Halcyon_BUILD_EXAMPLES "Build Halcyon Examples." OFF)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)

@@ -13,28 +13,24 @@
 // Aims to keep the safety of scoped enums while taking out the
 // annoying part of writing std::to_underlying() everywhere.
 
-namespace
-{
-    template <typename Value, typename Enum>
-    constexpr Value reduce(std::initializer_list<Enum> e)
-    {
-        Value mask { 0 };
-
-        for (const Enum v : e)
-            mask |= static_cast<Value>(v);
-
-        return mask;
-    }
-}
-
 namespace hal
 {
     // A bitset-like class for (scoped) enums defined as bit masks (i.e. 0b1, 0b10, 0b100...).
-    // Has restricted functionality to prevent excessive foot-shooting.
+    // Has restricted functionality compared to pure ints to prevent excessive foot-shooting.
     template <typename Enum, typename Value = meta::underlying_type<Enum>>
         requires std::is_enum_v<Enum>
     class enum_bitmask
     {
+        constexpr static Value reduce(std::initializer_list<Enum> e)
+        {
+            Value mask { 0 };
+
+            for (const Enum v : e)
+                mask |= static_cast<Value>(v);
+
+            return mask;
+        }
+
     public:
         // Default constructor, initializes to zero.
         constexpr enum_bitmask()
@@ -50,7 +46,7 @@ namespace hal
 
         // OR together multiple enums.
         constexpr enum_bitmask(std::initializer_list<Enum> il)
-            : enum_bitmask { reduce<Value>(il) }
+            : enum_bitmask { reduce(il) }
         {
         }
 
@@ -135,9 +131,9 @@ namespace hal
             return operator&(e).mask() == e.mask();
         }
 
-        constexpr bool operator[](Enum e) const
+        constexpr bool operator[](enum_bitmask e) const
         {
-            return (mask() & static_cast<Value>(e)) != 0;
+            return all(e);
         }
 
         constexpr Value mask() const
@@ -145,7 +141,7 @@ namespace hal
             return m_mask;
         }
 
-        constexpr u8 popcount() const
+        constexpr u8 count() const
         {
             return static_cast<u8>(std::popcount(mask()));
         }
