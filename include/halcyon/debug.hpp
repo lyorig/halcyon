@@ -64,7 +64,7 @@ namespace hal
     class debug
     {
     public:
-        enum class severity
+        enum class severity : u8
         {
             info,
             warning,

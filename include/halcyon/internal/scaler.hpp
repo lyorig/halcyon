@@ -70,7 +70,7 @@ namespace hal
                 return src * m_data.mul;
 
             default:
-                return {};
+                std::unreachable();
             }
         }
 

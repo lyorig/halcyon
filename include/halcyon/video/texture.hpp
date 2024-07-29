@@ -19,7 +19,7 @@ namespace hal
     class texture : public detail::raii_object<SDL_Texture, &::SDL_DestroyTexture>
     {
     protected:
-        enum class access
+        enum class access : u8
         {
             static_   = SDL_TEXTUREACCESS_STATIC,
             target    = SDL_TEXTUREACCESS_TARGET,
