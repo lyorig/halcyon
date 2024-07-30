@@ -87,29 +87,29 @@ namespace hal
         target_texture() = default;
 
         target_texture(lref<const renderer> rnd, pixel::point size, pixel::format fmt);
+    };
 
-        // A texture whose pixels can be accessed.
-        // Use if you want to directly manipulate pixels.
-        class streaming_texture : public texture
+    // A texture whose pixels can be accessed.
+    // Use if you want to directly manipulate pixels.
+    class streaming_texture : public texture
+    {
+    public:
+        streaming_texture() = default;
+
+        streaming_texture(lref<const renderer> rnd, pixel::point size, pixel::format fmt);
+
+        struct data
         {
-        public:
-            streaming_texture() = default;
-
-            streaming_texture(lref<const renderer> rnd, pixel::point size, pixel::format fmt);
-
-            struct data
-            {
-                std::byte* pixels;
-                int        pitch;
-            };
-
-            data lock();
-            data lock(pixel::rect area);
-
-            void unlock();
-
-        private:
-            data common_lock(const SDL_Rect* area);
+            std::byte* pixels;
+            int        pitch;
         };
+
+        data lock();
+        data lock(pixel::rect area);
+
+        void unlock();
+
+    private:
+        data common_lock(const SDL_Rect* area);
     };
 }

@@ -9,11 +9,7 @@
 
 using namespace hal;
 
-<<<<<<< HEAD
 renderer::renderer(lref<const class window> wnd, flag_bitmask f)
-=======
-renderer::renderer(clref<class window> wnd, flag_bitmask f)
->>>>>>> refs/remotes/origin/master
     : raii_object { ::SDL_CreateRenderer(wnd.get(), -1, f.mask()) }
 {
     clear();
