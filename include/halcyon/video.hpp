@@ -58,9 +58,11 @@ namespace hal
         public:
             subsystem(pass_key<hal::system::video>);
 
-            [[nodiscard]] window make_window(std::string_view title, pixel::point size, std::initializer_list<window::flags> flags = {}) &;
+            [[nodiscard]] window make_window(std::string_view title, pixel::point size, window::flag_bitmask flags = {}) const&;
+            [[nodiscard]] window make_window(std::string_view title, pixel::point size, window::flag_bitmask flags = {}) const&& = delete;
 
-            [[nodiscard]] window make_window(std::string_view title, HAL_TAG_NAME(fullscreen)) &;
+            [[nodiscard]] window make_window(std::string_view title, HAL_TAG_NAME(fullscreen)) const&;
+            [[nodiscard]] window make_window(std::string_view title, HAL_TAG_NAME(fullscreen)) const&& = delete;
 
             HAL_NO_SIZE proxy::events events;
 

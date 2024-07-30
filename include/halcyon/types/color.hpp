@@ -25,6 +25,9 @@ namespace hal
         // A single R, G, B or A value.
         using value_t = decltype(SDL_Color::r);
 
+        static constexpr value_t opaque      = SDL_ALPHA_OPAQUE,
+                                 transparent = SDL_ALPHA_TRANSPARENT;
+
         // Helper struct that represents the difference of two colors.
         struct diff
         {
@@ -32,7 +35,12 @@ namespace hal
 
             constexpr friend diff operator*(diff d, f64 mul)
             {
-                return { static_cast<diff_t>(d.r * mul), static_cast<diff_t>(d.g * mul), static_cast<diff_t>(d.b * mul), static_cast<diff_t>(d.a * mul) };
+                return {
+                    static_cast<diff_t>(d.r * mul),
+                    static_cast<diff_t>(d.g * mul),
+                    static_cast<diff_t>(d.b * mul),
+                    static_cast<diff_t>(d.a * mul)
+                };
             }
         };
 
@@ -43,7 +51,7 @@ namespace hal
         }
 
         // 0xRRGGBB color, 0 - 255 alpha.
-        constexpr color(hex_t rgb, value_t alpha = SDL_ALPHA_OPAQUE)
+        constexpr color(hex_t rgb, value_t alpha = opaque)
             : SDL_Color { static_cast<value_t>((rgb >> 16) & 0xFF),
                 static_cast<value_t>((rgb >> 8) & 0xFF),
                 static_cast<value_t>(rgb & 0xFF),

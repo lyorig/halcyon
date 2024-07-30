@@ -23,7 +23,7 @@ namespace hal
 
         using authority_t = hal::proxy::video;
 
-        enum class flags : u16
+        enum class flag : u16
         {
             none                  = 0,
             fullscreen            = SDL_WINDOW_FULLSCREEN,
@@ -34,15 +34,15 @@ namespace hal
             maximized             = SDL_WINDOW_MAXIMIZED
         };
 
-        using flag_bitmask = enum_bitmask<flags, u32>;
+        using flag_bitmask = enum_bitmask<flag>;
 
         window() = default;
 
-        window(proxy::video& sys, std::string_view title, pixel::point size, flag_bitmask f = {});
+        window(sysref<const proxy::video> sys, std::string_view title, pixel::point size, flag_bitmask f = {});
 
         // Create a window in fullscreen mode.
         // Warning: This has some issues on macOS due to its DPI scaling stuff.
-        window(proxy::video& sys, std::string_view title, HAL_TAG_NAME(fullscreen));
+        window(sysref<const proxy::video> sys, std::string_view title, HAL_TAG_NAME(fullscreen));
 
         // Get the index of the display this window is currently on.
         display::id_t display_index() const;
@@ -50,6 +50,8 @@ namespace hal
         pixel::format pixel_format() const;
 
         u8 id() const;
+
+        flag_bitmask flags() const;
 
         pixel::point pos() const;
         void         pos(pixel::point ps);
@@ -72,6 +74,7 @@ namespace hal
         // Only works if a software renderer is used.
         ref<const surface> surface() const;
 
-        [[nodiscard]] class renderer make_renderer(std::initializer_list<renderer::flags> flags = {}) &;
+        [[nodiscard]] class renderer make_renderer(renderer::flag_bitmask flags = {}) const&;
+        [[nodiscard]] class renderer make_renderer(renderer::flag_bitmask flags = {}) const&& = delete;
     };
 }

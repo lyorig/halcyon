@@ -2,7 +2,7 @@
 
 #include <halcyon/types/numeric.hpp>
 
-// tags.hpp:
+// internal/tags.hpp:
 // Tag macros and shared tag names.
 
 #define HAL_TAG_NAMESPACE      tag

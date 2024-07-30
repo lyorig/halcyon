@@ -1,5 +1,7 @@
 #pragma once
 
+#include <limits>
+
 #include <halcyon/utility/metaprogramming.hpp>
 
 #define HAL_DETAIL_DEFINE_LITERAL_OPERATOR(type, suffix)                   \

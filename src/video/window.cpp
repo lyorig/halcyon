@@ -4,14 +4,14 @@
 
 using namespace hal;
 
-window::window(proxy::video&, std::string_view title, pixel::point size, flag_bitmask f)
+window::window(sysref<const proxy::video>, std::string_view title, pixel::point size, flag_bitmask f)
     : raii_object { ::SDL_CreateWindow(title.data(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, size.x, size.y, f.mask()) }
 {
     HAL_PRINT(debug::severity::init, "Created window \"", title, "\" [ID: ", to_printable_int(id()), ']');
 }
 
-window::window(proxy::video& sys, std::string_view title, HAL_TAG_NAME(fullscreen))
-    : window { sys, title, sys.displays[0].size(), { flags::fullscreen } }
+window::window(sysref<const proxy::video> sys, std::string_view title, HAL_TAG_NAME(fullscreen))
+    : window { sys, title, sys->displays[0].size(), { flag::fullscreen } }
 {
 }
 
@@ -36,6 +36,11 @@ window::id_t window::id() const
     HAL_ASSERT(ret != 0, debug::last_error());
 
     return static_cast<window::id_t>(ret);
+}
+
+window::flag_bitmask window::flags() const
+{
+    return static_cast<enum flag>(::SDL_GetWindowFlags(get()));
 }
 
 hal::pixel::point window::pos() const
@@ -85,14 +90,14 @@ void window::title(std::string_view val)
 
 bool window::fullscreen() const
 {
-    return static_cast<bool>(::SDL_GetWindowFlags(get()) & (std::to_underlying(window::flags::fullscreen) | std::to_underlying(window::flags::fullscreen_borderless)));
+    return flags().any({ flag::fullscreen, flag::fullscreen_borderless });
 }
 
 void window::fullscreen(bool set)
 {
     HAL_ASSERT_VITAL(::SDL_SetWindowFullscreen(
                          get(),
-                         set * std::to_underlying(window::flags::fullscreen))
+                         set * std::to_underlying(window::flag::fullscreen))
             == 0,
         debug::last_error());
 }
@@ -112,7 +117,7 @@ ref<const surface> window::surface() const
     return { ::SDL_GetWindowSurface(get()), pass_key<window> {} };
 }
 
-renderer window::make_renderer(std::initializer_list<renderer::flags> flags) &
+renderer window::make_renderer(renderer::flag_bitmask flags) const&
 {
     return { *this, flags };
 }

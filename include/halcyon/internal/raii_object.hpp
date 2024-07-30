@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include <halcyon/debug.hpp>
 #include <halcyon/utility/pass_key.hpp>
 
@@ -25,7 +27,7 @@ namespace hal
             raii_object(pointer ptr)
                 : m_ptr { ptr }
             {
-                HAL_ASSERT(valid(), "raii_object not valid after construction");
+                HAL_ASSERT(valid(), debug::last_error());
             }
 
             pointer release()
@@ -69,9 +71,16 @@ namespace hal
     template <typename T>
     class ref
     {
+        static_assert(sizeof(T) == sizeof(typename T::pointer));
+
     public:
         ref(T& obj)
             : m_ptr { obj.get() }
+        {
+        }
+
+        ref(ref<std::remove_const_t<T>> r)
+            : m_ptr { r.get() }
         {
         }
 
@@ -111,14 +120,16 @@ namespace hal
         {
             m_ptr       = other.m_ptr;
             other.m_ptr = nullptr;
+
+            return *this;
         }
 
-        T& get()
+        T& operator()()
         {
             return reinterpret_cast<T&>(*this);
         }
 
-        const T& get() const
+        const T& operator()() const
         {
             return reinterpret_cast<const T&>(*this);
         }
@@ -133,14 +144,33 @@ namespace hal
             return reinterpret_cast<const T*>(this);
         }
 
+        T::pointer get() const
+        {
+            return m_ptr;
+        }
+
     private:
         // [private] For use with specialized constuctors.
         ref(T::pointer ptr)
             : m_ptr { ptr }
         {
-            HAL_ASSERT(m_ptr != nullptr, "Reference invalid after construction");
         }
 
         T::pointer m_ptr;
+    };
+
+    // Const lvalue reference to an SDL resource. Cannot be bound to an rvalue.
+    template <typename T>
+    class lref : public ref<T>
+    {
+    public:
+        using ref<T>::ref;
+
+        lref(ref<std::remove_const_t<T>> r)
+            : ref<T> { r }
+        {
+        }
+
+        lref(T&&) = delete;
     };
 }

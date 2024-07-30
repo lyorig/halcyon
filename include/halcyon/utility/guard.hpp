@@ -2,24 +2,67 @@
 
 #include <halcyon/internal/raii_object.hpp>
 
-#include <halcyon/types/color.hpp>
-#include <halcyon/video/types.hpp>
+#include <halcyon/video/texture.hpp>
 
-// locks.hpp:
-// RAII-based locks for various uses.
+// utility/guard.hpp:
+// RAII-based guards for various uses.
 // Not useable with CTAD since references are in play.
 
 namespace hal
 {
     class target_texture;
 
-    namespace lock
+    namespace guard
     {
+        template <typename T>
+        class lock
+        {
+        public:
+            lock(lref<T> obj)
+                : m_ref { obj }
+            {
+                m_ref->lock();
+            }
+
+            ~lock()
+            {
+                m_ref->unlock();
+            }
+
+        private:
+            lref<T> m_ref;
+        };
+
+        template <>
+        class lock<streaming_texture>
+        {
+        public:
+            lock(streaming_texture& tx, streaming_texture::data& out_data)
+                : m_ref { tx }
+            {
+                out_data = m_ref->lock();
+            }
+
+            lock(lref<streaming_texture> tx, pixel::rect area, streaming_texture::data& out_data)
+                : m_ref { tx }
+            {
+                out_data = m_ref->lock(area);
+            }
+
+            ~lock()
+            {
+                m_ref->unlock();
+            }
+
+        private:
+            lref<streaming_texture> m_ref;
+        };
+
         template <typename T>
         class blend
         {
         public:
-            blend(ref<T> obj, blend_mode bm)
+            blend(lref<T> obj, blend_mode bm)
                 : m_ref { obj }
                 , m_old { obj->blend() }
             {
@@ -37,7 +80,7 @@ namespace hal
             }
 
         private:
-            ref<T>     m_ref;
+            lref<T>    m_ref;
             blend_mode m_old;
         };
 
@@ -45,7 +88,7 @@ namespace hal
         class color
         {
         public:
-            color(ref<T> obj, hal::color c)
+            color(lref<T> obj, hal::color c)
                 : m_ref { obj }
                 , m_old { obj->color() }
             {
@@ -63,7 +106,7 @@ namespace hal
             }
 
         private:
-            ref<T>     m_ref;
+            lref<T>    m_ref;
             hal::color m_old;
         };
 
@@ -71,7 +114,7 @@ namespace hal
         class target
         {
         public:
-            target(ref<T> obj, target_texture& tex)
+            target(lref<T> obj, target_texture& tex)
                 : m_ref { obj }
             {
                 set(tex);
@@ -88,7 +131,7 @@ namespace hal
             }
 
         private:
-            ref<T> m_ref;
+            lref<T> m_ref;
         };
     }
 }

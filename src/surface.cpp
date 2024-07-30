@@ -5,7 +5,7 @@
 
 #include <SDL_image.h>
 
-#include <halcyon/utility/locks.hpp>
+#include <halcyon/utility/guard.hpp>
 
 using namespace hal;
 
@@ -201,7 +201,7 @@ Uint32 const_pixel_reference::get_mapped() const
 {
     Uint32 ret { 0 };
 
-    if constexpr (compile_settings::byte_order == hal::byte_order::lil_endian)
+    if constexpr (compile_settings::endianness == endian::lil)
     {
         std::memcpy(&ret, m_ptr, m_fmt->BytesPerPixel);
     }
@@ -229,7 +229,7 @@ void pixel_reference::color(struct color c)
 
 void pixel_reference::set_mapped(Uint32 mapped)
 {
-    if constexpr (compile_settings::byte_order == byte_order::lil_endian)
+    if constexpr (compile_settings::endianness == endian::lil)
     {
         std::memcpy(m_ptr, &mapped, m_fmt->BytesPerPixel);
     }
@@ -246,9 +246,9 @@ void pixel_reference::set_mapped(Uint32 mapped)
 void blitter::operator()()
 {
     HAL_ASSERT_VITAL(::SDL_BlitScaled(
-                         m_this->get(),
+                         m_this.get(),
                          m_src.pos.x == unset_pos<src_t>() ? nullptr : reinterpret_cast<const SDL_Rect*>(m_src.addr()),
-                         m_pass->get(),
+                         m_pass.get(),
                          m_dst.pos.x == unset_pos<dst_t>() ? nullptr : reinterpret_cast<SDL_Rect*>(m_dst.addr()))
             == 0,
         debug::last_error());
@@ -259,9 +259,9 @@ void blitter::operator()(HAL_TAG_NAME(keep_dst)) const
     pixel::rect copy { m_dst };
 
     HAL_ASSERT_VITAL(::SDL_BlitScaled(
-                         m_this->get(),
+                         m_this.get(),
                          m_src.pos.x == unset_pos<src_t>() ? nullptr : m_src.addr(),
-                         m_pass->get(),
+                         m_pass.get(),
                          m_dst.pos.x == unset_pos<dst_t>() ? nullptr : copy.addr())
             == 0,
         debug::last_error());

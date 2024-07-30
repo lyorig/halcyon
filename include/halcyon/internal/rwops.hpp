@@ -1,15 +1,14 @@
 #pragma once
 
+#include <filesystem>
 #include <span>
 
 #include <SDL_rwops.h>
 
 #include <halcyon/internal/raii_object.hpp>
 
-#include <halcyon/utility/concepts.hpp>
+#include <halcyon/utility/metaprogramming.hpp>
 #include <halcyon/utility/pass_key.hpp>
-
-struct SDL_Surface;
 
 namespace hal
 {
@@ -35,14 +34,18 @@ namespace hal
     class accessor : public detail::rwops
     {
     public:
-        // Access a file.
+        // File accessors:
+
         accessor(const char* path);
         accessor(std::nullptr_t) = delete;
 
-        // Access a file.
         accessor(std::string_view path);
+        accessor(const std::string& path);
 
-        // Access a buffer.
+        accessor(const std::filesystem::path& path);
+
+        // Memory accessors:
+
         template <std::size_t Size>
         accessor(std::span<const std::byte, Size> buffer)
             : rwops { ::SDL_RWFromConstMem(buffer.data(), buffer.size_bytes()) }
@@ -58,6 +61,12 @@ namespace hal
         SDL_RWops* use(pass_key<image::context>); // Image loading.
     };
 
+    namespace meta
+    {
+        template <typename T>
+        concept buffer = requires(const T& x) { std::begin(x); std::end(x); std::size(x); std::data(x); };
+    }
+
     // Shorthand for creating a readable byte span from a compatible array-like object.
     template <meta::buffer T>
     auto as_bytes(const T& buffer)
@@ -69,14 +78,18 @@ namespace hal
     class outputter : public detail::rwops
     {
     public:
-        // Output to a file.
+        // File outputters:
+
         outputter(const char* path);
         outputter(std::nullptr_t) = delete;
 
-        // Output to a file.
         outputter(std::string_view path);
+        outputter(const std::string& path);
 
-        // Output to an array.
+        outputter(const std::filesystem::path& path);
+
+        // Memory outputters:
+
         template <std::size_t Size>
         outputter(std::span<std::byte, Size> buffer)
             : rwops { ::SDL_RWFromMem(buffer.data(), buffer.size_bytes()) }

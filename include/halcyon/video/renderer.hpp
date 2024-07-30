@@ -46,7 +46,7 @@ namespace hal
     class renderer : public detail::raii_object<SDL_Renderer, &::SDL_DestroyRenderer>
     {
     public:
-        enum class flags : u8
+        enum class flag : u8
         {
             none           = 0,
             software       = SDL_RENDERER_SOFTWARE,     // Require a software renderer.
@@ -55,11 +55,11 @@ namespace hal
             target_texture = SDL_RENDERER_TARGETTEXTURE // Require support for rendering to a target texture.
         };
 
-        using flag_bitmask = enum_bitmask<flags, u32>;
+        using flag_bitmask = enum_bitmask<flag>;
 
         renderer() = default;
 
-        renderer(ref<window> wnd, flag_bitmask f = {});
+        renderer(lref<const window> wnd, flag_bitmask f = {});
 
         // Clear (fill) the render target with the current draw color.
         void clear();
@@ -76,6 +76,8 @@ namespace hal
         // Outline a rectangle with the current color.
         void draw(coord::rect area);
 
+        [[nodiscard]] copyer draw(ref<const texture> tx);
+
         void fill(coord::rect area);
         void fill(std::span<const coord::rect> areas);
         void fill();
@@ -84,6 +86,13 @@ namespace hal
         void target(ref<target_texture> tx);
         void reset_target();
 
+        // Read pixels from the rendering target.
+        surface read_pixels(pixel::format fmt) const;
+
+        // Read pixels from an area of the rendering target.
+        surface read_pixels(pixel::rect area, pixel::format fmt) const;
+
+        // Get/set the color used for draw/fill operations.
         hal::color color() const;
         void       color(hal::color clr);
 
@@ -100,16 +109,18 @@ namespace hal
         info::sdl::renderer info() const;
 
         // Texture creation functions.
-        [[nodiscard]] static_texture    make_static_texture(ref<const surface> surf) &;
-        [[nodiscard]] target_texture    make_target_texture(pixel::point size) &;
-        [[nodiscard]] streaming_texture make_streaming_texture(pixel::point size) &;
+        [[nodiscard]] static_texture make_static_texture(ref<const surface> surf) const&;
+        [[nodiscard]] static_texture make_static_texture(ref<const surface> surf) const&& = delete;
 
-        // Render a texture via a builder.
-        [[nodiscard]] copyer render(ref<const texture> tex);
+        [[nodiscard]] target_texture make_target_texture(pixel::point size, pixel::format) const&;
+        [[nodiscard]] target_texture make_target_texture(pixel::point size, pixel::format) const&& = delete;
+
+        [[nodiscard]] streaming_texture make_streaming_texture(pixel::point size, pixel::format fmt) const&;
+        [[nodiscard]] streaming_texture make_streaming_texture(pixel::point size, pixel::format fmt) const&& = delete;
 
     private:
         // Helper for setting the render target.
-        void internal_target(SDL_Texture* target);
+        void common_target(SDL_Texture* target);
     };
 
     namespace info

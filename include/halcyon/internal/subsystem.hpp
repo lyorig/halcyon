@@ -1,7 +1,5 @@
 #pragma once
 
-#include <cstdint>
-
 #include <SDL.h>
 
 #include <halcyon/debug.hpp>
@@ -9,6 +7,9 @@
 #include <halcyon/types/numeric.hpp>
 
 #include <halcyon/utility/pass_key.hpp>
+
+// internal/subsystem.hpp:
+// SDL subsystem proxies and RAII managers.
 
 namespace hal
 {
@@ -71,19 +72,19 @@ namespace hal
                 : subsystem<S> { pass_key<subinit<S>> {} }
             {
                 HAL_WARN_IF(initialized(), to_string(S), " subsystem is already initialized");
-                HAL_ASSERT_VITAL(::SDL_InitSubSystem(static_cast<std::uint32_t>(S)) == 0, debug::last_error());
+                HAL_ASSERT_VITAL(::SDL_InitSubSystem(static_cast<Uint32>(S)) == 0, debug::last_error());
                 HAL_PRINT(debug::severity::init, to_string(S), " subsystem initialized");
             }
 
             ~subinit()
             {
-                ::SDL_QuitSubSystem(static_cast<std::uint32_t>(S));
+                ::SDL_QuitSubSystem(static_cast<Uint32>(S));
                 HAL_PRINT(to_string(S), " subsystem destroyed");
             }
 
             static bool initialized()
             {
-                return ::SDL_WasInit(static_cast<std::uint32_t>(S)) == static_cast<std::uint32_t>(S);
+                return ::SDL_WasInit(static_cast<Uint32>(S)) == static_cast<Uint32>(S);
             }
         };
     }
@@ -101,6 +102,42 @@ namespace hal
         using video  = detail::subinit<detail::system::video>;
         using events = detail::subinit<detail::system::events>;
     }
+
+    // All this does is ensure that const references aren't bound to rvalues.
+    template <typename T>
+    class sysref
+    {
+    public:
+        sysref(T& obj)
+            : m_obj { obj }
+        {
+        }
+
+        sysref(T&&) = delete;
+
+        T& operator()()
+        {
+            return m_obj;
+        }
+
+        const T& operator()() const
+        {
+            return m_obj;
+        }
+
+        T* operator->()
+        {
+            return &m_obj;
+        }
+
+        const T* operator->() const
+        {
+            return &m_obj;
+        }
+
+    private:
+        T& m_obj;
+    };
 
     namespace compile_settings
     {

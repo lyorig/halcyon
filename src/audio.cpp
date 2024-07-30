@@ -62,12 +62,12 @@ proxy::audio::subsystem(pass_key<hal::system::audio>)
 {
 }
 
-audio::builder::device proxy::audio::build_device() &
+audio::builder::device proxy::audio::build_device() const&
 {
     return *this;
 }
 
-audio::stream proxy::audio::make_stream(hal::audio::config src, hal::audio::config dst) &
+audio::stream proxy::audio::make_stream(hal::audio::config src, hal::audio::config dst) const&
 {
     return { *this, src, dst };
 }

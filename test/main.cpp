@@ -1,3 +1,5 @@
+#include <cstdlib>
+
 #include <halcyon/audio.hpp>
 #include <halcyon/video.hpp>
 
@@ -27,7 +29,7 @@ namespace test
         hal::context       ctx;
         hal::system::video vid { ctx };
 
-        hal::window wnd { vid.make_window("HalTest: Window resize", { 640, 480 }, { hal::window::flags::hidden }) };
+        hal::window wnd { vid.make_window("HalTest: Window resize", { 640, 480 }, { hal::window::flag::hidden }) };
 
         hal::event::holder e;
 
@@ -69,7 +71,7 @@ namespace test
 
         HAL_ASSERT(hal::system::video::initialized(), "Video should report initialization by now");
 
-        hal::window   wnd { vid.make_window("HalTest: Basic init", { 640, 480 }, { hal::window::flags::hidden }) };
+        hal::window   wnd { vid.make_window("HalTest: Basic init", { 640, 480 }, { hal::window::flag::hidden }) };
         hal::renderer rnd { wnd.make_renderer() };
 
         hal::event::holder e;
@@ -290,7 +292,7 @@ namespace test
         // Failure should occur here.
         const hal::surface s { ictx.load(hal::as_bytes(data)) };
 
-        return EXIT_SUCCESS;
+        return EXIT_FAILURE;
     }
 
     // Drawing a null texture.
@@ -300,13 +302,13 @@ namespace test
         hal::context       ctx;
         hal::system::video vid { ctx };
 
-        hal::window   wnd { vid.make_window("HalTest: Invalid texture", { 640, 480 }, { hal::window::flags::hidden }) };
+        hal::window   wnd { vid.make_window("HalTest: Invalid texture", { 640, 480 }, { hal::window::flag::hidden }) };
         hal::renderer rnd { wnd.make_renderer() };
 
         hal::static_texture tex;
 
         // Failure should occur here.
-        rnd.render(tex)();
+        rnd.draw(tex)();
 
         return EXIT_SUCCESS;
     }

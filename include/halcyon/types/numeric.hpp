@@ -22,10 +22,10 @@
 
 namespace hal
 {
-    enum class byte_order : bool
+    enum class endian : bool
     {
-        lil_endian,
-        big_endian
+        lil,
+        big
     };
 
     namespace compile_settings
@@ -41,11 +41,11 @@ namespace hal
 #endif
         };
 
-        constexpr byte_order byte_order {
+        constexpr endian endianness {
 #ifdef SDL_LIL_ENDIAN
-            byte_order::lil_endian
+            endian::lil
 #elif defined SDL_BIG_ENDIAN
-            byte_order::big_endian
+            endian::big
 #else
     #error "No byte order specified by SDL"
 #endif

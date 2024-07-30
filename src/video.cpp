@@ -11,12 +11,12 @@ proxy::display::display(pass_key<video>)
 {
 }
 
-window proxy::video::make_window(std::string_view title, pixel::point size, std::initializer_list<window::flags> flags) &
+window proxy::video::make_window(std::string_view title, pixel::point size, window::flag_bitmask flags) const&
 {
     return { *this, title, size, flags };
 }
 
-window proxy::video::make_window(std::string_view title, HAL_TAG_NAME(fullscreen)) &
+window proxy::video::make_window(std::string_view title, HAL_TAG_NAME(fullscreen)) const&
 {
     return { *this, title, tag::fullscreen };
 }

@@ -9,7 +9,11 @@ using namespace hal;
 texture::texture(SDL_Texture* ptr)
     : raii_object { ptr }
 {
-    this->blend(blend_mode::blend);
+}
+
+texture::texture(lref<const renderer> rnd, pixel::format fmt, access a, pixel::point size)
+    : texture { ::SDL_CreateTexture(rnd.get(), static_cast<Uint32>(fmt), static_cast<int>(a), size.x, size.y) }
+{
 }
 
 pixel::point texture::size() const
@@ -77,17 +81,73 @@ void texture::query(Uint32* format, int* access, int* w, int* h) const
     HAL_ASSERT_VITAL(::SDL_QueryTexture(get(), format, access, w, h) == 0, debug::last_error());
 }
 
-static_texture::static_texture(ref<renderer> rnd, ref<const surface> surf)
-    : texture { ::SDL_CreateTextureFromSurface(rnd->get(), surf->get()) }
+static_texture::static_texture(lref<const renderer> rnd, pixel::point size, pixel::format fmt)
+    : texture { rnd, fmt, access::static_, size }
 {
 }
 
-target_texture::target_texture(ref<renderer> rnd, pixel::format fmt, pixel::point size)
-    : texture { ::SDL_CreateTexture(rnd->get(), static_cast<Uint32>(fmt), SDL_TEXTUREACCESS_TARGET, size.x, size.y) }
+static_texture::static_texture(lref<const renderer> rnd, ref<const surface> surf)
+    : texture { ::SDL_CreateTextureFromSurface(rnd.get(), surf.get()) }
 {
 }
 
-streaming_texture::streaming_texture(ref<renderer> rnd, pixel::format fmt, pixel::point size)
-    : texture { ::SDL_CreateTexture(rnd->get(), static_cast<Uint32>(fmt), SDL_TEXTUREACCESS_STREAMING, size.x, size.y) }
+void static_texture::update(non_null<const std::byte> pixel_buffer, int pitch)
 {
+    common_update(nullptr, pixel_buffer, pitch);
+}
+
+void static_texture::update(non_null<const std::byte> pixel_buffer, int pitch, pixel::rect area)
+{
+    common_update(area.addr(), pixel_buffer, pitch);
+}
+
+void static_texture::update(ref<const surface> surf, pixel::point pos)
+{
+    update(surf, { pos, surf->size() });
+}
+
+void static_texture::update(ref<const surface> surf, pixel::rect area)
+{
+    HAL_ASSERT(surf->size() >= area.size, "The surface must be >= to the area");
+
+    common_update(area.addr(), surf.get()->pixels, surf.get()->pitch);
+}
+
+void static_texture::common_update(const SDL_Rect* area, non_null<const void> pixels, int pitch)
+{
+    HAL_ASSERT_VITAL(::SDL_UpdateTexture(get(), area, pixels.get(), pitch) == 0, debug::last_error());
+}
+
+target_texture::target_texture(lref<const renderer> rnd, pixel::point size, pixel::format fmt)
+    : texture { rnd, fmt, access::target, size }
+{
+}
+
+streaming_texture::streaming_texture(lref<const renderer> rnd, pixel::point size, pixel::format fmt)
+    : texture { rnd, fmt, access::streaming, size }
+{
+}
+
+streaming_texture::data streaming_texture::lock()
+{
+    return common_lock(nullptr);
+}
+
+streaming_texture::data streaming_texture::lock(pixel::rect area)
+{
+    return common_lock(area.addr());
+}
+
+streaming_texture::data streaming_texture::common_lock(const SDL_Rect* area)
+{
+    data ret;
+
+    HAL_ASSERT_VITAL(::SDL_LockTexture(get(), area, reinterpret_cast<void**>(&ret.pixels), &ret.pitch) == 0, debug::last_error());
+
+    return ret;
+}
+
+void streaming_texture::unlock()
+{
+    ::SDL_UnlockTexture(get());
 }

@@ -3,7 +3,7 @@
 #include <memory>
 #include <span>
 
-#include <halcyon/utility/concepts.hpp>
+#include <halcyon/utility/metaprogramming.hpp>
 
 namespace hal
 {
@@ -15,6 +15,12 @@ namespace hal
     public:
         constexpr buffer()
             : m_size { 0 }
+        {
+        }
+
+        constexpr buffer(std::uintptr_t sz)
+            : m_arr { std::make_unique<T[]>(sz) }
+            , m_size { sz }
         {
         }
 
@@ -61,8 +67,18 @@ namespace hal
             return begin() + size();
         }
 
+        constexpr T* data()
+        {
+            return m_arr.get();
+        }
+
+        constexpr const T* data() const
+        {
+            return m_arr.get();
+        }
+
     private:
         std::unique_ptr<T[]> m_arr;
-        std::size_t          m_size;
+        std::uintptr_t       m_size;
     };
 }

@@ -28,7 +28,7 @@ bool keyboard::state_reference::operator[](key k) const
 }
 
 keyboard::mod_state::mod_state(pass_key<authority_t>)
-    : enum_bitmask { ::SDL_GetModState() }
+    : enum_bitmask { static_cast<mod>(::SDL_GetModState()) }
 {
 }
 

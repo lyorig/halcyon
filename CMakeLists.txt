@@ -9,8 +9,8 @@ find_package(SDL2 CONFIG REQUIRED)
 find_package(SDL2_image CONFIG REQUIRED)
 find_package(SDL2_ttf CONFIG REQUIRED)
 
-option(Halcyon_BUILD_TESTS "Build HalTest.")
-option(Halcyon_BUILD_EXAMPLES "Build Halcyon Examples.")
+option(Halcyon_BUILD_TESTS "Build HalTest." OFF)
+option(Halcyon_BUILD_EXAMPLES "Build Halcyon Examples." OFF)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -26,7 +26,6 @@ set(Halcyon_SOURCES
     internal/rwops.cpp
     internal/string.cpp
     types/color.cpp
-    utility/strutil.cpp
     utility/timer.cpp
     video/display.cpp
     video/driver.cpp
@@ -71,9 +70,9 @@ if(Halcyon_BUILD_TESTS)
 
     include(CTest)
 
-    add_executable(HalTest test/main.cpp)
+    add_executable(HalTest WIN32 test/main.cpp)
 
-    target_link_libraries(HalTest PRIVATE Halcyon)
+	target_link_libraries(HalTest PUBLIC Halcyon)
 
     set(ExeName $<TARGET_FILE:HalTest>)
 
@@ -111,13 +110,14 @@ if(Halcyon_BUILD_EXAMPLES)
         safety.cpp
         events.cpp
         text_render.cpp
+		update.cpp
     )
 
     list(TRANSFORM EXAMPLE_SOURCES PREPEND examples/)
 
     foreach(FILE IN LISTS EXAMPLE_SOURCES)
         cmake_path(GET FILE STEM TGT_NAME)
-        add_executable(${TGT_NAME} ${FILE} $<TARGET_OBJECTS:Halcyon>)
+        add_executable(${TGT_NAME} WIN32 ${FILE} $<TARGET_OBJECTS:Halcyon>)
         target_link_libraries(${TGT_NAME} PRIVATE Halcyon)
         set_target_properties(${TGT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin/)
     endforeach()

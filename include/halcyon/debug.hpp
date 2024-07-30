@@ -19,6 +19,7 @@
         #include <fstream>
     #endif
 
+    #include <iomanip>
     #include <iostream>
 
     #include <halcyon/utility/printing.hpp>
@@ -37,6 +38,7 @@
 
 // Necessary include files.
 #include <string_view>
+#include <utility>
 
 namespace hal
 {
@@ -62,7 +64,7 @@ namespace hal
     class debug
     {
     public:
-        enum class severity
+        enum class severity : u8
         {
             info,
             warning,
@@ -198,10 +200,12 @@ namespace hal
     #define HAL_ASSERT_VITAL(cond, ...) \
         ::hal::debug::verify(cond, #cond, __PRETTY_FUNCTION__, __FILE_NAME__, __LINE__, __VA_ARGS__)
 
+    #define HAL_DEBUG_TIMER(init) ::hal::timer init
+
 #else
 
     #define HAL_PRINT(...) (static_cast<void>(0))
-    #define HAL_PANIC(...) std::unreachable()
+    #define HAL_PANIC(...) (std::unreachable())
 
     #define HAL_WARN(...) (static_cast<void>(0))
 
@@ -210,5 +214,7 @@ namespace hal
 
     #define HAL_ASSERT(...)             (static_cast<void>(0))
     #define HAL_ASSERT_VITAL(cond, ...) (static_cast<void>(cond))
+
+    #define HAL_DEBUG_TIMER(...) (static_cast<void>(0))
 
 #endif

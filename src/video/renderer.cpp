@@ -5,13 +5,15 @@
 #include <halcyon/video/texture.hpp>
 #include <halcyon/video/window.hpp>
 
-#include <halcyon/utility/locks.hpp>
+#include <halcyon/utility/guard.hpp>
 
 using namespace hal;
 
-renderer::renderer(ref<class window> wnd, flag_bitmask f)
-    : raii_object { ::SDL_CreateRenderer(wnd->get(), -1, f.mask()) }
+renderer::renderer(lref<const class window> wnd, flag_bitmask f)
+    : raii_object { ::SDL_CreateRenderer(wnd.get(), -1, f.mask()) }
 {
+    clear();
+
     HAL_PRINT("Created renderer for \"", wnd->title(), "\" ");
 }
 
@@ -41,6 +43,11 @@ void renderer::draw(coord::rect area)
     HAL_ASSERT_VITAL(::SDL_RenderDrawRectF(get(), area.addr()) == 0, debug::last_error());
 }
 
+copyer renderer::draw(ref<const texture> tx)
+{
+    return { *this, tx };
+}
+
 void renderer::fill(coord::rect area)
 {
     HAL_ASSERT_VITAL(::SDL_RenderFillRectF(get(), area.addr()) == 0, debug::last_error());
@@ -58,12 +65,30 @@ void renderer::fill()
 
 void renderer::target(ref<target_texture> tx)
 {
-    this->internal_target(tx->get());
+    this->common_target(tx.get());
 }
 
 void renderer::reset_target()
 {
-    this->internal_target(nullptr);
+    this->common_target(nullptr);
+}
+
+surface renderer::read_pixels(pixel::format fmt) const
+{
+    hal::surface surf { size(), fmt };
+
+    HAL_ASSERT_VITAL(::SDL_RenderReadPixels(get(), nullptr, static_cast<Uint32>(fmt), surf.get()->pixels, surf.get()->pitch) == 0, debug::last_error());
+
+    return surf;
+}
+
+surface renderer::read_pixels(pixel::rect area, pixel::format fmt) const
+{
+    hal::surface surf { area.size, fmt };
+
+    HAL_ASSERT_VITAL(::SDL_RenderReadPixels(get(), area.addr(), static_cast<Uint32>(fmt), surf.get()->pixels, surf.get()->pitch) == 0, debug::last_error());
+
+    return surf;
 }
 
 color renderer::color() const
@@ -130,27 +155,22 @@ info::sdl::renderer renderer::info() const
     return { *this, pass_key<renderer> {} };
 }
 
-static_texture renderer::make_static_texture(ref<const surface> surf) &
+static_texture renderer::make_static_texture(ref<const surface> surf) const&
 {
     return { *this, surf };
 }
 
-target_texture renderer::make_target_texture(pixel::point size) &
+target_texture renderer::make_target_texture(pixel::point size, pixel::format fmt) const&
 {
-    return { *this, window()->pixel_format(), size };
+    return { *this, size, fmt };
 }
 
-streaming_texture renderer::make_streaming_texture(pixel::point size) &
+streaming_texture renderer::make_streaming_texture(pixel::point size, pixel::format fmt) const&
 {
-    return { *this, window()->pixel_format(), size };
+    return { *this, size, fmt };
 }
 
-copyer renderer::render(ref<const texture> tex)
-{
-    return { *this, tex };
-}
-
-void renderer::internal_target(SDL_Texture* target)
+void renderer::common_target(SDL_Texture* target)
 {
     HAL_ASSERT_VITAL(::SDL_SetRenderTarget(get(), target) == 0, debug::last_error());
 }
@@ -159,7 +179,7 @@ void renderer::internal_target(SDL_Texture* target)
 
 info::sdl::renderer::renderer(ref<const hal::renderer> rnd, pass_key<hal::renderer>)
 {
-    HAL_ASSERT_VITAL(::SDL_GetRendererInfo(rnd->get(), static_cast<SDL_RendererInfo*>(this)) == 0, debug::last_error());
+    HAL_ASSERT_VITAL(::SDL_GetRendererInfo(rnd.get(), static_cast<SDL_RendererInfo*>(this)) == 0, debug::last_error());
 }
 
 std::string_view info::sdl::renderer::name() const
@@ -169,7 +189,7 @@ std::string_view info::sdl::renderer::name() const
 
 renderer::flag_bitmask info::sdl::renderer::flags() const
 {
-    return SDL_RendererInfo::flags;
+    return static_cast<hal::renderer::flag>(SDL_RendererInfo::flags);
 }
 
 std::span<const pixel::format> info::sdl::renderer::formats() const
@@ -241,13 +261,13 @@ copyer& copyer::outline()
 
 copyer& copyer::outline(color c)
 {
-    lock::color<renderer> _ { m_pass, c };
+    guard::color<renderer> _ { m_pass, c };
     return outline();
 }
 
 void copyer::operator()()
 {
-    HAL_ASSERT_VITAL(::SDL_RenderCopyExF(m_pass->get(), m_this->get(),
+    HAL_ASSERT_VITAL(::SDL_RenderCopyExF(m_pass.get(), m_this.get(),
                          m_src.pos.x == unset_pos<src_t>() ? nullptr : m_src.addr(),
                          m_dst.pos.x == unset_pos<dst_t>() ? nullptr : m_dst.addr(),
                          m_angle, nullptr, static_cast<SDL_RendererFlip>(m_flip))

@@ -9,13 +9,13 @@ int main(int, char*[])
 {
     static_assert(hal::meta::is_correct_main<main>);
 
-    using wf = hal::window::flags;
-    using rf = hal::renderer::flags;
+    using wf = hal::window::flag;
+    using rf = hal::renderer::flag;
 
     hal::context       ctx;
     hal::system::video vid { ctx };
 
-    hal::window   wnd { vid, "Halcyon Structure Showcase", { 640, 480 }, { wf::resizable } };
+    hal::window   wnd { vid, "Halcyon Structure Showcase", { 640, 480 }, wf::resizable };
     hal::renderer rnd { wnd, { rf::accelerated, rf::vsync } };
 
     hal::event::holder eh;
@@ -31,7 +31,7 @@ int main(int, char*[])
 
             case terminated:
                 HAL_PRINT("Program has been terminated!");
-                // intentional fallthrough
+                // intentional fallthrough...
 
             case quit_requested:
                 return EXIT_SUCCESS;

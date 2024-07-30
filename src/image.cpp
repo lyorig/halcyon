@@ -65,11 +65,11 @@ void context::save(ref<const surface> surf, save_format fmt, outputter dst) cons
     {
         using enum save_format;
     case png:
-        HAL_ASSERT_VITAL(::IMG_SavePNG_RW(surf->get(), dst.use(pass_key<context> {}), true) == 0, debug::last_error());
+        HAL_ASSERT_VITAL(::IMG_SavePNG_RW(surf.get(), dst.use(pass_key<context> {}), true) == 0, debug::last_error());
         break;
 
     case jpg:
-        HAL_ASSERT_VITAL(::IMG_SaveJPG_RW(surf->get(), dst.use(pass_key<context> {}), true, jpg_quality) == 0, debug::last_error());
+        HAL_ASSERT_VITAL(::IMG_SaveJPG_RW(surf.get(), dst.use(pass_key<context> {}), true, jpg_quality) == 0, debug::last_error());
         break;
     }
 }
@@ -108,7 +108,7 @@ load_format context::query(const accessor& src) const
 
 context::flag_bitset context::flags() const
 {
-    return ::IMG_Init(0);
+    return static_cast<init_format>(::IMG_Init(0));
 }
 
 bool context::initialized()

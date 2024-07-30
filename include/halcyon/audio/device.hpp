@@ -7,7 +7,6 @@
 #include <halcyon/internal/raii_object.hpp>
 #include <halcyon/internal/subsystem.hpp>
 
-#include <halcyon/utility/concepts.hpp>
 #include <halcyon/utility/enum_bits.hpp>
 #include <halcyon/utility/pass_key.hpp>
 
@@ -22,7 +21,8 @@ namespace hal
             class device
             {
             public:
-                device(proxy::audio& sys);
+                device(const proxy::audio& sys);
+                device(const proxy::audio&& sys) = delete;
 
                 // Choose a specific audio device.
                 device& name(std::string_view name);

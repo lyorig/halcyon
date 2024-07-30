@@ -40,8 +40,11 @@ namespace hal
         public:
             subsystem(pass_key<hal::system::audio>);
 
-            [[nodiscard]] audio::builder::device build_device() &;
-            [[nodiscard]] audio::stream          make_stream(audio::config src, audio::config dst) &;
+            [[nodiscard]] audio::builder::device build_device() const&;
+            [[nodiscard]] audio::builder::device build_device() const&& = delete;
+
+            [[nodiscard]] audio::stream make_stream(audio::config src, audio::config dst) const&;
+            [[nodiscard]] audio::stream make_stream(audio::config src, audio::config dst) const&& = delete;
 
             HAL_NO_SIZE proxy::audio_outputs outputs;
             HAL_NO_SIZE proxy::audio_inputs inputs;

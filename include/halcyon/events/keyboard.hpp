@@ -181,27 +181,26 @@ namespace hal
         {
             none = KMOD_NONE,
 
-            left_shift  = KMOD_LSHIFT,
-            right_shift = KMOD_RSHIFT,
+            shift_left  = KMOD_LSHIFT,
+            shift_right = KMOD_RSHIFT,
+            shift_both  = KMOD_SHIFT,
 
-            left_ctrl  = KMOD_LCTRL,
-            right_ctrl = KMOD_RCTRL,
+            ctrl_left  = KMOD_LCTRL,
+            ctrl_right = KMOD_RCTRL,
+            ctrl_both  = KMOD_CTRL,
 
-            left_alt  = KMOD_LALT,
-            right_alt = KMOD_RALT,
+            alt_left  = KMOD_LALT,
+            alt_right = KMOD_RALT,
+            alt_both  = KMOD_ALT,
 
-            left_gui  = KMOD_LGUI,
-            right_gui = KMOD_RGUI,
+            gui_left  = KMOD_LGUI,
+            gui_right = KMOD_RGUI,
+            gui_both  = KMOD_GUI,
 
             num_lock    = KMOD_NUM,
             caps_lock   = KMOD_CAPS,
             mode_lock   = KMOD_MODE, // What even is this?
-            scroll_lock = KMOD_SCROLL,
-
-            shift = KMOD_SHIFT,
-            ctrl  = KMOD_CTRL,
-            alt   = KMOD_ALT,
-            gui   = KMOD_GUI
+            scroll_lock = KMOD_SCROLL
         };
 
         key    to_key(button btn);
