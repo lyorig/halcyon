@@ -67,20 +67,38 @@ namespace hal
         // Present the back-buffer and clear it.
         void present();
 
+        // Drawing & filling:
+        // Each of these functions has an additional overload since
+        // creating a color guard is annoying for one-off calls.
+        // Keep in mind that the renderer stores its draw color internally,
+        // so if you plan to do multiple draw/fill operations, prefer the color guard.
+
         // Draw a single point (pixel) with the current color.
         void draw(coord::point pt);
+        void draw(coord::point pt, color c);
 
         // Draw a line with the current color.
         void draw(coord::point from, coord::point to);
+        void draw(coord::point from, coord::point to, color c);
 
         // Outline a rectangle with the current color.
         void draw(coord::rect area);
+        void draw(coord::rect area, color c);
 
+        // Draw a texture. Returns a builder-like class
         [[nodiscard]] copyer draw(ref<const texture> tx);
 
+        // Fill an area.
         void fill(coord::rect area);
+        void fill(coord::rect area, color c);
+
+        // Fill an array of areas.
         void fill(std::span<const coord::rect> areas);
+        void fill(std::span<const coord::rect> areas, color c);
+
+        // Fill the entire rendering target.
         void fill();
+        void fill(color c);
 
         // Get/set the rendering target.
         void target(ref<target_texture> tx);

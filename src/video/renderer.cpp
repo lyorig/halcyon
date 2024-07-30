@@ -33,14 +33,32 @@ void renderer::draw(coord::point pt)
     ::SDL_RenderDrawPointF(get(), pt.x, pt.y);
 }
 
+void renderer::draw(coord::point pt, struct color c)
+{
+    guard::color<renderer> _ { *this, c };
+    draw(pt);
+}
+
 void renderer::draw(coord::point from, coord::point to)
 {
     HAL_ASSERT_VITAL(::SDL_RenderDrawLineF(get(), from.x, from.y, to.x, to.y) == 0, debug::last_error());
 }
 
+void renderer::draw(coord::point from, coord::point to, struct color c)
+{
+    guard::color<renderer> _ { *this, c };
+    draw(from, to);
+}
+
 void renderer::draw(coord::rect area)
 {
     HAL_ASSERT_VITAL(::SDL_RenderDrawRectF(get(), area.addr()) == 0, debug::last_error());
+}
+
+void renderer::draw(coord::rect area, struct color c)
+{
+    guard::color<renderer> _ { *this, c };
+    draw(area);
 }
 
 copyer renderer::draw(ref<const texture> tx)
@@ -53,14 +71,32 @@ void renderer::fill(coord::rect area)
     HAL_ASSERT_VITAL(::SDL_RenderFillRectF(get(), area.addr()) == 0, debug::last_error());
 }
 
+void renderer::fill(coord::rect area, struct color c)
+{
+    guard::color<renderer> _ { *this, c };
+    fill(area);
+}
+
 void renderer::fill(std::span<const coord::rect> areas)
 {
     HAL_ASSERT_VITAL(::SDL_RenderFillRectsF(get(), areas.front().addr(), static_cast<int>(areas.size())) == 0, debug::last_error());
 }
 
+void renderer::fill(std::span<const coord::rect> areas, struct color c)
+{
+    guard::color<renderer> _ { *this, c };
+    fill(areas);
+}
+
 void renderer::fill()
 {
     HAL_ASSERT_VITAL(::SDL_RenderFillRect(get(), nullptr) == 0, debug::last_error());
+}
+
+void renderer::fill(struct color c)
+{
+    guard::color<renderer> _ { *this, c };
+    fill();
 }
 
 void renderer::target(ref<target_texture> tx)
