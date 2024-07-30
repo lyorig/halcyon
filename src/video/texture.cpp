@@ -11,7 +11,11 @@ texture::texture(SDL_Texture* ptr)
 {
 }
 
+<<<<<<< HEAD
 texture::texture(lref<const renderer> rnd, pixel::format fmt, access a, pixel::point size)
+=======
+texture::texture(clref<renderer> rnd, pixel::format fmt, access a, pixel::point size)
+>>>>>>> refs/remotes/origin/master
     : texture { ::SDL_CreateTexture(rnd.get(), static_cast<Uint32>(fmt), static_cast<int>(a), size.x, size.y) }
 {
 }
@@ -81,12 +85,20 @@ void texture::query(Uint32* format, int* access, int* w, int* h) const
     HAL_ASSERT_VITAL(::SDL_QueryTexture(get(), format, access, w, h) == 0, debug::last_error());
 }
 
+<<<<<<< HEAD
 static_texture::static_texture(lref<const renderer> rnd, pixel::point size, pixel::format fmt)
+=======
+static_texture::static_texture(clref<renderer> rnd, pixel::point size, pixel::format fmt)
+>>>>>>> refs/remotes/origin/master
     : texture { rnd, fmt, access::static_, size }
 {
 }
 
+<<<<<<< HEAD
 static_texture::static_texture(lref<const renderer> rnd, ref<const surface> surf)
+=======
+static_texture::static_texture(clref<renderer> rnd, ref<const surface> surf)
+>>>>>>> refs/remotes/origin/master
     : texture { ::SDL_CreateTextureFromSurface(rnd.get(), surf.get()) }
 {
 }
@@ -118,12 +130,20 @@ void static_texture::common_update(const SDL_Rect* area, non_null<const void> pi
     HAL_ASSERT_VITAL(::SDL_UpdateTexture(get(), area, pixels.get(), pitch) == 0, debug::last_error());
 }
 
+<<<<<<< HEAD
 target_texture::target_texture(lref<const renderer> rnd, pixel::point size, pixel::format fmt)
+=======
+target_texture::target_texture(clref<renderer> rnd, pixel::point size, pixel::format fmt)
+>>>>>>> refs/remotes/origin/master
     : texture { rnd, fmt, access::target, size }
 {
 }
 
+<<<<<<< HEAD
 streaming_texture::streaming_texture(lref<const renderer> rnd, pixel::point size, pixel::format fmt)
+=======
+streaming_texture::streaming_texture(clref<renderer> rnd, pixel::point size, pixel::format fmt)
+>>>>>>> refs/remotes/origin/master
     : texture { rnd, fmt, access::streaming, size }
 {
 }

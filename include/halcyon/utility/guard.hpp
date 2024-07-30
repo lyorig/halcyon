@@ -37,7 +37,7 @@ namespace hal
         class lock<streaming_texture>
         {
         public:
-            lock(streaming_texture& tx, streaming_texture::data& out_data)
+            lock(lref<streaming_texture> tx, streaming_texture::data& out_data)
                 : m_ref { tx }
             {
                 out_data = m_ref->lock();
