@@ -40,6 +40,8 @@
 #include <string_view>
 #include <utility>
 
+#include <halcyon/types/numeric.hpp>
+
 namespace hal
 {
     namespace compile_settings
