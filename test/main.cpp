@@ -321,6 +321,8 @@ namespace test
         hal::system::events sys { ctx };
 
         hal::event::holder eh;
+
+        // Failure should occur here.
         eh.text_input().text("amogus sus").window_id(69);
 
         return EXIT_SUCCESS;

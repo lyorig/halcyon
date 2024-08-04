@@ -17,7 +17,7 @@ namespace hal
     {
     public:
         // Initialize Halcyon with no subsystems.
-        context();
+        context() = default;
 
         context(const context&) = delete;
         context(context&&)      = delete;

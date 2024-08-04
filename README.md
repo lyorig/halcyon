@@ -62,7 +62,7 @@ Halcyon provides several macro functions for easing your debugging experience.
 
 Halcyon's debugging facilities are configured via several macros.  
 If NDEBUG is not defined, debugging is implicitly enabled in advanced mode.
-- `HAL_DEBUG_ENABLED`: Enables all debugging macros.
+- `HAL_DEBUG_YOLO`: Disables all printing & replaces assertions with std::unreachable().
 - `HAL_DEBUG_ADVANCED`: Enables time logging, and outputs to an additional file. This adds static variables to your program.
 
 # Wishlist

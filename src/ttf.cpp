@@ -57,8 +57,6 @@ ttf::context::context()
     HAL_WARN_IF(initialized(), "TTF context already exists");
 
     HAL_ASSERT_VITAL(::TTF_Init() == 0, debug::last_error());
-
-    HAL_PRINT(debug::severity::init, "TTF context initialized");
 }
 
 ttf::context::~context()
@@ -66,8 +64,6 @@ ttf::context::~context()
     HAL_ASSERT(initialized(), "TTF context not initialized at destruction");
 
     ::TTF_Quit();
-
-    HAL_PRINT("TTF context destroyed");
 }
 
 font ttf::context::load(accessor data, font::pt_t size) &

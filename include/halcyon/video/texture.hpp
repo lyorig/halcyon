@@ -19,6 +19,8 @@ namespace hal
     class texture : public detail::raii_object<SDL_Texture, &::SDL_DestroyTexture>
     {
     protected:
+        static constexpr pixel::format use_renderer_native { 0 };
+
         enum class access : u8
         {
             static_   = SDL_TEXTUREACCESS_STATIC,
@@ -60,7 +62,7 @@ namespace hal
     public:
         static_texture() = default;
 
-        static_texture(lref<const renderer> rnd, pixel::point size, pixel::format fmt);
+        static_texture(lref<const renderer> rnd, pixel::point size, pixel::format fmt = use_renderer_native);
         static_texture(lref<const renderer> rnd, ref<const surface> surf);
 
         // Update the texture with your own pixel buffer. These pixels' format
@@ -86,7 +88,7 @@ namespace hal
     public:
         target_texture() = default;
 
-        target_texture(lref<const renderer> rnd, pixel::point size, pixel::format fmt);
+        target_texture(lref<const renderer> rnd, pixel::point size, pixel::format fmt = use_renderer_native);
     };
 
     // A texture whose pixels can be accessed.
@@ -96,7 +98,7 @@ namespace hal
     public:
         streaming_texture() = default;
 
-        streaming_texture(lref<const renderer> rnd, pixel::point size, pixel::format fmt);
+        streaming_texture(lref<const renderer> rnd, pixel::point size, pixel::format fmt = use_renderer_native);
 
         struct data
         {

@@ -7,7 +7,6 @@ using namespace hal;
 window::window(sysref<const proxy::video>, std::string_view title, pixel::point size, flag_bitmask f)
     : raii_object { ::SDL_CreateWindow(title.data(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, size.x, size.y, f.mask()) }
 {
-    HAL_PRINT(debug::severity::init, "Created window \"", title, "\" [ID: ", to_printable_int(id()), ']');
 }
 
 window::window(sysref<const proxy::video> sys, std::string_view title, HAL_TAG_NAME(fullscreen))

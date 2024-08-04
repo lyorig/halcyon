@@ -13,8 +13,6 @@ renderer::renderer(lref<const class window> wnd, flag_bitmask f)
     : raii_object { ::SDL_CreateRenderer(wnd.get(), -1, f.mask()) }
 {
     clear();
-
-    HAL_PRINT("Created renderer for \"", wnd->title(), "\" ");
 }
 
 void renderer::clear()
@@ -35,7 +33,7 @@ void renderer::draw(coord::point pt)
 
 void renderer::draw(coord::point pt, struct color c)
 {
-    guard::color<renderer> _ { *this, c };
+    guard::color _ { *this, c };
     draw(pt);
 }
 
@@ -46,7 +44,7 @@ void renderer::draw(coord::point from, coord::point to)
 
 void renderer::draw(coord::point from, coord::point to, struct color c)
 {
-    guard::color<renderer> _ { *this, c };
+    guard::color _ { *this, c };
     draw(from, to);
 }
 
@@ -57,7 +55,7 @@ void renderer::draw(coord::rect area)
 
 void renderer::draw(coord::rect area, struct color c)
 {
-    guard::color<renderer> _ { *this, c };
+    guard::color _ { *this, c };
     draw(area);
 }
 
@@ -73,7 +71,7 @@ void renderer::fill(coord::rect area)
 
 void renderer::fill(coord::rect area, struct color c)
 {
-    guard::color<renderer> _ { *this, c };
+    guard::color _ { *this, c };
     fill(area);
 }
 
@@ -84,7 +82,7 @@ void renderer::fill(std::span<const coord::rect> areas)
 
 void renderer::fill(std::span<const coord::rect> areas, struct color c)
 {
-    guard::color<renderer> _ { *this, c };
+    guard::color _ { *this, c };
     fill(areas);
 }
 
@@ -95,7 +93,7 @@ void renderer::fill()
 
 void renderer::fill(struct color c)
 {
-    guard::color<renderer> _ { *this, c };
+    guard::color _ { *this, c };
     fill();
 }
 
@@ -109,18 +107,20 @@ void renderer::reset_target()
     this->common_target(nullptr);
 }
 
-surface renderer::read_pixels(pixel::format fmt) const
+surface renderer::read_pixels() const
 {
-    hal::surface surf { size(), fmt };
+    pixel::format fmt { window()->pixel_format() };
+    hal::surface  surf { size(), fmt };
 
     HAL_ASSERT_VITAL(::SDL_RenderReadPixels(get(), nullptr, static_cast<Uint32>(fmt), surf.get()->pixels, surf.get()->pitch) == 0, debug::last_error());
 
     return surf;
 }
 
-surface renderer::read_pixels(pixel::rect area, pixel::format fmt) const
+surface renderer::read_pixels(pixel::rect area) const
 {
-    hal::surface surf { area.size, fmt };
+    pixel::format fmt { window()->pixel_format() };
+    hal::surface  surf { area.size, fmt };
 
     HAL_ASSERT_VITAL(::SDL_RenderReadPixels(get(), area.addr(), static_cast<Uint32>(fmt), surf.get()->pixels, surf.get()->pitch) == 0, debug::last_error());
 
@@ -297,7 +297,7 @@ copyer& copyer::outline()
 
 copyer& copyer::outline(color c)
 {
-    guard::color<renderer> _ { m_pass, c };
+    guard::color _ { m_pass, c };
     return outline();
 }
 

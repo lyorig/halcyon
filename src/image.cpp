@@ -7,8 +7,6 @@ context::context(flag_bitset formats)
     HAL_WARN_IF(initialized(), "Image context already exists");
 
     HAL_ASSERT_VITAL(::IMG_Init(formats.mask()) == formats.mask(), ::IMG_GetError());
-
-    HAL_PRINT(debug::severity::init, "Initialized image context [flags: 0x", std::hex, formats.mask(), ']');
 }
 
 context::~context()
@@ -16,8 +14,6 @@ context::~context()
     HAL_ASSERT(initialized(), "Image context not initialized at destruction");
 
     ::IMG_Quit();
-
-    HAL_PRINT("Destroyed image context");
 }
 
 hal::surface context::load(accessor src) const

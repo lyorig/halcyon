@@ -119,7 +119,7 @@ void proxy::events::push(const event::holder& eh)
 {
     eh.get(pass_key<subsystem> {}).common.timestamp = ::SDL_GetTicks();
 
-#ifdef HAL_DEBUG_ENABLED
+#ifndef HAL_DEBUG_DISABLED
     const auto ret =
 #endif
         ::SDL_PushEvent(&eh.get(pass_key<subsystem> {}));

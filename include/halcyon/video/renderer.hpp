@@ -104,16 +104,18 @@ namespace hal
         void target(ref<target_texture> tx);
         void reset_target();
 
-        // Read pixels from the rendering target.
-        surface read_pixels(pixel::format fmt) const;
+        surface read_pixels() const;
 
         // Read pixels from an area of the rendering target.
-        surface read_pixels(pixel::rect area, pixel::format fmt) const;
+        // 'fmt' must be the renderer's primary pixel format.
+        // Get it via renderer::info().formats().front().
+        surface read_pixels(pixel::rect area) const;
 
         // Get/set the color used for draw/fill operations.
         hal::color color() const;
         void       color(hal::color clr);
 
+        // Get/set the blend mode used foor draw/fill operations.
         blend_mode blend() const;
         void       blend(blend_mode bm);
 

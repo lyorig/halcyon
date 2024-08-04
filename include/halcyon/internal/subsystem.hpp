@@ -72,14 +72,13 @@ namespace hal
                 : subsystem<S> { pass_key<subinit<S>> {} }
             {
                 HAL_WARN_IF(initialized(), to_string(S), " subsystem is already initialized");
+
                 HAL_ASSERT_VITAL(::SDL_InitSubSystem(static_cast<Uint32>(S)) == 0, debug::last_error());
-                HAL_PRINT(debug::severity::init, to_string(S), " subsystem initialized");
             }
 
             ~subinit()
             {
                 ::SDL_QuitSubSystem(static_cast<Uint32>(S));
-                HAL_PRINT(to_string(S), " subsystem destroyed");
             }
 
             static bool initialized()

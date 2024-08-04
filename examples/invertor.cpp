@@ -22,16 +22,6 @@ int main(int argc, char* argv[])
     hal::image::context ctx { hal::image::init_format::png };
     hal::surface        surf { ctx.load(argv[1]) };
 
-    if (!surf.valid())
-    {
-        hal::message_box::builder()
-            .title(hal::string_from_pack("Could not load ", argv[1]))
-            .body(hal::debug::last_error())
-            .type(hal::message_box::type::error)();
-
-        return EXIT_FAILURE;
-    }
-
     const hal::pixel::point size { surf.size() };
 
     for (hal::pixel::point i { 0, 0 }; i.y < size.y; ++i.y)

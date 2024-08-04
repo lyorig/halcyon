@@ -1,8 +1,7 @@
 #pragma once
 
-#include <halcyon/internal/raii_object.hpp>
-
-#include <halcyon/video/texture.hpp>
+#include "halcyon/video/texture.hpp"
+#include <halcyon/video/renderer.hpp>
 
 // utility/guard.hpp:
 // RAII-based guards for various uses.
@@ -18,32 +17,21 @@ namespace hal
         class lock
         {
         public:
-            lock(lref<T> obj)
+            lock(T& obj)
                 : m_ref { obj }
             {
                 m_ref->lock();
             }
 
-            ~lock()
-            {
-                m_ref->unlock();
-            }
-
-        private:
-            lref<T> m_ref;
-        };
-
-        template <>
-        class lock<streaming_texture>
-        {
-        public:
             lock(lref<streaming_texture> tx, streaming_texture::data& out_data)
+                requires std::is_same_v<T, streaming_texture>
                 : m_ref { tx }
             {
                 out_data = m_ref->lock();
             }
 
             lock(lref<streaming_texture> tx, pixel::rect area, streaming_texture::data& out_data)
+                requires std::is_same_v<T, streaming_texture>
                 : m_ref { tx }
             {
                 out_data = m_ref->lock(area);
@@ -55,16 +43,16 @@ namespace hal
             }
 
         private:
-            lref<streaming_texture> m_ref;
+            lref<T> m_ref;
         };
 
         template <typename T>
         class blend
         {
         public:
-            blend(lref<T> obj, blend_mode bm)
+            blend(T& obj, blend_mode bm)
                 : m_ref { obj }
-                , m_old { obj->blend() }
+                , m_old { m_ref->blend() }
             {
                 set(bm);
             }
@@ -85,53 +73,56 @@ namespace hal
         };
 
         template <typename T>
-        class color
+        class color_mod
         {
         public:
-            color(lref<T> obj, hal::color c)
+            color_mod(T& obj, color c)
                 : m_ref { obj }
-                , m_old { obj->color() }
+                , m_old { m_ref->color_mod() }
             {
                 set(c);
             }
 
-            ~color()
+            ~color_mod()
             {
-                set(m_old);
+                m_ref->color_mod(m_old);
             }
 
-            void set(hal::color c)
+            void set(color c)
             {
-                m_ref->color(c);
-            }
-
-        private:
-            lref<T>    m_ref;
-            hal::color m_old;
-        };
-
-        template <typename T>
-        class target
-        {
-        public:
-            target(lref<T> obj, target_texture& tex)
-                : m_ref { obj }
-            {
-                set(tex);
-            }
-
-            ~target()
-            {
-                m_ref->reset_target();
-            }
-
-            void set(target_texture& c)
-            {
-                m_ref->target(c);
+                m_ref->color_mod(c);
             }
 
         private:
             lref<T> m_ref;
+            color   m_old;
+        };
+
+        class color
+        {
+        public:
+            color(lref<renderer> obj, hal::color c);
+
+            ~color();
+
+            void set(hal::color c);
+
+        private:
+            lref<renderer> m_ref;
+            hal::color     m_old;
+        };
+
+        class target
+        {
+        public:
+            target(lref<renderer> obj, ref<target_texture> tx);
+
+            ~target();
+
+            void set(ref<target_texture> tx);
+
+        private:
+            lref<renderer> m_ref;
         };
     }
 }

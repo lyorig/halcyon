@@ -8,3 +8,6 @@ bin/*
 
 .DS_Store
 .clangd
+
+*.sh
+*.bat
