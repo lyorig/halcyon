@@ -190,7 +190,7 @@ namespace hal
         }
 
         // Comparisons.
-        constexpr std::strong_ordering operator<=>(const point& cmp) const = default;
+        constexpr auto operator<=>(const point& cmp) const = default;
 
         // Conversions.
         template <meta::arithmetic Convert>

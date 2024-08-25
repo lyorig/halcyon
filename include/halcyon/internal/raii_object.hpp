@@ -77,6 +77,7 @@ namespace hal
         {
         }
 
+        // Think MSVC had an issue with this once.
         ref(ref<std::remove_const_t<T>> r)
             requires std::is_const_v<T>
             : m_ptr { r.get() }

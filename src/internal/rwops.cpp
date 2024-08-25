@@ -9,7 +9,7 @@ using namespace hal;
 namespace
 {
     // If filesystem paths are narrow, don't bother.
-    const char* path_cvt(const char* path)
+    [[maybe_unused]] const char* path_cvt(const char* path)
     {
         return path;
     }
@@ -33,7 +33,7 @@ namespace
     };
 
     // Otherwise, do indeed bother, and do it in the simplest way possible.
-    wchar_cvt path_cvt(const wchar_t* path)
+    [[maybe_unused]] wchar_cvt path_cvt(const wchar_t* path)
     {
         return path;
     }

@@ -47,7 +47,8 @@ namespace test
 
         if (e.window().kind() != hal::event::window::type::size_changed)
         {
-            HAL_PRINT("HalTest: Window event type mismatch (desired resized, actually ", hal::to_string(e.window().kind()), ')');
+            HAL_PRINT("HalTest: Window event type mismatch (desired resized, actually ",
+                hal::to_string(e.window().kind()), ')');
             return EXIT_FAILURE;
         }
 
@@ -250,14 +251,11 @@ namespace test
 
         using list = hal::meta::type_list<first_t, second_t>;
 
-        static_assert(std::is_same_v<first_t, list::at<0>>
-            && std::is_same_v<second_t, list::at<1>>);
+        static_assert(std::is_same_v<first_t, list::at<0>> && std::is_same_v<second_t, list::at<1>>);
 
         using info = hal::meta::func_info<ret_t(first_t, second_t)>;
 
-        static_assert(std::is_same_v<ret_t, info::return_type>
-            && std::is_same_v<first_t, info::args::at<0>>
-            && std::is_same_v<second_t, info::args::at<1>>);
+        static_assert(std::is_same_v<ret_t, info::return_type> && std::is_same_v<first_t, info::args::at<0>> && std::is_same_v<second_t, info::args::at<1>>);
 
         return EXIT_SUCCESS;
     }
@@ -327,14 +325,13 @@ namespace test
 
         return EXIT_SUCCESS;
     }
-}
+} // namespace test
 
 int main(int argc, char* argv[])
 {
     static_assert(hal::compile_settings::debug_enabled, "HalTest requires debug mode to be enabled");
 
-    constexpr std::pair<std::string_view, hal::func_ptr<int>> tests[] {
-        { "--assert-fail", test::assert_fail },
+    constexpr std::pair<std::string_view, hal::func_ptr<int>> tests[] { { "--assert-fail", test::assert_fail },
         { "--window-resize", test::window_resize },
         { "--basic-init", test::basic_init },
         { "--clipboard", test::clipboard },
@@ -350,8 +347,7 @@ int main(int argc, char* argv[])
         { "--audio-init", test::audio_init },
         { "--invalid-buffer", test::invalid_buffer },
         { "--invalid-texture", test::invalid_texture },
-        { "--invalid-event", test::invalid_event }
-    };
+        { "--invalid-event", test::invalid_event } };
 
     if (argc == 1)
     {

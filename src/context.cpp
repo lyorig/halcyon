@@ -4,7 +4,7 @@
 
 using namespace hal;
 
-std::string_view hal::platform()
+const char* hal::platform()
 {
     return ::SDL_GetPlatform();
 }

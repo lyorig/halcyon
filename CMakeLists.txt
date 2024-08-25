@@ -17,9 +17,6 @@ if (NOT CMAKE_BUILD_TYPE MATCHES Debug)
 	set(Halcyon_BUILD_TESTS OFF)
 endif()
 
-set(CMAKE_CXX_STANDARD 23)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
 # Sources.
 set(Halcyon_SOURCES
     audio/device.cpp
@@ -56,6 +53,16 @@ list(TRANSFORM Halcyon_SOURCES PREPEND src/)
 add_library(Halcyon)
 add_library(Halcyon::Halcyon ALIAS Halcyon)
 
+target_compile_features(Halcyon PUBLIC cxx_std_23)
+
+if (MSVC)
+	set(WarningFlags /Wall)
+else()
+	set(WarningFlags -Wall -Wpedantic)
+endif()
+
+target_compile_options(Halcyon PRIVATE ${WarningFlags})
+
 target_include_directories(Halcyon PUBLIC include/)
 
 target_sources(Halcyon PRIVATE
@@ -63,10 +70,11 @@ target_sources(Halcyon PRIVATE
 )
 
 target_link_libraries(Halcyon PUBLIC
-    SDL2::SDL2main
-    SDL2::SDL2
-    SDL2_image::SDL2_image
-    SDL2_ttf::SDL2_ttf)
+    $<TARGET_NAME_IF_EXISTS:SDL2::SDL2main>
+    $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>
+    $<IF:$<TARGET_EXISTS:SDL2_image::SDL2_image>,SDL2_image::SDL2_image,SDL2_image::SDL2_image-static>
+    $<IF:$<TARGET_EXISTS:SDL2_ttf::SDL2_ttf>,SDL2_ttf::SDL2_ttf,SDL2_ttf::SDL2_ttf-static>
+)
 
 # Okay, that's it for the library.
 

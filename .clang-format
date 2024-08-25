@@ -7,8 +7,11 @@ NamespaceIndentation: All
 IndentPPDirectives: BeforeHash
 
 BreakBeforeBraces: Allman
+PointerAlignment: Left
 
 AlignConsecutiveDeclarations: Consecutive
 AlignConsecutiveAssignments: Consecutive
 AlignConsecutiveMacros: Consecutive
 AlignTrailingComments: true
+
+FixNamespaceComments: false
