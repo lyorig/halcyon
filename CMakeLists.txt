@@ -9,12 +9,32 @@ find_package(SDL2 CONFIG REQUIRED)
 find_package(SDL2_image CONFIG REQUIRED)
 find_package(SDL2_ttf CONFIG REQUIRED)
 
-option(Halcyon_BUILD_TESTS "Build HalTest.")
-option(Halcyon_BUILD_EXAMPLES "Build Halcyon Examples.")
+option(BUILD_SHARED_LIBS
+	"Build Halcyon as a shared library (.so/.dylib/.dll)."
+	OFF
+)
 
-# Tests need debug mode.
-if (NOT CMAKE_BUILD_TYPE MATCHES Debug)
-	set(Halcyon_BUILD_TESTS OFF)
+option(Halcyon_STATIC_LINK
+	"Link SDL2 and its extensions statically."
+	OFF
+)
+
+option(Halcyon_BUILD_TESTS
+	"Build the test executable (in the test/ directory) for use with CTest."
+	OFF
+)
+
+option(Halcyon_BUILD_EXAMPLES
+	"Build examples (in the examples/ directory)."
+	OFF
+)
+
+if (BUILD_SHARED_LIBS)
+	message("Halcyon: Enabled building as shared library.")
+endif()
+
+if (Halcyon_STATIC_LINK)
+	message("Halcyon: Enabled SDL2 static linking.")
 endif()
 
 # Sources.
@@ -61,7 +81,8 @@ else()
 	set(WarningFlags -Wall -Wpedantic)
 endif()
 
-target_compile_options(Halcyon PRIVATE ${WarningFlags})
+# Might as well add these flags to everything.
+add_compile_options(${WarningFlags})
 
 target_include_directories(Halcyon PUBLIC include/)
 
@@ -71,16 +92,16 @@ target_sources(Halcyon PRIVATE
 
 target_link_libraries(Halcyon PUBLIC
     $<TARGET_NAME_IF_EXISTS:SDL2::SDL2main>
-    $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>
-    $<IF:$<TARGET_EXISTS:SDL2_image::SDL2_image>,SDL2_image::SDL2_image,SDL2_image::SDL2_image-static>
-    $<IF:$<TARGET_EXISTS:SDL2_ttf::SDL2_ttf>,SDL2_ttf::SDL2_ttf,SDL2_ttf::SDL2_ttf-static>
+	$<IF:$<BOOL:${Halcyon_STATIC_LINK}>,SDL2::SDL2-static,SDL2::SDL2>
+    $<IF:$<BOOL:${Halcyon_STATIC_LINK}>,SDL2_image::SDL2_image-static,SDL2_image::SDL2_image>
+    $<IF:$<BOOL:${Halcyon_STATIC_LINK}>,SDL2_ttf::SDL2_ttf-static,SDL2_ttf::SDL2_ttf>
 )
 
 # Okay, that's it for the library.
 
 # Testing.
 if(Halcyon_BUILD_TESTS)
-    message("Halcyon: Enabled HalTest.")
+    message("Halcyon: Enabled tests.")
 
     include(CTest)
 
@@ -131,8 +152,8 @@ if(Halcyon_BUILD_EXAMPLES)
 
     foreach(FILE IN LISTS EXAMPLE_SOURCES)
         cmake_path(GET FILE STEM TGT_NAME)
-        add_executable(${TGT_NAME} WIN32 ${FILE} $<TARGET_OBJECTS:Halcyon>)
-        target_link_libraries(${TGT_NAME} PRIVATE Halcyon)
+        add_executable(${TGT_NAME} WIN32 ${FILE})
+		target_link_libraries(${TGT_NAME} PRIVATE Halcyon::Halcyon)
         set_target_properties(${TGT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin/)
     endforeach()
 endif()
