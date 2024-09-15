@@ -6,7 +6,7 @@
 // Debugging functionality is configured as such:
 //  - HAL_DEBUG_ENABLED enables debugging.
 //  - HAL_DEBUG_ADVANCED additionally provides timestamps and logs to an output file.
-//  - if NDEBUG is defined, both of the aforementioned macros are implicitly defined as well.
+//  - if NDEBUG is defined, HAL_DEBUG_ENABLED gets implicitly enabled as well.
 
 #ifndef NDEBUG
     #define HAL_DEBUG_ENABLED

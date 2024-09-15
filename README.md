@@ -4,7 +4,7 @@ Performance is the main priority here, but work has also been put into making su
 Namespaces are not cluttered, everything is neatly organized - proper C++ design, plain and simple.  
 
 # Installation
-Halcyon is included into your project via CMake (or, experimentally, Meson).
+Halcyon is included into your project via CMake.
 1. Clone the repository into your project directory.
 > [!CAUTION]
 Do a shallow clone, as there was a time when actual MP3 and WAV files were stored here. I'll get around to removing these commits from the history eventually.
@@ -13,8 +13,7 @@ Do a shallow clone, as there was a time when actual MP3 and WAV files were store
 
 # Usage
 Halcyon wraps SDL with several concepts:
-- **Context:** A "top-level" class that manages a library's (de)initialization, i.e. `SDL/IMG/TTF_Init`.
-- **System:** Dependent on a context; manages SDL subsystems.
+- **System:**: Manages SDL subsystems.
 - **Proxy**: Provides system functionality without initializing. Used for when some systems implicitly initialize others.
 > [!TIP]
 These are empty classes. You are encouraged to use them with `[[no_unique_address]]` (also defined as `HAL_NO_SIZE`).
@@ -29,10 +28,9 @@ This library is still under heavy developement; some namespaces etc. might not b
 #include <halcyon/video.hpp>
 
 int main(int argc, char* argv[]) {
-  static_assert(hal::meta::is_correct_main<decltype(main)>);
+  static_assert(hal::meta::is_correct_main<main>);
 
-  hal::context       ctx;
-  hal::system::video vid{ctx};
+  hal::system::video vid;
 
   hal::window   wnd{vid.make_window("Example", {640, 480})};
   hal::renderer rnd{wnd.make_renderer()};
@@ -47,6 +45,8 @@ int main(int argc, char* argv[]) {
 
     rnd.present();
   }
+
+  hal::cleanup();
 
   return EXIT_SUCCESS;
 }
