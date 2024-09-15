@@ -57,10 +57,10 @@ set(Halcyon_SOURCES
     video/texture.cpp
     video/window.cpp
     audio.cpp
-    context.cpp
     debug.cpp
     events.cpp
     image.cpp
+	misc.cpp
     surface.cpp
     templates.cpp
     ttf.cpp
