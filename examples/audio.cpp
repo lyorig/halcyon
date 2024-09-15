@@ -4,8 +4,7 @@ int main(int argc, char* argv[])
 {
     static_assert(hal::meta::is_correct_main<main>);
 
-    hal::context       ctx;
-    hal::system::audio aud { ctx };
+    hal::system::audio aud;
 
     hal::audio::device dev { aud.build_device().changes({ hal::audio::change::any }).spec({ 44100, hal::audio::format::f32, 2, 2048 })() };
 
@@ -24,6 +23,8 @@ int main(int argc, char* argv[])
     /* fill buffer with data... */
 
     dev.queue(buffer);
+
+    hal::cleanup();
 
     return EXIT_SUCCESS;
 }

@@ -5,7 +5,7 @@
 #include <SDL_surface.h>
 
 #include <halcyon/internal/drawer.hpp>
-#include <halcyon/internal/raii_object.hpp>
+#include <halcyon/internal/resource.hpp>
 #include <halcyon/internal/rwops.hpp>
 #include <halcyon/internal/scaler.hpp>
 
@@ -37,7 +37,7 @@ namespace hal
         class font_glyph;
     }
 
-    class surface : public detail::raii_object<SDL_Surface, ::SDL_FreeSurface>
+    class surface : public detail::resource<SDL_Surface, ::SDL_FreeSurface>
     {
     public:
         static constexpr pixel::format default_pixel_format { pixel::format::rgba32 };

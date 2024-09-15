@@ -3,7 +3,7 @@
 using namespace hal;
 
 audio::stream::stream(const proxy::audio&, config src, config dst)
-    : raii_object { ::SDL_NewAudioStream(static_cast<SDL_AudioFormat>(src.fmt), src.channels, src.rate, static_cast<SDL_AudioFormat>(dst.fmt), dst.channels, dst.rate) }
+    : resource { ::SDL_NewAudioStream(static_cast<SDL_AudioFormat>(src.fmt), src.channels, src.rate, static_cast<SDL_AudioFormat>(dst.fmt), dst.channels, dst.rate) }
 {
 }
 

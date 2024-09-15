@@ -5,7 +5,7 @@
 
 #include <SDL_rwops.h>
 
-#include <halcyon/internal/raii_object.hpp>
+#include <halcyon/internal/resource.hpp>
 
 #include <halcyon/utility/metaprogramming.hpp>
 #include <halcyon/utility/pass_key.hpp>
@@ -23,10 +23,10 @@ namespace hal
     namespace detail
     {
         // Base class for SDL_RWops operations.
-        class rwops : public raii_object<SDL_RWops, ::SDL_RWclose>
+        class rwops : public resource<SDL_RWops, ::SDL_RWclose>
         {
         protected:
-            using raii_object::raii_object;
+            using resource::resource;
         };
     }
 

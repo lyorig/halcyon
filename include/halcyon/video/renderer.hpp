@@ -43,7 +43,7 @@ namespace hal
     // is attached to a window. Multiple renderers can exist for a single window, i.e. a hardware-
     // accelerated one, plus a software fallback in case the former isn't available.
     // By default, renderers use hardware acceleration. You can override this via renderer flags.
-    class renderer : public detail::raii_object<SDL_Renderer, &::SDL_DestroyRenderer>
+    class renderer : public detail::resource<SDL_Renderer, &::SDL_DestroyRenderer>
     {
     public:
         enum class flag : u8

@@ -7,8 +7,7 @@ int main(int argc, char* argv[])
 {
     static_assert(hal::meta::is_correct_main<main>);
 
-    hal::context       c;
-    hal::system::video v { c };
+    hal::system::video v;
 
     hal::window   wnd { v, "Example", { 640, 480 } };
     hal::renderer rnd { wnd, hal::renderer::flag::vsync };
@@ -73,6 +72,8 @@ int main(int argc, char* argv[])
         using namespace std::chrono_literals;
         std::this_thread::sleep_for(20ms);
     }
+
+    hal::cleanup();
 
     return EXIT_FAILURE;
 }

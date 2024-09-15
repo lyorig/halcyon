@@ -7,7 +7,7 @@
 using namespace hal;
 
 string::string(char* ptr, pass_key<proxy::clipboard>)
-    : raii_object { ptr }
+    : resource { ptr }
 {
 }
 

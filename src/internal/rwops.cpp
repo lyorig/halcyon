@@ -62,22 +62,22 @@ accessor::accessor(const std::filesystem::path& path)
 
 SDL_RWops* accessor::get(pass_key<image::context>) const
 {
-    return raii_object::get();
+    return resource::get();
 }
 
 SDL_RWops* accessor::use(pass_key<surface>)
 {
-    return raii_object::release();
+    return resource::release();
 }
 
 SDL_RWops* accessor::use(pass_key<font>)
 {
-    return raii_object::release();
+    return resource::release();
 }
 
 SDL_RWops* accessor::use(pass_key<image::context>)
 {
-    return raii_object::release();
+    return resource::release();
 }
 
 outputter::outputter(const char* path)
@@ -103,10 +103,10 @@ outputter::outputter(const std::filesystem::path& path)
 
 SDL_RWops* outputter::use(pass_key<surface>)
 {
-    return raii_object::release();
+    return resource::release();
 }
 
 SDL_RWops* outputter::use(pass_key<image::context>)
 {
-    return raii_object::release();
+    return resource::release();
 }

@@ -19,9 +19,7 @@ int main(int argc, char* argv[])
         return EXIT_FAILURE;
     }
 
-    hal::context ctx;
-
-    hal::system::video vid { ctx };
+    hal::system::video vid;
 
     hal::window        wnd { vid.make_window("Text renderer", { 100, 100 }) };
     hal::event::holder evt;
@@ -67,6 +65,8 @@ int main(int argc, char* argv[])
         rnd.draw(tex).to(padding / 2)();
         rnd.present();
     }
+
+    hal::cleanup();
 
     return EXIT_SUCCESS;
 }

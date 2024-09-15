@@ -12,8 +12,7 @@ int main(int, char*[])
     using wf = hal::window::flag;
     using rf = hal::renderer::flag;
 
-    hal::context       ctx;
-    hal::system::video vid { ctx };
+    hal::system::video vid;
 
     hal::window   wnd { vid, "Halcyon Structure Showcase", { 640, 480 }, wf::resizable };
     hal::renderer rnd { wnd, { rf::accelerated, rf::vsync } };
@@ -94,6 +93,8 @@ int main(int, char*[])
 
         rnd.present();
     }
+
+    hal::cleanup();
 
     return EXIT_FAILURE;
 }

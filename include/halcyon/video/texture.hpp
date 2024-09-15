@@ -2,7 +2,7 @@
 
 #include <SDL_render.h>
 
-#include <halcyon/internal/raii_object.hpp>
+#include <halcyon/internal/resource.hpp>
 #include <halcyon/types/color.hpp>
 #include <halcyon/video/types.hpp>
 
@@ -16,9 +16,10 @@ namespace hal
     class surface;
 
     // Common texture functionality. Cannot be constructed, instead use static, target, or streaming textures.
-    class texture : public detail::raii_object<SDL_Texture, &::SDL_DestroyTexture>
+    class texture : public detail::resource<SDL_Texture, &::SDL_DestroyTexture>
     {
     protected:
+        // A special integer value that tells SDL to do the thing it's named after when creating a texture.
         static constexpr pixel::format use_renderer_native { 0 };
 
         enum class access : u8

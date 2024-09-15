@@ -5,7 +5,7 @@
 using namespace hal;
 
 window::window(sysref<const proxy::video>, std::string_view title, pixel::point size, flag_bitmask f)
-    : raii_object { ::SDL_CreateWindow(title.data(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, size.x, size.y, f.mask()) }
+    : resource { ::SDL_CreateWindow(title.data(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, size.x, size.y, f.mask()) }
 {
 }
 

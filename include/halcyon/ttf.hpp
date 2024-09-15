@@ -23,7 +23,7 @@ namespace hal
         class context;
     }
 
-    class font : public detail::raii_object<TTF_Font, &::TTF_CloseFont>
+    class font : public detail::resource<TTF_Font, &::TTF_CloseFont>
     {
     public:
         using pt_t = u8;

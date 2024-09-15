@@ -3,7 +3,7 @@
 
 #include <halcyon/utility/pass_key.hpp>
 
-#include <halcyon/internal/raii_object.hpp>
+#include <halcyon/internal/resource.hpp>
 #include <halcyon/internal/scaler.hpp>
 
 #include <limits>

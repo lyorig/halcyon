@@ -3,7 +3,7 @@
 using namespace hal;
 
 font::font(accessor src, pt_t size, pass_key<ttf::context>)
-    : raii_object { ::TTF_OpenFontRW(src.use(pass_key<font> {}), true, size) }
+    : resource { ::TTF_OpenFontRW(src.use(pass_key<font> {}), true, size) }
 {
     HAL_WARN_IF(height() != skip(), '\"', family(), ' ', style(), "\" has different height (", height(), "px) & skip (", skip(), "px). size_text() might not return accurate vertical results.");
 }

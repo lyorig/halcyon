@@ -30,10 +30,10 @@ namespace hal
     // In the detail namespace; not meant to be seen by the end user.
     constexpr std::string_view to_string(detail::system s)
     {
-        using enum detail::system;
-
         switch (s)
         {
+            using enum detail::system;
+
         case audio:
             return "Audio";
 
@@ -68,7 +68,7 @@ namespace hal
         class subinit : public subsystem<S>
         {
         public:
-            explicit subinit(context&)
+            subinit()
                 : subsystem<S> { pass_key<subinit<S>> {} }
             {
                 HAL_WARN_IF(initialized(), to_string(S), " subsystem is already initialized");

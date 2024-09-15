@@ -28,12 +28,8 @@ int main(int, char*[])
     // A compile-time check is provided to ensure your program passes this part of the cross-platform check.
     static_assert(hal::meta::is_correct_main<main>);
 
-    // A context must first be created - you cannot do much without one.
-    hal::context ctx;
-
     // Subsystem initialization.
-    // "ctx" is taken by lvalue reference, it cannot be a temporary.
-    hal::system::video vid { ctx };
+    hal::system::video vid;
 
     // "vid" only makes this function available if it's an lvalue.
     // Temporaries cannot create objects that rely on them.
@@ -48,7 +44,6 @@ int main(int, char*[])
     // the loading itself, and can be discarded immediately afterwards.
     using img = hal::image::context;
     using enum hal::image::init_format;
-    using namespace std::string_view_literals;
 
     hal::static_texture tex { rnd, img { png }.load("assets/file.png") };
 
@@ -69,6 +64,8 @@ int main(int, char*[])
     // - HAL_FAST_TYPES switch for switching all integer types to fast variants (hal::i16 -> std::int_fast16_t)
     // - compile time settings (hal::compile_settings)
 
+    hal::cleanup();
+
     return EXIT_SUCCESS;
 }
 
@@ -80,12 +77,10 @@ class halcyon
 public:
     halcyon(std::initializer_list<hal::image::init_format> formats)
         : m_img { formats }
-        , m_vid { m_ctx }
     {
     }
 
 private:
-    HAL_NO_SIZE hal::context m_ctx;
     HAL_NO_SIZE hal::image::context m_img;
     HAL_NO_SIZE hal::ttf::context m_ttf;
 

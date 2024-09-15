@@ -10,7 +10,7 @@
 using namespace hal;
 
 renderer::renderer(lref<const class window> wnd, flag_bitmask f)
-    : raii_object { ::SDL_CreateRenderer(wnd.get(), -1, f.mask()) }
+    : resource { ::SDL_CreateRenderer(wnd.get(), -1, f.mask()) }
 {
     clear();
 }

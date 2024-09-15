@@ -26,8 +26,7 @@ namespace test
     {
         constexpr hal::pixel::point new_size { 120, 120 };
 
-        hal::context       ctx;
-        hal::system::video vid { ctx };
+        hal::system::video vid;
 
         hal::window wnd { vid.make_window("HalTest: Window resize", { 640, 480 }, { hal::window::flag::hidden }) };
 
@@ -64,11 +63,9 @@ namespace test
     // Basic Halcyon initialization.
     int basic_init()
     {
-        hal::context ctx;
-
         HAL_ASSERT(!hal::system::video::initialized(), "Video should not be initialized at this point");
 
-        hal::system::video vid { ctx };
+        hal::system::video vid;
 
         HAL_ASSERT(hal::system::video::initialized(), "Video should report initialization by now");
 
@@ -88,8 +85,7 @@ namespace test
     {
         constexpr char text[] { "We can be heroes - just for one day." };
 
-        hal::context       ctx;
-        hal::system::video vid { ctx };
+        hal::system::video vid;
 
         vid.clipboard.text(text);
 
@@ -115,8 +111,7 @@ namespace test
     // Sending a quit event and checking whether it gets caught.
     int events()
     {
-        hal::context        ctx;
-        hal::system::events evt { ctx };
+        hal::system::events evt;
 
         hal::event::holder eh;
 
@@ -167,9 +162,7 @@ namespace test
 
     int rvalues()
     {
-        hal::context c;
-
-        hal::system::video { c }.clipboard.text("Hello from HalTest!");
+        hal::system::video {}.clipboard.text("Hello from HalTest!");
 
         return EXIT_SUCCESS;
     }
@@ -224,8 +217,7 @@ namespace test
 
     int references()
     {
-        hal::context       ctx;
-        hal::system::video vid { ctx };
+        hal::system::video vid;
 
         hal::window           wnd { vid, "HalTest Views", { 128, 128 } };
         hal::ref<hal::window> r1 = wnd;
@@ -262,8 +254,7 @@ namespace test
 
     int audio_init()
     {
-        hal::context       ctx;
-        hal::system::audio a { ctx };
+        hal::system::audio a;
 
         hal::audio::sdl::spec gotten;
         hal::audio::device    dev = a.build_device().spec({ 44100, hal::audio::format::f32, 2, 4096 })(gotten);
@@ -297,8 +288,7 @@ namespace test
     // This test should fail.
     int invalid_texture()
     {
-        hal::context       ctx;
-        hal::system::video vid { ctx };
+        hal::system::video vid;
 
         hal::window   wnd { vid.make_window("HalTest: Invalid texture", { 640, 480 }, { hal::window::flag::hidden }) };
         hal::renderer rnd { wnd.make_renderer() };
@@ -315,8 +305,7 @@ namespace test
     // This test should fail.
     int invalid_event()
     {
-        hal::context        ctx;
-        hal::system::events sys { ctx };
+        hal::system::events sys;
 
         hal::event::holder eh;
 
@@ -364,5 +353,9 @@ int main(int argc, char* argv[])
         return EXIT_FAILURE;
     }
 
-    return iter->second();
+    const int ret { iter->second() };
+
+    hal::cleanup();
+
+    return ret;
 }

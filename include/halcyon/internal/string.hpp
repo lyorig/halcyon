@@ -2,7 +2,7 @@
 
 #include <SDL_stdinc.h>
 
-#include <halcyon/internal/raii_object.hpp>
+#include <halcyon/internal/resource.hpp>
 #include <halcyon/utility/pass_key.hpp>
 
 namespace hal
@@ -15,7 +15,7 @@ namespace hal
     // SDL sometimes returns string pointers that we have to free via
     // its own function afterwards. This is a wrapper of that functionality
     // that attempts to mimic std::string as best as it can.
-    class string : public detail::raii_object<char, ::SDL_free>
+    class string : public detail::resource<char, ::SDL_free>
     {
     public:
         string(char* ptr, pass_key<proxy::clipboard>);

@@ -4,7 +4,7 @@
 
 #include <halcyon/audio/spec.hpp>
 
-#include <halcyon/internal/raii_object.hpp>
+#include <halcyon/internal/resource.hpp>
 #include <halcyon/internal/subsystem.hpp>
 
 #include <halcyon/utility/enum_bits.hpp>

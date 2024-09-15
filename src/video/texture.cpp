@@ -7,7 +7,7 @@
 using namespace hal;
 
 texture::texture(SDL_Texture* ptr)
-    : raii_object { ptr }
+    : resource { ptr }
 {
 }
 

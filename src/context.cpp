@@ -1,15 +1,13 @@
-#include <halcyon/context.hpp>
+#include <halcyon/halcyon.hpp>
 
 #include <SDL.h>
-
-using namespace hal;
 
 const char* hal::platform()
 {
     return ::SDL_GetPlatform();
 }
 
-context::~context()
+void hal::cleanup()
 {
     ::SDL_Quit();
 }

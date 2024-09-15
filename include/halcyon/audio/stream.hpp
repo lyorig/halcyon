@@ -4,7 +4,7 @@
 
 #include <halcyon/audio/types.hpp>
 
-#include <halcyon/internal/raii_object.hpp>
+#include <halcyon/internal/resource.hpp>
 #include <halcyon/internal/subsystem.hpp>
 
 namespace hal
@@ -19,7 +19,7 @@ namespace hal
         };
 
         // A stream that transforms an input of a certain format to an output of another format.
-        class stream : public detail::raii_object<SDL_AudioStream, ::SDL_FreeAudioStream>
+        class stream : public detail::resource<SDL_AudioStream, ::SDL_FreeAudioStream>
         {
         public:
             // Default constructor. Creates an invalid stream.

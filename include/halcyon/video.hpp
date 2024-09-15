@@ -1,6 +1,6 @@
 #pragma once
 
-#include <halcyon/context.hpp>
+#include <halcyon/halcyon.hpp>
 
 #include <halcyon/image.hpp>
 #include <halcyon/surface.hpp>
