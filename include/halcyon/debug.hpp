@@ -10,7 +10,6 @@
 
 #ifndef NDEBUG
     #define HAL_DEBUG_ENABLED
-    #define HAL_DEBUG_ADVANCED
 #endif
 
 #ifdef HAL_DEBUG_ENABLED
