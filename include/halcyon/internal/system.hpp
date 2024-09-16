@@ -1,5 +1,6 @@
 #pragma once
 
+#include <halcyon/types/exception.hpp>
 #include <halcyon/types/numeric.hpp>
 
 #include <halcyon/utility/enum_bits.hpp>
@@ -39,21 +40,33 @@ namespace hal
         };
 
         template <proxy_check T>
-        class init : public T
+        class guard : public T
         {
         public:
-            init()
+            guard()
             {
-                ::SDL_InitSubSystem(static_cast<Uint32>(T::type()));
+                if (!init())
+                    throw hal::exception {};
             }
 
-            ~init()
+            guard(std::nothrow_t)
+            {
+                static_cast<void>(init());
+            }
+
+            ~guard()
             {
                 ::SDL_QuitSubSystem(static_cast<Uint32>(T::type()));
             }
 
-            init(const init&) = delete;
-            init(init&&)      = delete;
+            guard(const guard&) = delete;
+            guard(guard&&)      = delete;
+
+        private:
+            static bool init()
+            {
+                return ::SDL_InitSubSystem(static_cast<Uint32>(T::type())) == 0;
+            }
         };
     }
 }

@@ -84,6 +84,6 @@ namespace hal
 
     namespace system
     {
-        using events = init<proxy::events>;
+        using events = guard<proxy::events>;
     }
 }

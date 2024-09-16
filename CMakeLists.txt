@@ -47,6 +47,7 @@ set(Halcyon_SOURCES
     events/mouse.cpp
     internal/rwops.cpp
     internal/string.cpp
+    internal/system.cpp
     types/color.cpp
 	utility/guard.cpp
     utility/timer.cpp

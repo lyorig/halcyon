@@ -51,7 +51,7 @@ namespace hal
 
     namespace system
     {
-        using audio = init<proxy::audio>;
+        using audio = guard<proxy::audio>;
     }
 
     namespace audio

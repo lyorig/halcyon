@@ -17,6 +17,9 @@
 #include <halcyon/internal/string.hpp>
 #include <halcyon/internal/system.hpp>
 
+// video.hpp:
+// Master include file for Halcyon Video.
+
 namespace hal
 {
     namespace proxy
@@ -79,6 +82,6 @@ namespace hal
 
     namespace system
     {
-        using video = init<proxy::video>;
+        using video = guard<proxy::video>;
     }
 }
