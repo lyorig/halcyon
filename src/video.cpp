@@ -11,12 +11,12 @@ proxy::display::display(pass_key<video>)
 {
 }
 
-window proxy::video::make_window(std::string_view title, pixel::point size, window::flag_bitmask flags) const&
+window proxy::video::make_window(const char* title, pixel::point size, window::flag_bitmask flags) const&
 {
     return { *this, title, size, flags };
 }
 
-window proxy::video::make_window(std::string_view title, HAL_TAG_NAME(fullscreen)) const&
+window proxy::video::make_window(const char* title, HAL_TAG_NAME(fullscreen)) const&
 {
     return { *this, title, tag::fullscreen };
 }
@@ -30,9 +30,9 @@ string proxy::clipboard::text() const
     return { text, pass_key<proxy::clipboard> {} };
 };
 
-void proxy::clipboard::text(std::string_view what)
+bool proxy::clipboard::text(const char* what)
 {
-    HAL_ASSERT_VITAL(::SDL_SetClipboardText(what.data()) == 0, debug::last_error());
+    return ::SDL_SetClipboardText(what) == 0;
 }
 
 bool proxy::clipboard::has_text() const
@@ -42,20 +42,15 @@ bool proxy::clipboard::has_text() const
 
 display::id_t proxy::display::size() const
 {
-    const auto ret = ::SDL_GetNumVideoDisplays();
-
-    HAL_ASSERT(ret >= 1, debug::last_error());
-
-    return static_cast<hal::display::id_t>(ret);
+    if (const int ret { ::SDL_GetNumVideoDisplays() }; ret >= 1)
+        return static_cast<hal::display::id_t>(ret);
+    else
+        return 0;
 }
 
-std::string_view proxy::display::name(hal::display::id_t id) const
+const char* proxy::display::name(hal::display::id_t id) const
 {
-    const char* ret { ::SDL_GetDisplayName(id) };
-
-    HAL_ASSERT(ret != nullptr, debug::last_error());
-
-    return ret;
+    return ::SDL_GetDisplayName(id);
 }
 
 info::sdl::display proxy::display::operator[](hal::display::id_t idx) const
@@ -63,13 +58,7 @@ info::sdl::display proxy::display::operator[](hal::display::id_t idx) const
     return { idx, pass_key<proxy::display> {} };
 }
 
-proxy::video::subsystem(pass_key<hal::system::video>)
-    : subsystem {}
-
-{
-}
-
-proxy::video::subsystem()
+proxy::video::video()
     : events { pass_key<proxy::video> {} }
     , clipboard { pass_key<proxy::video> {} }
     , displays { pass_key<proxy::video> {} }

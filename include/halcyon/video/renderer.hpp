@@ -1,7 +1,5 @@
 #pragma once
 
-#include <span>
-
 #include <halcyon/video/texture.hpp>
 
 #include <halcyon/internal/drawer.hpp>
@@ -9,6 +7,8 @@
 
 #include <halcyon/utility/buffer.hpp>
 #include <halcyon/utility/enum_bits.hpp>
+
+#include <span>
 
 // video/renderer.hpp:
 // A proxy for creating and rendering textures etc. - more info below.

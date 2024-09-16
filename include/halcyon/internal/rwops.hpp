@@ -1,14 +1,14 @@
 #pragma once
 
-#include <filesystem>
-#include <span>
-
-#include <SDL_rwops.h>
-
 #include <halcyon/internal/resource.hpp>
 
 #include <halcyon/utility/metaprogramming.hpp>
 #include <halcyon/utility/pass_key.hpp>
+
+#include "SDL_rwops.h"
+
+#include <filesystem>
+#include <span>
 
 namespace hal
 {

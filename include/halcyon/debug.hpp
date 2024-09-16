@@ -12,18 +12,20 @@
     #define HAL_DEBUG_ENABLED
 #endif
 
+// Necessary include files.
+#include <halcyon/types/numeric.hpp>
+
 #ifdef HAL_DEBUG_ENABLED
+
+    #include <halcyon/utility/printing.hpp>
+    #include <halcyon/utility/strutil.hpp>
+    #include <halcyon/utility/timer.hpp>
 
     #ifdef HAL_DEBUG_ADVANCED
         #include <fstream>
     #endif
 
-    #include <iomanip>
     #include <iostream>
-
-    #include <halcyon/utility/printing.hpp>
-    #include <halcyon/utility/strutil.hpp>
-    #include <halcyon/utility/timer.hpp>
 
     // For compatibility with MSVC.
     #ifdef _MSC_VER
@@ -35,11 +37,10 @@
     #endif
 #endif
 
-// Necessary include files.
+// More necessary include files.
+// Separated to have all Halcyon includes before the STL.
 #include <string_view>
 #include <utility>
-
-#include <halcyon/types/numeric.hpp>
 
 namespace hal
 {

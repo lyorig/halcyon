@@ -1,9 +1,9 @@
 #pragma once
 
-#include <SDL_stdinc.h>
-
 #include <halcyon/internal/resource.hpp>
 #include <halcyon/utility/pass_key.hpp>
+
+#include "SDL_stdinc.h"
 
 namespace hal
 {

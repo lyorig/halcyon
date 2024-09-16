@@ -2,11 +2,13 @@
 
 #include <halcyon/utility/enum_bits.hpp>
 
+#include <halcyon/audio.hpp>
+
 using namespace hal;
 
 using adb = audio::builder::device;
 
-adb::device(const proxy::audio&)
+adb::device(proxy::audio)
     : m_spec { 44100, format::i32, 2, 4096 }
     , m_name { nullptr }
     , m_allowedChanges { 0 }

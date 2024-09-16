@@ -56,7 +56,7 @@ hal::audio::sdl::spec proxy::audio_inputs::spec(hal::audio::device::id_t idx) co
     return ret;
 }
 
-proxy::audio::subsystem(pass_key<hal::system::audio>)
+proxy::audio::audio()
     : outputs { pass_key<proxy::audio> {} }
     , inputs { pass_key<proxy::audio> {} }
 {

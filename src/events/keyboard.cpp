@@ -12,7 +12,7 @@ keyboard::button keyboard::to_button(key k)
     return static_cast<keyboard::button>(::SDL_GetScancodeFromKey(static_cast<SDL_KeyCode>(k)));
 }
 
-keyboard::state_reference::state_reference(pass_key<authority_t>)
+keyboard::state_reference::state_reference(pass_key<proxy::keyboard>)
     : m_arr { ::SDL_GetKeyboardState(nullptr) }
 {
 }
@@ -27,17 +27,17 @@ bool keyboard::state_reference::operator[](key k) const
     return static_cast<bool>(m_arr[::SDL_GetScancodeFromKey(static_cast<SDL_KeyCode>(k))]);
 }
 
-keyboard::mod_state::mod_state(pass_key<authority_t>)
+keyboard::mod_state::mod_state(pass_key<proxy::keyboard>)
     : enum_bitmask { static_cast<mod>(::SDL_GetModState()) }
 {
 }
 
-std::string_view hal::to_string(keyboard::button btn)
+const char* hal::to_string(keyboard::button btn)
 {
     return ::SDL_GetScancodeName(static_cast<SDL_Scancode>(btn));
 }
 
-std::string_view hal::to_string(keyboard::key k)
+const char* hal::to_string(keyboard::key k)
 {
     return ::SDL_GetKeyName(static_cast<SDL_KeyCode>(k));
 }

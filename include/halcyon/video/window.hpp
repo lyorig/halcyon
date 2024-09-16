@@ -4,8 +4,8 @@
 #include <halcyon/video/renderer.hpp>
 
 #include <halcyon/internal/scaler.hpp>
+#include <halcyon/internal/system.hpp>
 
-#include <halcyon/internal/subsystem.hpp>
 #include <halcyon/surface.hpp>
 
 // video/window.hpp:
@@ -15,13 +15,16 @@ namespace hal
 {
     HAL_TAG(fullscreen);
 
+    namespace proxy
+    {
+        class video;
+    }
+
     // A window. Not much more to say.
     class window : public detail::resource<SDL_Window, ::SDL_DestroyWindow>
     {
     public:
         using id_t = u8;
-
-        using authority_t = hal::proxy::video;
 
         enum class flag : u16
         {
@@ -38,11 +41,13 @@ namespace hal
 
         window() = default;
 
-        window(sysref<const proxy::video> sys, std::string_view title, pixel::point size, flag_bitmask f = {});
+        // Create a window with specific flags.
+        // If you want fullscreen, a tagged constructor exists for that purpose
+        // and using it is recommended.
+        window(proxy::video sys, std::string_view title, pixel::point size, flag_bitmask f = {});
 
         // Create a window in fullscreen mode.
-        // Warning: This has some issues on macOS due to its DPI scaling stuff.
-        window(sysref<const proxy::video> sys, std::string_view title, HAL_TAG_NAME(fullscreen));
+        window(proxy::video sys, std::string_view title, HAL_TAG_NAME(fullscreen));
 
         // Get the index of the display this window is currently on.
         display::id_t display_index() const;

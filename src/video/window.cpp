@@ -4,13 +4,13 @@
 
 using namespace hal;
 
-window::window(sysref<const proxy::video>, std::string_view title, pixel::point size, flag_bitmask f)
+window::window(proxy::video, std::string_view title, pixel::point size, flag_bitmask f)
     : resource { ::SDL_CreateWindow(title.data(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, size.x, size.y, f.mask()) }
 {
 }
 
-window::window(sysref<const proxy::video> sys, std::string_view title, HAL_TAG_NAME(fullscreen))
-    : window { sys, title, sys->displays[0].size(), { flag::fullscreen } }
+window::window(proxy::video sys, std::string_view title, HAL_TAG_NAME(fullscreen))
+    : window { sys, title, sys.displays[0].size(), { flag::fullscreen } }
 {
 }
 

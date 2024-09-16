@@ -1,12 +1,12 @@
 #pragma once
 
+#include <halcyon/types/numeric.hpp>
+
+#include "SDL_pixels.h"
+
 #include <algorithm>
 #include <iosfwd>
 #include <limits> // MSVC wants this.
-
-#include <SDL_pixels.h>
-
-#include <halcyon/types/numeric.hpp>
 
 // types/color.hpp:
 // An extension of SDL_Color with custom constructors,

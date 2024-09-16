@@ -1,13 +1,13 @@
 #pragma once
 
+#include <halcyon/internal/literals.hpp>
+
+#include "SDL_endian.h"
+
 #include <cmath>
 #include <cstdint>
 #include <limits>
 #include <type_traits>
-
-#include <SDL_endian.h>
-
-#include <halcyon/internal/literals.hpp>
 
 #ifdef _MSC_VER
     #define HAL_NO_SIZE [[msvc::no_unique_address]]

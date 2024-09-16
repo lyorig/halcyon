@@ -1,11 +1,11 @@
 #pragma once
 
-#include <string_view>
-
-#include <SDL_blendmode.h>
-#include <SDL_pixels.h>
-
 #include <halcyon/types/rectangle.hpp>
+
+#include "SDL_blendmode.h"
+#include "SDL_pixels.h"
+
+#include <string_view>
 
 // types/render.hpp:
 // Rendering-related types used throughout Halcyon.

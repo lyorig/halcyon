@@ -1,10 +1,11 @@
 #pragma once
 
-#include <compare>
-
 #include <halcyon/internal/sdl_types.hpp>
 #include <halcyon/internal/tags.hpp>
+
 #include <halcyon/utility/printing.hpp>
+
+#include <compare>
 
 // types/point.hpp:
 // A 2D point class, there's really not much more to say.

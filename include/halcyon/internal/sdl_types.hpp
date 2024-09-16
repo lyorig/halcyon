@@ -1,8 +1,8 @@
 #pragma once
 
-#include <SDL_rect.h>
-
 #include <halcyon/internal/literals.hpp>
+
+#include "SDL_rect.h"
 
 // internal/sdl_types.hpp:
 // Type aliases for underlying library types.

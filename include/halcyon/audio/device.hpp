@@ -1,17 +1,22 @@
 #pragma once
 
-#include <span>
-
 #include <halcyon/audio/spec.hpp>
 
 #include <halcyon/internal/resource.hpp>
-#include <halcyon/internal/subsystem.hpp>
+#include <halcyon/internal/system.hpp>
 
 #include <halcyon/utility/enum_bits.hpp>
 #include <halcyon/utility/pass_key.hpp>
 
+#include <span>
+
 namespace hal
 {
+    namespace proxy
+    {
+        class audio;
+    }
+
     namespace audio
     {
         class device;
@@ -21,8 +26,7 @@ namespace hal
             class device
             {
             public:
-                device(const proxy::audio& sys);
-                device(const proxy::audio&& sys) = delete;
+                device(proxy::audio sys);
 
                 // Choose a specific audio device.
                 device& name(std::string_view name);
@@ -62,8 +66,8 @@ namespace hal
             device(const char* name, bool capture, const SDL_AudioSpec* desired, SDL_AudioSpec* obtained, int allowed_changes, pass_key<builder::device>);
             ~device();
 
-            device(const device&)             = delete;
-            device& operator==(const device&) = delete;
+            device(const device&)            = delete;
+            device& operator=(const device&) = delete;
 
             void queue(std::span<std::byte> bytes);
 

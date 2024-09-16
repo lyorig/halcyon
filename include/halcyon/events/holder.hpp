@@ -3,8 +3,6 @@
 #include <halcyon/events/keyboard.hpp>
 #include <halcyon/events/mouse.hpp>
 
-#include <halcyon/internal/subsystem.hpp>
-
 #include <halcyon/video/display.hpp>
 #include <halcyon/video/window.hpp>
 
@@ -13,9 +11,14 @@
 
 namespace hal
 {
+    namespace proxy
+    {
+        class events;
+    }
+
     namespace event
     {
-        class display : SDL_DisplayEvent
+        class display : private SDL_DisplayEvent
         {
         public:
             enum class type : u8
@@ -39,7 +42,7 @@ namespace hal
 
         static_assert(sizeof(display) == sizeof(SDL_DisplayEvent));
 
-        class window : SDL_WindowEvent
+        class window : private SDL_WindowEvent
         {
         public:
             enum class type : u8
@@ -88,7 +91,7 @@ namespace hal
 
         static_assert(sizeof(window) == sizeof(SDL_WindowEvent));
 
-        class keyboard : SDL_KeyboardEvent
+        class keyboard : private SDL_KeyboardEvent
         {
         public:
             keyboard() = delete;
@@ -108,7 +111,7 @@ namespace hal
 
         static_assert(sizeof(keyboard) == sizeof(SDL_KeyboardEvent));
 
-        class mouse_motion : SDL_MouseMotionEvent
+        class mouse_motion : private SDL_MouseMotionEvent
         {
         public:
             mouse_motion() = delete;
@@ -128,7 +131,7 @@ namespace hal
 
         static_assert(sizeof(mouse_motion) == sizeof(SDL_MouseMotionEvent));
 
-        class mouse_button : SDL_MouseButtonEvent
+        class mouse_button : private SDL_MouseButtonEvent
         {
         public:
             mouse_button() = delete;
@@ -148,7 +151,7 @@ namespace hal
 
         static_assert(sizeof(mouse_button) == sizeof(SDL_MouseButtonEvent));
 
-        class mouse_wheel : SDL_MouseWheelEvent
+        class mouse_wheel : private SDL_MouseWheelEvent
         {
         public:
             mouse_wheel() = delete;
@@ -171,7 +174,7 @@ namespace hal
 
         static_assert(sizeof(mouse_wheel) == sizeof(SDL_MouseWheelEvent));
 
-        class text_input : SDL_TextInputEvent
+        class text_input : private SDL_TextInputEvent
         {
         public:
             // The maximum string length this event can handle.
@@ -283,7 +286,7 @@ namespace hal
                     event::mouse_wheel  wheel;
                 } data;
 
-                std::byte padding[sizeof(SDL_Event) - sizeof(data)] {};
+                std::byte padding[sizeof(SDL_Event) - sizeof(data)];
             } m_event;
 
             static_assert(sizeof(m_event) == sizeof(SDL_Event));

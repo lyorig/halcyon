@@ -1,6 +1,7 @@
 #pragma once
 
 #include <halcyon/debug.hpp>
+
 #include <halcyon/utility/pass_key.hpp>
 
 #include <memory>
@@ -12,7 +13,7 @@ namespace hal
 {
     namespace detail
     {
-        // An owning SDL object.
+        // An owned SDL resource.
         template <typename SDL_Type, auto Deleter>
             requires std::is_invocable_r_v<void, decltype(Deleter), SDL_Type*>
         class resource

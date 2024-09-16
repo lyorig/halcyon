@@ -1,9 +1,9 @@
 #pragma once
 
+#include <halcyon/utility/metaprogramming.hpp>
+
 #include <memory>
 #include <span>
-
-#include <halcyon/utility/metaprogramming.hpp>
 
 namespace hal
 {

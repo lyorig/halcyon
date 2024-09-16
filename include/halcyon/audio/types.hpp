@@ -1,10 +1,10 @@
 #pragma once
 
-#include <string_view>
-
-#include <SDL_audio.h>
-
 #include <halcyon/types/numeric.hpp>
+
+#include "SDL_audio.h"
+
+#include <string_view>
 
 namespace hal
 {

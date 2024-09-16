@@ -1,10 +1,10 @@
 #pragma once
 
-#include <chrono>
-
 #include <halcyon/types/numeric.hpp>
 
-// timer.hpp:
+#include <chrono>
+
+// utility/timer.hpp:
 // Timing facilities.
 
 namespace hal

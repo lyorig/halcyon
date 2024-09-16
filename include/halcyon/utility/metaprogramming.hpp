@@ -2,8 +2,6 @@
 
 #include <type_traits>
 
-#include <SDL_main.h>
-
 // utility/metaprogramming.hpp:
 // Template metaprogramming. Everything here resides in namespace hal::meta.
 

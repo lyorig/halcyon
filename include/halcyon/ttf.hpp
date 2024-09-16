@@ -1,11 +1,11 @@
 #pragma once
 
-#include <string_view>
-
-#include <SDL_ttf.h>
-
 #include <halcyon/internal/rwops.hpp>
 #include <halcyon/surface.hpp>
+
+#include "SDL_ttf.h"
+
+#include <string_view>
 
 // ttf.hpp:
 // SDL_ttf wrappers for font loading and text rendering.

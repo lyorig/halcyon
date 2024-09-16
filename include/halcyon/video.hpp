@@ -15,7 +15,7 @@
 #include <halcyon/video/window.hpp>
 
 #include <halcyon/internal/string.hpp>
-#include <halcyon/internal/subsystem.hpp>
+#include <halcyon/internal/system.hpp>
 
 namespace hal
 {
@@ -30,8 +30,11 @@ namespace hal
             // This has to be freed, so a custom wrapper is returned.
             string text() const;
 
-            void text(std::string_view what);
+            // Set clipboard text.
+            // Returns whether the operation succeeded.
+            bool text(const char* what);
 
+            // Check whether the clipboard contains text data.
             bool has_text() const;
         };
 
@@ -41,36 +44,41 @@ namespace hal
             display(pass_key<video>);
 
             // Get the amount of video displays.
+            // Returns zero if the query failed.
             hal::display::id_t size() const;
 
             // Get the name of a display.
-            std::string_view name(hal::display::id_t id) const;
+            // Returns nullptr in case of failure.
+            const char* name(hal::display::id_t id) const;
 
+            // Get info about a display.
             info::sdl::display operator[](hal::display::id_t idx) const;
         };
     }
 
-    namespace detail
+    namespace proxy
     {
-        template <>
-        class subsystem<system::video>
+        class video : public system::base<system::type::video>
         {
         public:
-            subsystem(pass_key<hal::system::video>);
+            [[nodiscard]] window make_window(const char* title, pixel::point size, window::flag_bitmask flags = {}) const&;
+            [[nodiscard]] window make_window(const char* title, pixel::point size, window::flag_bitmask flags = {}) const&& = delete;
 
-            [[nodiscard]] window make_window(std::string_view title, pixel::point size, window::flag_bitmask flags = {}) const&;
-            [[nodiscard]] window make_window(std::string_view title, pixel::point size, window::flag_bitmask flags = {}) const&& = delete;
-
-            [[nodiscard]] window make_window(std::string_view title, HAL_TAG_NAME(fullscreen)) const&;
-            [[nodiscard]] window make_window(std::string_view title, HAL_TAG_NAME(fullscreen)) const&& = delete;
+            [[nodiscard]] window make_window(const char* title, HAL_TAG_NAME(fullscreen)) const&;
+            [[nodiscard]] window make_window(const char* title, HAL_TAG_NAME(fullscreen)) const&& = delete;
 
             HAL_NO_SIZE proxy::events events;
 
             HAL_NO_SIZE proxy::clipboard clipboard;
             HAL_NO_SIZE proxy::display displays;
 
-        private:
-            subsystem();
+        protected:
+            video();
         };
+    }
+
+    namespace system
+    {
+        using video = init<proxy::video>;
     }
 }

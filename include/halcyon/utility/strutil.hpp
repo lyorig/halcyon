@@ -2,9 +2,7 @@
 
 #include <sstream>
 
-#include <halcyon/utility/non_null.hpp>
-
-// strutil.hpp:
+// utility/strutil.hpp:
 // String utility functions.
 
 namespace hal

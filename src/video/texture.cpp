@@ -91,16 +91,6 @@ static_texture::static_texture(lref<const renderer> rnd, ref<const surface> surf
 {
 }
 
-void static_texture::update(non_null<const std::byte> pixel_buffer, int pitch)
-{
-    common_update(nullptr, pixel_buffer, pitch);
-}
-
-void static_texture::update(non_null<const std::byte> pixel_buffer, int pitch, pixel::rect area)
-{
-    common_update(area.addr(), pixel_buffer, pitch);
-}
-
 void static_texture::update(ref<const surface> surf, pixel::point pos)
 {
     update(surf, { pos, surf->size() });
@@ -113,9 +103,9 @@ void static_texture::update(ref<const surface> surf, pixel::rect area)
     common_update(area.addr(), surf.get()->pixels, surf.get()->pitch);
 }
 
-void static_texture::common_update(const SDL_Rect* area, non_null<const void> pixels, int pitch)
+void static_texture::common_update(const SDL_Rect* area, const void* pixels, int pitch)
 {
-    HAL_ASSERT_VITAL(::SDL_UpdateTexture(get(), area, pixels.get(), pitch) == 0, debug::last_error());
+    HAL_ASSERT_VITAL(::SDL_UpdateTexture(get(), area, pixels, pitch) == 0, debug::last_error());
 }
 
 target_texture::target_texture(lref<const renderer> rnd, pixel::point size, pixel::format fmt)

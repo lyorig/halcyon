@@ -1,12 +1,10 @@
 #pragma once
 
-#include <SDL_render.h>
-
 #include <halcyon/internal/resource.hpp>
 #include <halcyon/types/color.hpp>
 #include <halcyon/video/types.hpp>
 
-#include <halcyon/utility/non_null.hpp>
+#include "SDL_render.h"
 
 // video/texture.cpp:
 // Proper textures that can be drawn to a window (or a target texture).
@@ -66,11 +64,6 @@ namespace hal
         static_texture(lref<const renderer> rnd, pixel::point size, pixel::format fmt = use_renderer_native);
         static_texture(lref<const renderer> rnd, ref<const surface> surf);
 
-        // Update the texture with your own pixel buffer. These pixels' format
-        // must match the texture's.
-        void update(non_null<const std::byte> pixel_buffer, int pitch);
-        void update(non_null<const std::byte> pixel_buffer, int pitch, pixel::rect area);
-
         // Update the texture with pixels of a surface. The surface's pixel format must match the texture's.
         void update(ref<const surface> surf, pixel::point pos = { 0, 0 });
 
@@ -79,7 +72,7 @@ namespace hal
         void update(ref<const surface> surf, pixel::rect area);
 
     private:
-        void common_update(const SDL_Rect* area, non_null<const void> pixels, int pitch);
+        void common_update(const SDL_Rect* area, const void* pixels, int pitch);
     };
 
     // A texture that can be drawn onto.

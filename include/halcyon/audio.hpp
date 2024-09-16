@@ -5,8 +5,6 @@
 #include <halcyon/audio/device.hpp>
 #include <halcyon/audio/stream.hpp>
 
-#include <halcyon/internal/subsystem.hpp>
-
 namespace hal
 {
     namespace proxy
@@ -32,23 +30,28 @@ namespace hal
         };
     }
 
-    namespace detail
+    namespace proxy
     {
-        template <>
-        class subsystem<system::audio>
+        class audio : public system::base<system::type::audio>
         {
         public:
-            subsystem(pass_key<hal::system::audio>);
+            [[nodiscard]] hal::audio::builder::device build_device() const&;
+            [[nodiscard]] hal::audio::builder::device build_device() const&& = delete;
 
-            [[nodiscard]] audio::builder::device build_device() const&;
-            [[nodiscard]] audio::builder::device build_device() const&& = delete;
-
-            [[nodiscard]] audio::stream make_stream(audio::config src, audio::config dst) const&;
-            [[nodiscard]] audio::stream make_stream(audio::config src, audio::config dst) const&& = delete;
+            [[nodiscard]] hal::audio::stream make_stream(hal::audio::config src, hal::audio::config dst) const&;
+            [[nodiscard]] hal::audio::stream make_stream(hal::audio::config src, hal::audio::config dst) const&& = delete;
 
             HAL_NO_SIZE proxy::audio_outputs outputs;
             HAL_NO_SIZE proxy::audio_inputs inputs;
+
+        protected:
+            audio();
         };
+    }
+
+    namespace system
+    {
+        using audio = init<proxy::audio>;
     }
 
     namespace audio

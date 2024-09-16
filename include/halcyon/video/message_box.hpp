@@ -1,11 +1,11 @@
 #pragma once
 
+#include <halcyon/video/window.hpp>
+
+#include "SDL_messagebox.h"
+
 #include <string_view>
 #include <vector>
-
-#include <SDL_messagebox.h>
-
-#include <halcyon/video/window.hpp>
 
 namespace hal
 {

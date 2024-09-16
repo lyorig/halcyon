@@ -1,8 +1,8 @@
 #pragma once
 
-#include <limits>
-
 #include <halcyon/utility/metaprogramming.hpp>
+
+#include <limits>
 
 #define HAL_DETAIL_DEFINE_LITERAL_OPERATOR(type, suffix)                   \
     consteval type operator""_##suffix(long double v)                      \

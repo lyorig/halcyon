@@ -1,9 +1,10 @@
 #pragma once
 
 #include <halcyon/types/numeric.hpp>
+
 #include <string_view>
 
-// driver.hpp:
+// video/driver.hpp:
 // Video driver information and enumeration.
 
 namespace hal

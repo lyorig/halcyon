@@ -6,7 +6,7 @@
 
 using namespace hal;
 
-mouse::state::state(pass_key<authority_t>)
+mouse::state::state(pass_key<proxy::mouse>)
     : m_state { static_cast<u8>(::SDL_GetMouseState(nullptr, nullptr)) }
 {
 }

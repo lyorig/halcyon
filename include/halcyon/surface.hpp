@@ -1,15 +1,15 @@
 #pragma once
 
-#include <span>
-
-#include <SDL_surface.h>
-
 #include <halcyon/internal/drawer.hpp>
 #include <halcyon/internal/resource.hpp>
 #include <halcyon/internal/rwops.hpp>
 #include <halcyon/internal/scaler.hpp>
 
 #include <halcyon/types/color.hpp>
+
+#include "SDL_surface.h"
+
+#include <span>
 
 // surface.hpp:
 // A software bitmap, from which textures are created.

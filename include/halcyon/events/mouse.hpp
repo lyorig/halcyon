@@ -1,14 +1,14 @@
 #pragma once
 
-#include <string_view>
-
-#include <SDL_mouse.h>
-
 #include <halcyon/video/types.hpp>
 
 #include <halcyon/utility/pass_key.hpp>
 
-#include <halcyon/internal/subsystem.hpp>
+#include <halcyon/internal/system.hpp>
+
+#include "SDL_mouse.h"
+
+#include <string_view>
 
 // event/mouse.hpp:
 // Mouse button access and data.
@@ -41,10 +41,8 @@ namespace hal
         class state
         {
         public:
-            using authority_t = proxy::mouse;
-
             // [private] A snapshot of the current mouse state is provided by the event subsystem.
-            state(pass_key<authority_t>);
+            state(pass_key<proxy::mouse>);
 
             // [private] Constructor meant for events.
             state(Uint32 mask, pass_key<event::mouse_motion>);

@@ -1,15 +1,11 @@
 #pragma once
 
-#include <string_view>
-
-#include <SDL_keyboard.h>
-#include <SDL_mouse.h>
+#include <halcyon/internal/system.hpp>
 
 #include <halcyon/utility/enum_bits.hpp>
+#include <halcyon/utility/pass_key.hpp>
 
 #include <halcyon/video/types.hpp>
-
-#include <halcyon/internal/subsystem.hpp>
 
 // keyboard.hpp:
 // Keyboard enumerations and access.
@@ -212,9 +208,7 @@ namespace hal
         class state_reference
         {
         public:
-            using authority_t = proxy::keyboard;
-
-            state_reference(pass_key<authority_t>);
+            state_reference(pass_key<proxy::keyboard>);
 
             bool operator[](button b) const;
             bool operator[](key k) const;
@@ -226,14 +220,12 @@ namespace hal
         class mod_state : public enum_bitmask<mod, meta::underlying_type<SDL_Keymod>>
         {
         public:
-            using authority_t = proxy::keyboard;
-
-            mod_state(pass_key<authority_t>);
+            mod_state(pass_key<proxy::keyboard>);
         };
     }
 
-    std::string_view to_string(keyboard::button btn);
-    std::string_view to_string(keyboard::key k);
+    const char* to_string(keyboard::button btn);
+    const char* to_string(keyboard::key k);
 
     namespace keyboard
     {

@@ -2,7 +2,7 @@
 
 #include <halcyon/events/holder.hpp>
 
-#include <halcyon/internal/subsystem.hpp>
+#include <halcyon/internal/system.hpp>
 
 // events.hpp:
 // Master include file for Halcyon Events, plus the events subsystem.
@@ -11,14 +11,13 @@ namespace hal
 {
     namespace proxy
     {
-        using events = detail::subsystem<detail::system::events>;
+        class events;
+        class video;
 
         class mouse
         {
         public:
-            using authority_t = events;
-
-            mouse(pass_key<authority_t>);
+            mouse(pass_key<events>);
 
             // Get a snapshot of the current mouse state.
             hal::mouse::state state() const;
@@ -33,9 +32,7 @@ namespace hal
         class keyboard
         {
         public:
-            using authority_t = events;
-
-            keyboard(pass_key<authority_t>);
+            keyboard(pass_key<events>);
 
             // Get a reference to the keyboard state.
             hal::keyboard::state_reference state_ref() const;
@@ -43,18 +40,14 @@ namespace hal
         };
     }
 
-    namespace detail
+    namespace proxy
     {
         // A system that represents the event queue.
-        template <>
-        class subsystem<system::events>
+        class events : public system::base<system::type::events>
         {
         public:
-            using authority_t = subsystem<system::video>;
-            using parent_t    = subinit<system::events>;
-
-            subsystem(pass_key<authority_t>);
-            subsystem(pass_key<parent_t>);
+            // [private] The video subsystem implicitly initializes events.
+            events(pass_key<video>);
 
             // Collect pending events.
             // This is usually not necessary - poll() calls it in an event loop.
@@ -83,9 +76,14 @@ namespace hal
             HAL_NO_SIZE proxy::mouse mouse;
             HAL_NO_SIZE proxy::keyboard keyboard;
 
-        private:
+        protected:
             // [private] Delegating constructor.
-            subsystem();
+            events();
         };
+    }
+
+    namespace system
+    {
+        using events = init<proxy::events>;
     }
 }

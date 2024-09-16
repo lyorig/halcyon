@@ -2,7 +2,7 @@
 
 using namespace hal;
 
-proxy::mouse::mouse(pass_key<authority_t>)
+proxy::mouse::mouse(pass_key<events>)
 {
 }
 
@@ -29,7 +29,7 @@ pixel::point proxy::mouse::pos_rel() const
     return ret;
 }
 
-proxy::keyboard::keyboard(pass_key<authority_t>)
+proxy::keyboard::keyboard(pass_key<events>)
 {
 }
 
@@ -43,17 +43,12 @@ keyboard::mod_state proxy::keyboard::mod() const
     return pass_key<proxy::keyboard> {};
 }
 
-proxy::events::subsystem(pass_key<authority_t>)
-    : subsystem {}
+proxy::events::events(pass_key<proxy::video>)
+    : events {}
 {
 }
 
-proxy::events::subsystem(pass_key<parent_t>)
-    : subsystem {}
-{
-}
-
-proxy::events::subsystem()
+proxy::events::events()
     : mouse { pass_key<proxy::events> {} }
     , keyboard { pass_key<proxy::events> {} }
 {
@@ -107,7 +102,7 @@ proxy::events::subsystem()
 
 bool proxy::events::poll(event::holder& eh)
 {
-    return static_cast<bool>(::SDL_PollEvent(&eh.get(pass_key<subsystem> {})));
+    return static_cast<bool>(::SDL_PollEvent(&eh.get(pass_key<events> {})));
 }
 
 void proxy::events::pump()
@@ -117,12 +112,12 @@ void proxy::events::pump()
 
 void proxy::events::push(const event::holder& eh)
 {
-    eh.get(pass_key<subsystem> {}).common.timestamp = ::SDL_GetTicks();
+    eh.get(pass_key<events> {}).common.timestamp = ::SDL_GetTicks();
 
 #ifdef HAL_DEBUG_ENABLED
     const auto ret =
 #endif
-        ::SDL_PushEvent(&eh.get(pass_key<subsystem> {}));
+        ::SDL_PushEvent(&eh.get(pass_key<events> {}));
 
     HAL_ASSERT(ret >= 0, debug::last_error());
     HAL_WARN_IF(ret == 0, "Pushed event of type ", eh.kind(), " was filtered");

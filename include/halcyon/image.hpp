@@ -1,11 +1,11 @@
 #pragma once
 
-#include <SDL_image.h>
-
 #include <halcyon/surface.hpp>
 
 #include <halcyon/internal/rwops.hpp>
 #include <halcyon/utility/enum_bits.hpp>
+
+#include "SDL_image.h"
 
 // image.hpp:
 // SDL_image wrappers for image loading.

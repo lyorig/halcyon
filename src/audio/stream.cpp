@@ -1,8 +1,10 @@
 #include <halcyon/audio/stream.hpp>
 
+#include <halcyon/audio.hpp>
+
 using namespace hal;
 
-audio::stream::stream(const proxy::audio&, config src, config dst)
+audio::stream::stream(proxy::audio, config src, config dst)
     : resource { ::SDL_NewAudioStream(static_cast<SDL_AudioFormat>(src.fmt), src.channels, src.rate, static_cast<SDL_AudioFormat>(dst.fmt), dst.channels, dst.rate) }
 {
 }

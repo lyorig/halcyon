@@ -1,11 +1,11 @@
 #pragma once
 
-#include <ostream>
-
 #include <halcyon/types/numeric.hpp>
 #include <halcyon/utility/metaprogramming.hpp>
 
-// printing.hpp:
+#include <ostream>
+
+// utility/printing.hpp:
 // Extra utility stuff for printing.
 
 namespace hal

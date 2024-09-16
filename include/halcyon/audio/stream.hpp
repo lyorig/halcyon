@@ -1,14 +1,19 @@
 #pragma once
 
-#include <span>
-
 #include <halcyon/audio/types.hpp>
 
 #include <halcyon/internal/resource.hpp>
-#include <halcyon/internal/subsystem.hpp>
+#include <halcyon/internal/system.hpp>
+
+#include <span>
 
 namespace hal
 {
+    namespace proxy
+    {
+        class audio;
+    }
+
     namespace audio
     {
         struct config
@@ -25,8 +30,7 @@ namespace hal
             // Default constructor. Creates an invalid stream.
             stream() = default;
 
-            stream(const proxy::audio& sys, config src, config dst);
-            stream(const proxy::audio&& sys, config src, config dst) = delete;
+            stream(proxy::audio sys, config src, config dst);
 
             void flush();
 
