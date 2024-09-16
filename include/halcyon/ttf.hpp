@@ -94,19 +94,20 @@ namespace hal
         public:
             // Initialize the TTF context.
             context();
+            context(std::nothrow_t);
 
             context(const context&) = delete;
-            context(context&&)      = default;
+            context(context&&)      = delete;
 
             ~context();
 
             // Font loading function.
             [[nodiscard]] font load(accessor data, font::pt_t size) &;
-
-            static bool initialized();
         };
 
         static_assert(std::is_empty_v<context>);
+
+        bool initialized();
     }
 
     namespace detail

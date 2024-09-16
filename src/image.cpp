@@ -1,27 +1,45 @@
 #include <halcyon/image.hpp>
 
-using namespace hal::image;
+#include <halcyon/types/exception.hpp>
 
-context::context(flag_bitset formats)
+using namespace hal;
+
+namespace
+{
+    bool img_init(image::init_bitmask formats)
+    {
+        return ::IMG_Init(formats.mask()) == formats.mask();
+    }
+}
+
+image::context::context(init_bitmask formats)
 {
     HAL_WARN_IF(initialized(), "Image context already exists");
 
-    HAL_ASSERT_VITAL(::IMG_Init(formats.mask()) == formats.mask(), ::IMG_GetError());
+    if (!img_init(formats))
+        throw hal::exception {};
 }
 
-context::~context()
+image::context::context(init_bitmask formats, std::nothrow_t)
+{
+    HAL_WARN_IF(initialized(), "Image context already exists.");
+
+    static_cast<void>(img_init(formats));
+}
+
+image::context::~context()
 {
     HAL_ASSERT(initialized(), "Image context not initialized at destruction");
 
     ::IMG_Quit();
 }
 
-hal::surface context::load(accessor src) const
+hal::surface image::context::load(accessor src) const
 {
     return { ::IMG_Load_RW(src.use(pass_key<context> {}), true), pass_key<context> {} };
 }
 
-hal::surface context::load(accessor src, load_format fmt) const
+hal::surface image::context::load(accessor src, load_format fmt) const
 {
     using enum load_format;
 
@@ -53,7 +71,7 @@ hal::surface context::load(accessor src, load_format fmt) const
     HAL_PANIC("Trying to load image of unknown type");
 }
 
-void context::save(ref<const surface> surf, save_format fmt, outputter dst) const
+void image::context::save(ref<const surface> surf, save_format fmt, outputter dst) const
 {
     constexpr u8 jpg_quality { 90 };
 
@@ -70,7 +88,7 @@ void context::save(ref<const surface> surf, save_format fmt, outputter dst) cons
     }
 }
 
-load_format context::query(const accessor& src) const
+image::load_format image::context::query(const accessor& src) const
 {
     using enum load_format;
 
@@ -102,12 +120,12 @@ load_format context::query(const accessor& src) const
     return unknown;
 }
 
-context::flag_bitset context::flags() const
+image::init_bitmask image::context::flags() const
 {
     return static_cast<init_format>(::IMG_Init(0));
 }
 
-bool context::initialized()
+bool image::initialized()
 {
     return ::IMG_Init(0) > 0;
 }

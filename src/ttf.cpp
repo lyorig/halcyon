@@ -1,6 +1,16 @@
 #include <halcyon/ttf.hpp>
 
+#include <halcyon/types/exception.hpp>
+
 using namespace hal;
+
+namespace
+{
+    bool ttf_init()
+    {
+        return ::TTF_Init() == 0;
+    }
+}
 
 font::font(accessor src, pt_t size, pass_key<ttf::context>)
     : resource { ::TTF_OpenFontRW(src.use(pass_key<font> {}), true, size) }
@@ -56,12 +66,20 @@ ttf::context::context()
 {
     HAL_WARN_IF(initialized(), "TTF context already exists");
 
-    HAL_ASSERT_VITAL(::TTF_Init() == 0, debug::last_error());
+    if (!ttf_init())
+        throw hal::exception {};
+}
+
+ttf::context::context(std::nothrow_t)
+{
+    HAL_WARN_IF(initialized(), "TTF context already exists");
+
+    static_cast<void>(ttf_init());
 }
 
 ttf::context::~context()
 {
-    HAL_ASSERT(initialized(), "TTF context not initialized at destruction");
+    HAL_WARN_IF(initialized(), "TTF context not initialized at destruction");
 
     ::TTF_Quit();
 }
@@ -71,7 +89,7 @@ font ttf::context::load(accessor data, font::pt_t size) &
     return { std::move(data), size, pass_key<context> {} };
 }
 
-bool ttf::context::initialized()
+bool ttf::initialized()
 {
     return ::TTF_WasInit() > 0;
 }

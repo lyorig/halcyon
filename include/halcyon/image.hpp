@@ -24,6 +24,8 @@ namespace hal
             avif = IMG_INIT_AVIF
         };
 
+        using init_bitmask = enum_bitmask<init_format>;
+
         enum class save_format : u8
         {
             png,
@@ -58,10 +60,9 @@ namespace hal
         class context
         {
         public:
-            using flag_bitset = enum_bitmask<init_format, int>;
-
             // Initialize the image context with chosen types.
-            context(flag_bitset formats);
+            context(init_bitmask formats);
+            context(init_bitmask formats, std::nothrow_t);
 
             context(const context&) = delete;
             context(context&&)      = delete;
@@ -82,12 +83,12 @@ namespace hal
             // This modifies the accessor, but ultimately sets it back where it was.
             load_format query(const accessor& src) const;
 
-            flag_bitset flags() const;
-
-            static bool initialized();
+            init_bitmask flags() const;
         };
 
         static_assert(std::is_empty_v<context>);
+
+        bool initialized();
 
         // Ensure calling debug::last_error() gives accurate information.
         static_assert(::IMG_GetError == ::SDL_GetError);
