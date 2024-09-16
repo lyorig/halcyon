@@ -62,12 +62,12 @@ proxy::audio::audio()
 {
 }
 
-audio::builder::device proxy::audio::build_device() const&
+audio::builder::device proxy::audio::build_device()
 {
     return *this;
 }
 
-audio::stream proxy::audio::make_stream(hal::audio::config src, hal::audio::config dst) const&
+audio::stream proxy::audio::make_stream(hal::audio::config src, hal::audio::config dst)
 {
     return { *this, src, dst };
 }

@@ -35,11 +35,9 @@ namespace hal
         class audio : public system::base<system::type::audio>
         {
         public:
-            [[nodiscard]] hal::audio::builder::device build_device() const&;
-            [[nodiscard]] hal::audio::builder::device build_device() const&& = delete;
+            [[nodiscard]] hal::audio::builder::device build_device();
 
-            [[nodiscard]] hal::audio::stream make_stream(hal::audio::config src, hal::audio::config dst) const&;
-            [[nodiscard]] hal::audio::stream make_stream(hal::audio::config src, hal::audio::config dst) const&& = delete;
+            [[nodiscard]] hal::audio::stream make_stream(hal::audio::config src, hal::audio::config dst);
 
             HAL_NO_SIZE proxy::audio_outputs outputs;
             HAL_NO_SIZE proxy::audio_inputs inputs;

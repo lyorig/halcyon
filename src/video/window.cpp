@@ -116,7 +116,7 @@ ref<const surface> window::surface() const
     return { ::SDL_GetWindowSurface(get()), pass_key<window> {} };
 }
 
-renderer window::make_renderer(renderer::flag_bitmask flags) const&
+renderer window::make_renderer(renderer::flag_bitmask flags)
 {
     return { *this, flags };
 }

@@ -129,14 +129,9 @@ namespace hal
         info::sdl::renderer info() const;
 
         // Texture creation functions.
-        [[nodiscard]] static_texture make_static_texture(ref<const surface> surf) const&;
-        [[nodiscard]] static_texture make_static_texture(ref<const surface> surf) const&& = delete;
-
-        [[nodiscard]] target_texture make_target_texture(pixel::point size, pixel::format) const&;
-        [[nodiscard]] target_texture make_target_texture(pixel::point size, pixel::format) const&& = delete;
-
-        [[nodiscard]] streaming_texture make_streaming_texture(pixel::point size, pixel::format fmt) const&;
-        [[nodiscard]] streaming_texture make_streaming_texture(pixel::point size, pixel::format fmt) const&& = delete;
+        [[nodiscard]] static_texture    make_static_texture(ref<const surface> surf);
+        [[nodiscard]] target_texture    make_target_texture(pixel::point size, pixel::format);
+        [[nodiscard]] streaming_texture make_streaming_texture(pixel::point size, pixel::format fmt);
 
     private:
         // Helper for setting the render target.

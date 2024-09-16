@@ -191,17 +191,17 @@ info::sdl::renderer renderer::info() const
     return { *this, pass_key<renderer> {} };
 }
 
-static_texture renderer::make_static_texture(ref<const surface> surf) const&
+static_texture renderer::make_static_texture(ref<const surface> surf)
 {
     return { *this, surf };
 }
 
-target_texture renderer::make_target_texture(pixel::point size, pixel::format fmt) const&
+target_texture renderer::make_target_texture(pixel::point size, pixel::format fmt)
 {
     return { *this, size, fmt };
 }
 
-streaming_texture renderer::make_streaming_texture(pixel::point size, pixel::format fmt) const&
+streaming_texture renderer::make_streaming_texture(pixel::point size, pixel::format fmt)
 {
     return { *this, size, fmt };
 }

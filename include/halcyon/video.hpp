@@ -64,11 +64,8 @@ namespace hal
         class video : public system::base<system::type::video>
         {
         public:
-            [[nodiscard]] window make_window(const char* title, pixel::point size, window::flag_bitmask flags = {}) const&;
-            [[nodiscard]] window make_window(const char* title, pixel::point size, window::flag_bitmask flags = {}) const&& = delete;
-
-            [[nodiscard]] window make_window(const char* title, HAL_TAG_NAME(fullscreen)) const&;
-            [[nodiscard]] window make_window(const char* title, HAL_TAG_NAME(fullscreen)) const&& = delete;
+            [[nodiscard]] window make_window(const char* title, pixel::point size, window::flag_bitmask flags = {});
+            [[nodiscard]] window make_window(const char* title, HAL_TAG_NAME(fullscreen));
 
             HAL_NO_SIZE proxy::events events;
 

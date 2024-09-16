@@ -79,7 +79,6 @@ namespace hal
         // Only works if a software renderer is used.
         ref<const surface> surface() const;
 
-        [[nodiscard]] class renderer make_renderer(renderer::flag_bitmask flags = {}) const&;
-        [[nodiscard]] class renderer make_renderer(renderer::flag_bitmask flags = {}) const&& = delete;
+        [[nodiscard]] class renderer make_renderer(renderer::flag_bitmask flags = {});
     };
 }
