@@ -26,7 +26,7 @@ namespace test
     {
         constexpr hal::pixel::point new_size { 120, 120 };
 
-        hal::system::video vid;
+        hal::init<hal::proxy::video> vid;
 
         hal::window wnd { vid.make_window("HalTest: Window resize", { 640, 480 }, { hal::window::flag::hidden }) };
 
@@ -63,11 +63,11 @@ namespace test
     // Basic Halcyon initialization.
     int basic_init()
     {
-        HAL_ASSERT(!hal::system::video::initialized(), "Video should not be initialized at this point");
+        HAL_ASSERT(!hal::initialized(hal::system::video), "Video should not be initialized at this point");
 
-        hal::system::video vid;
+        hal::init<hal::proxy::video> vid;
 
-        HAL_ASSERT(hal::system::video::initialized(), "Video should report initialization by now");
+        HAL_ASSERT(hal::initialized(hal::system::video), "Video should report initialization by now");
 
         hal::window   wnd { vid.make_window("HalTest: Basic init", { 640, 480 }, { hal::window::flag::hidden }) };
         hal::renderer rnd { wnd.make_renderer() };
@@ -85,7 +85,7 @@ namespace test
     {
         constexpr char text[] { "We can be heroes - just for one day." };
 
-        hal::system::video vid;
+        hal::init<hal::proxy::video> vid;
 
         vid.clipboard.text(text);
 
@@ -111,7 +111,7 @@ namespace test
     // Sending a quit event and checking whether it gets caught.
     int events()
     {
-        hal::system::events evt;
+        hal::init<hal::proxy::events> evt;
 
         hal::event::holder eh;
 
@@ -162,7 +162,7 @@ namespace test
 
     int rvalues()
     {
-        hal::system::video {}.clipboard.text("Hello from HalTest!");
+        hal::init<hal::proxy::video> {}.clipboard.text("Hello from HalTest!");
 
         return EXIT_SUCCESS;
     }
@@ -217,7 +217,7 @@ namespace test
 
     int references()
     {
-        hal::system::video vid;
+        hal::init<hal::proxy::video> vid;
 
         hal::window           wnd { vid, "HalTest Views", { 128, 128 } };
         hal::ref<hal::window> r1 = wnd;
@@ -254,7 +254,7 @@ namespace test
 
     int audio_init()
     {
-        hal::system::audio a;
+        hal::init<hal::proxy::audio> a;
 
         hal::audio::sdl::spec gotten;
         hal::audio::device    dev = a.build_device().spec({ 44100, hal::audio::format::f32, 2, 4096 })(gotten);
@@ -288,7 +288,7 @@ namespace test
     // This test should fail.
     int invalid_texture()
     {
-        hal::system::video vid;
+        hal::init<hal::proxy::video> vid;
 
         hal::window   wnd { vid.make_window("HalTest: Invalid texture", { 640, 480 }, { hal::window::flag::hidden }) };
         hal::renderer rnd { wnd.make_renderer() };
@@ -305,7 +305,7 @@ namespace test
     // This test should fail.
     int invalid_event()
     {
-        hal::system::events sys;
+        hal::init<hal::proxy::events> sys;
 
         hal::event::holder eh;
 

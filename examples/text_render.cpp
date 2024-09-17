@@ -19,7 +19,7 @@ int main(int argc, char* argv[])
         return EXIT_FAILURE;
     }
 
-    hal::system::video vid;
+    hal::init<hal::proxy::video> vid;
 
     hal::window        wnd { vid.make_window("Text renderer", { 100, 100 }) };
     hal::event::holder evt;

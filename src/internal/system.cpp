@@ -2,12 +2,17 @@
 
 using namespace hal;
 
-bool system::initialized(type system)
+system_mask hal::initialized()
 {
-    return ::SDL_WasInit(static_cast<Uint32>(system)) != 0;
+    return static_cast<system>(::SDL_WasInit(0));
 }
 
-bool system::initialized(type_mask systems)
+bool hal::initialized(system sys)
+{
+    return ::SDL_WasInit(static_cast<Uint32>(sys)) != 0;
+}
+
+bool hal::initialized(system_mask systems)
 {
     return ::SDL_WasInit(systems.mask()) == systems.mask();
 }

@@ -4,6 +4,8 @@
 
 #include <halcyon/utility/metaprogramming.hpp>
 
+#include <halcyon/main.hpp>
+
 // metaprogramming.cpp:
 // Showcase of Halcyon metaprogramming.
 

@@ -17,6 +17,8 @@
 #include <halcyon/internal/string.hpp>
 #include <halcyon/internal/system.hpp>
 
+#include <halcyon/main.hpp>
+
 // video.hpp:
 // Master include file for Halcyon Video.
 
@@ -61,9 +63,11 @@ namespace hal
 
     namespace proxy
     {
-        class video : public system::base<system::type::video>
+        class video
         {
         public:
+            constexpr static system system { system::video };
+
             [[nodiscard]] window make_window(const char* title, pixel::point size, window::flag_bitmask flags = {});
             [[nodiscard]] window make_window(const char* title, HAL_TAG_NAME(fullscreen));
 
@@ -75,10 +79,5 @@ namespace hal
         protected:
             video();
         };
-    }
-
-    namespace system
-    {
-        using video = guard<proxy::video>;
     }
 }

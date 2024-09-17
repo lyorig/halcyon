@@ -4,7 +4,7 @@ int main(int argc, char* argv[])
 {
     static_assert(hal::meta::is_correct_main<main>);
 
-    hal::system::audio aud;
+    hal::init<hal::proxy::audio> aud;
 
     hal::audio::device dev { aud.build_device().changes({ hal::audio::change::any }).spec({ 44100, hal::audio::format::f32, 2, 2048 })() };
 

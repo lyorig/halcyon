@@ -5,6 +5,8 @@
 #include <halcyon/audio/device.hpp>
 #include <halcyon/audio/stream.hpp>
 
+#include <halcyon/main.hpp>
+
 namespace hal
 {
     namespace proxy
@@ -32,9 +34,11 @@ namespace hal
 
     namespace proxy
     {
-        class audio : public system::base<system::type::audio>
+        class audio
         {
         public:
+            constexpr static system system { system::audio };
+
             [[nodiscard]] hal::audio::builder::device build_device();
 
             [[nodiscard]] hal::audio::stream make_stream(hal::audio::config src, hal::audio::config dst);
@@ -45,11 +49,6 @@ namespace hal
         protected:
             audio();
         };
-    }
-
-    namespace system
-    {
-        using audio = guard<proxy::audio>;
     }
 
     namespace audio

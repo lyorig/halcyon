@@ -29,7 +29,7 @@ int main(int, char*[])
     static_assert(hal::meta::is_correct_main<main>);
 
     // Subsystem initialization.
-    hal::system::video vid;
+    hal::init<hal::proxy::video> vid;
 
     // "vid" only makes this function available if it's an lvalue.
     // Temporaries cannot create objects that rely on them.
@@ -84,5 +84,5 @@ private:
     HAL_NO_SIZE hal::image::context m_img;
     HAL_NO_SIZE hal::ttf::context m_ttf;
 
-    HAL_NO_SIZE hal::system::video m_vid;
+    HAL_NO_SIZE hal::init<hal::proxy::video> m_video;
 };

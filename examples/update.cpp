@@ -7,7 +7,7 @@ int main(int argc, char* argv[])
 {
     static_assert(hal::meta::is_correct_main<main>);
 
-    hal::system::video v;
+    hal::init<hal::proxy::video> v;
 
     hal::window   wnd { v, "Example", { 640, 480 } };
     hal::renderer rnd { wnd, hal::renderer::flag::vsync };

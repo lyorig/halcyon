@@ -4,6 +4,8 @@
 
 #include <halcyon/internal/system.hpp>
 
+#include <halcyon/main.hpp>
+
 // events.hpp:
 // Master include file for Halcyon Events, plus the events subsystem.
 
@@ -43,9 +45,11 @@ namespace hal
     namespace proxy
     {
         // A system that represents the event queue.
-        class events : public system::base<system::type::events>
+        class events
         {
         public:
+            constexpr static system system { system::events };
+
             // [private] The video subsystem implicitly initializes events.
             events(pass_key<video>);
 
@@ -80,10 +84,5 @@ namespace hal
             // [private] Delegating constructor.
             events();
         };
-    }
-
-    namespace system
-    {
-        using events = guard<proxy::events>;
     }
 }
