@@ -1,6 +1,6 @@
 #include <halcyon/misc.hpp>
 
-#include <SDL.h>
+#include "SDL.h"
 
 const char* hal::platform()
 {

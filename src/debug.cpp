@@ -1,6 +1,6 @@
 #include <halcyon/debug.hpp>
 
-#include <SDL_error.h>
+#include "SDL_error.h"
 
 using namespace hal;
 

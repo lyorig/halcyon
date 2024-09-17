@@ -1,44 +1,37 @@
 #include <halcyon/video/driver.hpp>
 
-#include <SDL_video.h>
-
-#include <halcyon/debug.hpp>
 #include <halcyon/video/renderer.hpp>
+
+#include <halcyon/types/exception.hpp>
+
+#include "SDL_video.h"
 
 using namespace hal;
 
 driver::index_t driver::amount()
 {
-    const auto ret = ::SDL_GetNumVideoDrivers();
-
-    HAL_ASSERT(ret >= 1, debug::last_error());
-
-    return static_cast<index_t>(ret);
+    if (const int ret { ::SDL_GetNumVideoDrivers() }; ret >= 1)
+        return static_cast<index_t>(ret);
+    else
+        return 0;
 }
 
-std::string_view driver::name()
+const char* driver::name()
 {
-    const char* ret { ::SDL_GetCurrentVideoDriver() };
-
-    HAL_ASSERT(ret != nullptr, debug::last_error());
-
-    return ret;
+    return ::SDL_GetCurrentVideoDriver();
 }
 
-std::string_view driver::name(index_t idx)
+const char* driver::name(index_t idx)
 {
-    const char* ret { ::SDL_GetVideoDriver(idx) };
-
-    HAL_ASSERT(ret != nullptr, debug::last_error());
-
-    return ret;
+    return ::SDL_GetVideoDriver(idx);
 }
 
 info::sdl::renderer driver::info(index_t idx)
 {
     info::sdl::renderer ret;
 
-    HAL_ASSERT_VITAL(::SDL_GetRenderDriverInfo(idx, ret.get()) == 0, debug::last_error());
+    if (::SDL_GetRenderDriverInfo(idx, ret.get()) != 0)
+        throw hal::exception {};
 
     return ret;
 }

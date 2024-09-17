@@ -1,8 +1,8 @@
 #include <halcyon/video/display.hpp>
 
-#include <SDL_video.h>
+#include "SDL_video.h"
 
-#include <halcyon/debug.hpp>
+#include <halcyon/types/exception.hpp>
 
 using namespace hal;
 
@@ -15,7 +15,8 @@ info::display::display(const sdl::display& src)
 
 info::sdl::display::display(hal::display::id_t id, pass_key<proxy::display>)
 {
-    HAL_ASSERT_VITAL(::SDL_GetDesktopDisplayMode(id, this) == 0, debug::last_error());
+    if (::SDL_GetDesktopDisplayMode(id, this) != 0)
+        throw hal::exception {};
 }
 
 info::sdl::display::display(const info::display& src)

@@ -1,11 +1,8 @@
 #include <halcyon/surface.hpp>
 
-#include <climits>
-#include <cstring>
-
-#include <SDL_image.h>
-
 #include <halcyon/utility/guard.hpp>
+
+#include "SDL_image.h"
 
 using namespace hal;
 
