@@ -13,12 +13,10 @@ Do a shallow clone, as there was a time when actual MP3 and WAV files were store
 
 # Usage
 Halcyon wraps SDL with several concepts:
-- **System:**: Manages SDL subsystems.
-- **Proxy**: Provides system functionality without initializing. Used for when some systems implicitly initialize others.
+- **Init:**: Manages SDL subsystem initialization via RAII.
+- **Proxy**: Provides subsystem functionality.
 > [!TIP]
 These are empty classes. You are encouraged to use them with `[[no_unique_address]]` (also defined as `HAL_NO_SIZE`).
-
-Both of the above also act as factories for classes that depend on their initialization. Such member functions are usually called `make_/build_(classname)`, with some exceptions, where a more fitting name was chosen.
 
 [^1]: Currently SDL2, SDL2_image, and SDL2_ttf.
 
@@ -30,7 +28,7 @@ This library is still under heavy developement; some namespaces etc. might not b
 int main(int argc, char* argv[]) {
   static_assert(hal::meta::is_correct_main<main>);
 
-  hal::system::video vid;
+  hal::init<hal::system::video> vid;
 
   hal::window   wnd{vid.make_window("Example", {640, 480})};
   hal::renderer rnd{wnd.make_renderer()};
@@ -60,9 +58,9 @@ Halcyon provides several macro functions for easing your debugging experience.
 - `HAL_WARN_IF[_VITAL]` - Print a warning message if a condition is true.
 - `HAL_PANIC` - Print where the panic occurred along with variadic user-supplied information, then exit.
 
-Halcyon's debugging facilities are configured via several macros.  
-If NDEBUG is not defined, debugging is implicitly enabled in advanced mode.
-- `HAL_DEBUG_YOLO`: Disables all printing & replaces assertions with std::unreachable().
+Halcyon's debugging facilities are configured via macros.  
+If NDEBUG is not defined, debugging is implicitly enabled.
+- `HAL_DEBUG_ENABLED`: Enables all of the aforementioned macros.
 - `HAL_DEBUG_ADVANCED`: Enables time logging, and outputs to an additional file. This adds static variables to your program.
 
 # Wishlist
