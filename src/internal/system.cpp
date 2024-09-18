@@ -1,3 +1,4 @@
+#include <SDL.h>
 #include <halcyon/internal/system.hpp>
 
 using namespace hal;

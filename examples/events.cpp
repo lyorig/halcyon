@@ -12,7 +12,7 @@ int main(int, char*[])
     using wf = hal::window::flag;
     using rf = hal::renderer::flag;
 
-    hal::init<hal::proxy::video> vid;
+    hal::init<hal::system::video> vid;
 
     hal::window   wnd { vid, "Halcyon Structure Showcase", { 640, 480 }, wf::resizable };
     hal::renderer rnd { wnd, { rf::accelerated, rf::vsync } };
