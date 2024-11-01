@@ -18,7 +18,7 @@ namespace
     {
     public:
         wchar_cvt(const wchar_t* path)
-            : m_buf { std::wcslen(path) * sizeof(wchar_t) + 1 }
+            : m_buf(std::wcslen(path) * sizeof(wchar_t) + 1)
         {
             HAL_ASSERT_VITAL(std::wcstombs(m_buf.data(), path, m_buf.size()) != -1, "Couldn't convert wchar_t string to char string");
         }

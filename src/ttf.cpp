@@ -18,7 +18,7 @@ font::font(accessor src, pt_t size, pass_key<ttf::context>)
     HAL_WARN_IF(height() != skip(), '\"', family(), ' ', style(), "\" has different height (", height(), "px) & skip (", skip(), "px). size_text() might not return accurate vertical results.");
 }
 
-builder::font_text font::render(std::string_view text) const
+builder::font_text font::render(const char* text) const
 {
     return { *this, text, pass_key<font> {} };
 }
@@ -28,11 +28,11 @@ builder::font_glyph font::render(char32_t glyph) const
     return { *this, glyph, pass_key<font> {} };
 }
 
-pixel::point font::size_text(const std::string_view& text) const
+pixel::point font::size_text(const char* text) const
 {
     point<int> size;
 
-    ::TTF_SizeUTF8(get(), text.data(), &size.x, &size.y);
+    ::TTF_SizeUTF8(get(), text, &size.x, &size.y);
 
     return pixel::point(size);
 }
@@ -47,12 +47,12 @@ pixel_t font::skip() const
     return static_cast<pixel_t>(::TTF_FontLineSkip(get()));
 }
 
-std::string_view font::family() const
+const char* font::family() const
 {
     return ::TTF_FontFaceFamilyName(get());
 }
 
-std::string_view font::style() const
+const char* font::style() const
 {
     return ::TTF_FontFaceStyleName(get());
 }
@@ -96,9 +96,9 @@ bool ttf::initialized()
 
 using bft = builder::font_text;
 
-bft::font_text(ref<const font> fnt, std::string_view text, pass_key<font> pk)
+bft::font_text(ref<const font> fnt, const char* text, pass_key<font> pk)
     : font_builder_base { fnt, pk }
-    , m_text { text.data() }
+    , m_text { text }
     , m_wrapLength { invalid() }
 {
 }

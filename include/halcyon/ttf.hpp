@@ -5,8 +5,6 @@
 
 #include "SDL_ttf.h"
 
-#include <string_view>
-
 // ttf.hpp:
 // SDL_ttf wrappers for font loading and text rendering.
 
@@ -44,25 +42,25 @@ namespace hal
         font(accessor src, pt_t size, pass_key<ttf::context>);
 
         // Render text to a surface.
-        [[nodiscard]] builder::font_text render(std::string_view text) const;
+        [[nodiscard]] builder::font_text render(const char* text) const;
 
         // Render a single glyph to a surface.
         [[nodiscard]] builder::font_glyph render(char32_t glyph) const;
 
         // When sizing text, it's important to know that the vertical size
         // doesn't necessarily have to match that of the rendered surface.
-        pixel::point size_text(const std::string_view& text) const;
+        pixel::point size_text(const char* text) const;
 
         pixel_t height() const;
         pixel_t skip() const;
 
-        std::string_view family() const;
-        std::string_view style() const;
+        const char* family() const;
+        const char* style() const;
 
         bool mono() const;
     };
 
-    constexpr std::string_view to_string(font::render_type rt)
+    constexpr const char* to_string(font::render_type rt)
     {
         switch (rt)
         {
@@ -157,7 +155,7 @@ namespace hal
         class font_text : public detail::font_builder_base<font_text>
         {
         public:
-            [[nodiscard]] font_text(ref<const font>, std::string_view text, pass_key<font>);
+            [[nodiscard]] font_text(ref<const font>, const char* text, pass_key<font>);
 
             // How many characters to wrap this text at.
             // Zero means only wrap on newlines.

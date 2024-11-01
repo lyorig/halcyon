@@ -4,7 +4,7 @@ using namespace hal;
 
 guard::color::color(lref<renderer> obj, hal::color c)
     : m_ref { obj }
-    , m_old { m_ref->color() }
+    , m_old { m_ref->color().get() }
 {
     set(c);
 }

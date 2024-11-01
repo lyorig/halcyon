@@ -4,8 +4,6 @@
 
 #include "SDL_audio.h"
 
-#include <string_view>
-
 namespace hal
 {
     namespace audio
@@ -47,7 +45,7 @@ namespace hal
         };
     }
 
-    constexpr std::string_view to_string(audio::format fmt)
+    constexpr const char* to_string(audio::format fmt)
     {
         using enum audio::format;
 
@@ -88,7 +86,7 @@ namespace hal
         }
     }
 
-    constexpr std::string_view to_string(audio::change ch)
+    constexpr const char* to_string(audio::change ch)
     {
         using enum audio::change;
 

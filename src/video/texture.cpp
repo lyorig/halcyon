@@ -2,6 +2,7 @@
 
 #include <halcyon/debug.hpp>
 #include <halcyon/surface.hpp>
+
 #include <halcyon/video/renderer.hpp>
 
 using namespace hal;
@@ -20,65 +21,54 @@ pixel::point texture::size() const
 {
     point<int> size;
 
-    this->query(nullptr, nullptr, &size.x, &size.y);
+    this->internal_query(nullptr, nullptr, &size.x, &size.y);
 
     return size;
 }
 
-color::value_t texture::alpha_mod() const
+result<color::value_t> texture::alpha_mod() const
 {
     color::value_t ret;
-
-    ::SDL_GetTextureAlphaMod(get(), &ret);
-
-    return ret;
+    return { ::SDL_GetTextureAlphaMod(get(), &ret), ret };
 }
 
-void texture::alpha_mod(color::value_t val)
+outcome texture::alpha_mod(color::value_t val)
 {
-    ::SDL_SetTextureAlphaMod(get(), val);
+    return ::SDL_SetTextureAlphaMod(get(), val);
 }
 
-color texture::color_mod() const
+result<color> texture::color_mod() const
 {
     color c;
 
-    HAL_ASSERT_VITAL(::SDL_GetTextureColorMod(get(), &c.r, &c.g, &c.b) == 0, debug::last_error());
-
-    return c;
+    return { ::SDL_GetTextureColorMod(get(), &c.r, &c.g, &c.b), c };
 }
 
-void texture::color_mod(color clr)
+outcome texture::color_mod(color clr)
 {
-    HAL_ASSERT_VITAL(::SDL_SetTextureColorMod(get(), clr.r, clr.g, clr.b) == 0, debug::last_error());
+    return ::SDL_SetTextureColorMod(get(), clr.r, clr.g, clr.b);
 }
 
-blend_mode texture::blend() const
+result<blend_mode> texture::blend() const
 {
     SDL_BlendMode bm;
-
-    HAL_ASSERT_VITAL(::SDL_GetTextureBlendMode(get(), &bm) == 0, debug::last_error());
-
-    return blend_mode(bm);
+    return { ::SDL_GetTextureBlendMode(get(), &bm), static_cast<blend_mode>(bm) };
 }
 
-void texture::blend(blend_mode bm)
+outcome texture::blend(blend_mode bm)
 {
-    HAL_ASSERT_VITAL(::SDL_SetTextureBlendMode(get(), static_cast<SDL_BlendMode>(bm)) == 0, debug::last_error());
+    return ::SDL_SetTextureBlendMode(get(), static_cast<SDL_BlendMode>(bm)) == 0;
 }
 
-pixel::format texture::pixel_format() const
+result<pixel::format> texture::pixel_format() const
 {
-    Uint32 ret;
-
-    query(&ret, nullptr, nullptr, nullptr);
-
-    return static_cast<pixel::format>(ret);
+    Uint32 res;
+    return { internal_query(&res, nullptr, nullptr, nullptr), static_cast<pixel::format>(res) };
 }
 
-void texture::query(Uint32* format, int* access, int* w, int* h) const
+outcome texture::internal_query(Uint32* format, int* access, int* w, int* h) const
 {
-    HAL_ASSERT_VITAL(::SDL_QueryTexture(get(), format, access, w, h) == 0, debug::last_error());
+    return ::SDL_QueryTexture(get(), format, access, w, h);
 }
 
 static_texture::static_texture(lref<const renderer> rnd, pixel::point size, pixel::format fmt)
@@ -91,21 +81,21 @@ static_texture::static_texture(lref<const renderer> rnd, ref<const surface> surf
 {
 }
 
-void static_texture::update(ref<const surface> surf, pixel::point pos)
+outcome static_texture::update(ref<const surface> surf, pixel::point pos)
 {
-    update(surf, { pos, surf->size() });
+    return update(surf, { pos, surf->size() });
 }
 
-void static_texture::update(ref<const surface> surf, pixel::rect area)
+outcome static_texture::update(ref<const surface> surf, pixel::rect area)
 {
     HAL_ASSERT(surf->size() >= area.size, "The surface must be >= to the area");
 
-    common_update(area.addr(), surf.get()->pixels, surf.get()->pitch);
+    return internal_update(area.addr(), surf.get()->pixels, surf.get()->pitch);
 }
 
-void static_texture::common_update(const SDL_Rect* area, const void* pixels, int pitch)
+outcome static_texture::internal_update(const SDL_Rect* area, const void* pixels, int pitch)
 {
-    HAL_ASSERT_VITAL(::SDL_UpdateTexture(get(), area, pixels, pitch) == 0, debug::last_error());
+    return ::SDL_UpdateTexture(get(), area, pixels, pitch);
 }
 
 target_texture::target_texture(lref<const renderer> rnd, pixel::point size, pixel::format fmt)
@@ -118,23 +108,21 @@ streaming_texture::streaming_texture(lref<const renderer> rnd, pixel::point size
 {
 }
 
-streaming_texture::data streaming_texture::lock()
+result<streaming_texture::data> streaming_texture::lock()
 {
-    return common_lock(nullptr);
+    return internal_lock(nullptr);
 }
 
-streaming_texture::data streaming_texture::lock(pixel::rect area)
+result<streaming_texture::data> streaming_texture::lock(pixel::rect area)
 {
-    return common_lock(area.addr());
+    return internal_lock(area.addr());
 }
 
-streaming_texture::data streaming_texture::common_lock(const SDL_Rect* area)
+result<streaming_texture::data> streaming_texture::internal_lock(const SDL_Rect* area)
 {
     data ret;
 
-    HAL_ASSERT_VITAL(::SDL_LockTexture(get(), area, reinterpret_cast<void**>(&ret.pixels), &ret.pitch) == 0, debug::last_error());
-
-    return ret;
+    return { ::SDL_LockTexture(get(), area, reinterpret_cast<void**>(&ret.pixels), &ret.pitch), std::move(ret) };
 }
 
 void streaming_texture::unlock()

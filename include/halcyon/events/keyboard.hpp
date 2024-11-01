@@ -14,7 +14,7 @@ namespace hal
 {
     namespace proxy
     {
-        class keyboard;
+        class events;
     }
 
     namespace keyboard
@@ -208,7 +208,7 @@ namespace hal
         class state_reference
         {
         public:
-            state_reference(pass_key<proxy::keyboard>);
+            state_reference(pass_key<proxy::events>);
 
             bool operator[](button b) const;
             bool operator[](key k) const;
@@ -220,7 +220,7 @@ namespace hal
         class mod_state : public enum_bitmask<mod, meta::underlying_type<SDL_Keymod>>
         {
         public:
-            mod_state(pass_key<proxy::keyboard>);
+            mod_state(pass_key<proxy::events>);
         };
     }
 

@@ -15,48 +15,48 @@ renderer::renderer(lref<const class window> wnd, flag_bitmask f)
     clear();
 }
 
-void renderer::clear()
+outcome renderer::clear()
 {
-    HAL_ASSERT_VITAL(::SDL_RenderClear(get()) == 0, debug::last_error());
+    return ::SDL_RenderClear(get());
 }
 
-void renderer::present()
+outcome renderer::present()
 {
     ::SDL_RenderPresent(get());
-    this->clear();
+    return this->clear();
 }
 
-void renderer::draw(coord::point pt)
+outcome renderer::draw(coord::point pt)
 {
-    ::SDL_RenderDrawPointF(get(), pt.x, pt.y);
+    return ::SDL_RenderDrawPointF(get(), pt.x, pt.y);
 }
 
-void renderer::draw(coord::point pt, struct color c)
-{
-    guard::color _ { *this, c };
-    draw(pt);
-}
-
-void renderer::draw(coord::point from, coord::point to)
-{
-    HAL_ASSERT_VITAL(::SDL_RenderDrawLineF(get(), from.x, from.y, to.x, to.y) == 0, debug::last_error());
-}
-
-void renderer::draw(coord::point from, coord::point to, struct color c)
+outcome renderer::draw(coord::point pt, struct color c)
 {
     guard::color _ { *this, c };
-    draw(from, to);
+    return draw(pt);
 }
 
-void renderer::draw(coord::rect area)
+outcome renderer::draw(coord::point from, coord::point to)
 {
-    HAL_ASSERT_VITAL(::SDL_RenderDrawRectF(get(), area.addr()) == 0, debug::last_error());
+    return ::SDL_RenderDrawLineF(get(), from.x, from.y, to.x, to.y);
 }
 
-void renderer::draw(coord::rect area, struct color c)
+outcome renderer::draw(coord::point from, coord::point to, struct color c)
 {
     guard::color _ { *this, c };
-    draw(area);
+    return draw(from, to);
+}
+
+outcome renderer::draw(coord::rect area)
+{
+    return ::SDL_RenderDrawRectF(get(), area.addr());
+}
+
+outcome renderer::draw(coord::rect area, struct color c)
+{
+    guard::color _ { *this, c };
+    return draw(area);
 }
 
 copyer renderer::draw(ref<const texture> tx)
@@ -64,55 +64,55 @@ copyer renderer::draw(ref<const texture> tx)
     return { *this, tx };
 }
 
-void renderer::fill(coord::rect area)
+outcome renderer::fill(coord::rect area)
 {
-    HAL_ASSERT_VITAL(::SDL_RenderFillRectF(get(), area.addr()) == 0, debug::last_error());
+    return ::SDL_RenderFillRectF(get(), area.addr());
 }
 
-void renderer::fill(coord::rect area, struct color c)
+outcome renderer::fill(coord::rect area, struct color c)
 {
     guard::color _ { *this, c };
-    fill(area);
+    return fill(area);
 }
 
-void renderer::fill(std::span<const coord::rect> areas)
+outcome renderer::fill(std::span<const coord::rect> areas)
 {
-    HAL_ASSERT_VITAL(::SDL_RenderFillRectsF(get(), areas.front().addr(), static_cast<int>(areas.size())) == 0, debug::last_error());
+    return ::SDL_RenderFillRectsF(get(), areas.front().addr(), static_cast<int>(areas.size()));
 }
 
-void renderer::fill(std::span<const coord::rect> areas, struct color c)
-{
-    guard::color _ { *this, c };
-    fill(areas);
-}
-
-void renderer::fill()
-{
-    HAL_ASSERT_VITAL(::SDL_RenderFillRect(get(), nullptr) == 0, debug::last_error());
-}
-
-void renderer::fill(struct color c)
+outcome renderer::fill(std::span<const coord::rect> areas, struct color c)
 {
     guard::color _ { *this, c };
-    fill();
+    return fill(areas);
 }
 
-void renderer::target(ref<target_texture> tx)
+outcome renderer::fill()
 {
-    this->common_target(tx.get());
+    return ::SDL_RenderFillRect(get(), nullptr);
 }
 
-void renderer::reset_target()
+outcome renderer::fill(struct color c)
 {
-    this->common_target(nullptr);
+    guard::color _ { *this, c };
+    return fill();
+}
+
+outcome renderer::target(ref<target_texture> tx)
+{
+    return internal_target(tx.get());
+}
+
+outcome renderer::reset_target()
+{
+    return this->internal_target(nullptr);
 }
 
 surface renderer::read_pixels() const
 {
     pixel::format fmt { window()->pixel_format() };
-    hal::surface  surf { size(), fmt };
+    hal::surface  surf { size().get(), fmt };
 
-    HAL_ASSERT_VITAL(::SDL_RenderReadPixels(get(), nullptr, static_cast<Uint32>(fmt), surf.get()->pixels, surf.get()->pitch) == 0, debug::last_error());
+    static_cast<void>(::SDL_RenderReadPixels(get(), nullptr, static_cast<Uint32>(fmt), surf.get()->pixels, surf.get()->pitch));
 
     return surf;
 }
@@ -122,58 +122,54 @@ surface renderer::read_pixels(pixel::rect area) const
     pixel::format fmt { window()->pixel_format() };
     hal::surface  surf { area.size, fmt };
 
-    HAL_ASSERT_VITAL(::SDL_RenderReadPixels(get(), area.addr(), static_cast<Uint32>(fmt), surf.get()->pixels, surf.get()->pitch) == 0, debug::last_error());
+    static_cast<void>(::SDL_RenderReadPixels(get(), area.addr(), static_cast<Uint32>(fmt), surf.get()->pixels, surf.get()->pitch));
 
     return surf;
 }
 
-color renderer::color() const
+result<color> renderer::color() const
 {
     hal::color ret;
 
-    HAL_ASSERT_VITAL(::SDL_GetRenderDrawColor(get(), &ret.r, &ret.g, &ret.b, &ret.a) == 0, debug::last_error());
-
-    return ret;
+    return { ::SDL_GetRenderDrawColor(get(), &ret.r, &ret.g, &ret.b, &ret.a), ret };
 }
 
-void renderer::color(hal::color clr)
+outcome renderer::color(hal::color clr)
 {
-    HAL_ASSERT_VITAL(::SDL_SetRenderDrawColor(get(), clr.r, clr.g, clr.b, clr.a) == 0, debug::last_error());
+    return ::SDL_SetRenderDrawColor(get(), clr.r, clr.g, clr.b, clr.a);
 }
 
-blend_mode renderer::blend() const
+result<blend_mode> renderer::blend() const
 {
     SDL_BlendMode bm;
 
-    HAL_ASSERT_VITAL(::SDL_GetRenderDrawBlendMode(get(), &bm) == 0, debug::last_error());
-
-    return static_cast<blend_mode>(bm);
+    return { ::SDL_GetRenderDrawBlendMode(get(), &bm), static_cast<blend_mode>(bm) };
 }
 
-void renderer::blend(blend_mode bm)
+outcome renderer::blend(blend_mode bm)
 {
-    HAL_ASSERT_VITAL(::SDL_SetRenderDrawBlendMode(get(), SDL_BlendMode(bm)) == 0, debug::last_error());
+    return ::SDL_SetRenderDrawBlendMode(get(), SDL_BlendMode(bm));
 }
 
-pixel::point renderer::size() const
+result<pixel::point> renderer::size() const
 {
     hal::point<int> sz;
     ::SDL_RenderGetLogicalSize(get(), &sz.x, &sz.y);
 
-    if (sz.x == 0)
-        HAL_ASSERT_VITAL(::SDL_GetRendererOutputSize(get(), &sz.x, &sz.y) == 0, debug::last_error());
+    if (sz.x)
+        return { ::SDL_GetRendererOutputSize(get(), &sz.x, &sz.y), static_cast<pixel::point>(sz) };
 
-    return static_cast<pixel::point>(sz);
+    return { true, static_cast<pixel::point>(sz) };
 }
 
-void renderer::size(pixel::point sz)
+outcome renderer::size(pixel::point sz)
 {
-    HAL_ASSERT_VITAL(::SDL_RenderSetLogicalSize(get(), sz.x, sz.y) == 0, debug::last_error());
+    return ::SDL_RenderSetLogicalSize(get(), sz.x, sz.y);
 }
 
-void renderer::size(scaler scl)
+outcome renderer::size(scaler scl)
 {
-    size(scl(size()));
+    return size(scl(size().get()));
 }
 
 ref<const window> renderer::window() const
@@ -186,9 +182,9 @@ ref<window> renderer::window()
     return { ::SDL_RenderGetWindow(get()), pass_key<renderer> {} };
 }
 
-info::sdl::renderer renderer::info() const
+outcome renderer::info(renderer_info& info) const
 {
-    return { *this, pass_key<renderer> {} };
+    return ::SDL_GetRendererInfo(get(), &info);
 }
 
 static_texture renderer::make_static_texture(ref<const surface> surf)
@@ -206,73 +202,39 @@ streaming_texture renderer::make_streaming_texture(pixel::point size, pixel::for
     return { *this, size, fmt };
 }
 
-void renderer::common_target(SDL_Texture* target)
+outcome renderer::internal_target(SDL_Texture* target)
 {
-    HAL_ASSERT_VITAL(::SDL_SetRenderTarget(get(), target) == 0, debug::last_error());
+    return ::SDL_SetRenderTarget(get(), target);
 }
 
-// Renderer information (SDL).
-
-info::sdl::renderer::renderer(ref<const hal::renderer> rnd, pass_key<hal::renderer>)
-{
-    HAL_ASSERT_VITAL(::SDL_GetRendererInfo(rnd.get(), static_cast<SDL_RendererInfo*>(this)) == 0, debug::last_error());
-}
-
-std::string_view info::sdl::renderer::name() const
+c_string renderer_info::name() const
 {
     return SDL_RendererInfo::name;
 }
 
-renderer::flag_bitmask info::sdl::renderer::flags() const
+renderer::flag_bitmask renderer_info::flags() const
 {
-    return static_cast<hal::renderer::flag>(SDL_RendererInfo::flags);
+    return static_cast<renderer::flag>(SDL_RendererInfo::flags);
 }
 
-std::span<const pixel::format> info::sdl::renderer::formats() const
+std::span<const pixel::format> renderer_info::formats() const
 {
-    static_assert(sizeof(pixel::format) == sizeof(Uint32));
-    return { reinterpret_cast<const pixel::format*>(texture_formats), static_cast<std::size_t>(num_texture_formats) };
-}
+    static_assert(sizeof(pixel::format) == sizeof(texture_formats[0]));
 
-pixel::point info::sdl::renderer::max_texture_size() const
-{
     return {
-        static_cast<pixel_t>(max_texture_width),
-        static_cast<pixel_t>(max_texture_height)
+        reinterpret_cast<const pixel::format*>(texture_formats),
+        static_cast<std::size_t>(num_texture_formats)
     };
 }
 
-SDL_RendererInfo* info::sdl::renderer::get()
+pixel::point renderer_info::max_texture_size() const
 {
-    return this;
+    return { max_texture_width, max_texture_height };
 }
 
-std::ostream& info::sdl::operator<<(std::ostream& str, const info::sdl::renderer& inf)
+std::ostream& hal::operator<<(std::ostream& str, const renderer_info& info)
 {
-    str << "[name: " << inf.name() << ", flags: 0x" << std::hex << inf.flags().mask() << std::dec << ", formats: [";
-
-    const auto span = inf.formats();
-
-    for (auto iter = span.begin(); iter != span.end(); ++iter)
-    {
-        if (iter != span.begin())
-            str << ", ";
-
-        str << hal::to_string(*iter);
-    }
-
-    return str << "], MTS: " << inf.max_texture_size() << "]]";
-}
-
-// Renderer information (compressed).
-
-info::renderer::renderer(const sdl::renderer& src)
-    : name { src.name() }
-    , max_texture_size { src.max_texture_size() }
-    , flags { src.flags() }
-    , formats { src.formats() }
-
-{
+    return str << '[' << info.name() << ", max tex. size " << info.max_texture_size() << ", flags " << info.flags().mask() << ']';
 }
 
 // Copyer.
@@ -301,12 +263,10 @@ copyer& copyer::outline(color c)
     return outline();
 }
 
-void copyer::operator()()
+outcome copyer::operator()()
 {
-    HAL_ASSERT_VITAL(::SDL_RenderCopyExF(m_pass.get(), m_this.get(),
-                         m_src.pos.x == unset_pos<src_t>() ? nullptr : m_src.addr(),
-                         m_dst.pos.x == unset_pos<dst_t>() ? nullptr : m_dst.addr(),
-                         m_angle, nullptr, static_cast<SDL_RendererFlip>(m_flip))
-            == 0,
-        debug::last_error());
+    return ::SDL_RenderCopyExF(m_pass.get(), m_this.get(),
+        m_src.pos.x == unset_pos<src_t>() ? nullptr : m_src.addr(),
+        m_dst.pos.x == unset_pos<dst_t>() ? nullptr : m_dst.addr(),
+        m_angle, nullptr, static_cast<SDL_RendererFlip>(m_flip));
 }

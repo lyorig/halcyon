@@ -9,7 +9,7 @@ namespace hal
 {
     namespace proxy
     {
-        class clipboard;
+        class video;
     }
 
     // SDL sometimes returns string pointers that we have to free via
@@ -18,7 +18,7 @@ namespace hal
     class string : public detail::resource<char, ::SDL_free>
     {
     public:
-        string(char* ptr, pass_key<proxy::clipboard>);
+        string(char* ptr, pass_key<proxy::video>);
 
         const_pointer begin() const;
         pointer       begin();
@@ -34,5 +34,5 @@ namespace hal
         const_pointer c_str() const;
     };
 
-    bool operator==(string lhs, std::string_view rhs);
+    bool operator==(string lhs, const char* rhs);
 }

@@ -28,7 +28,7 @@ namespace hal
             resource(pointer ptr)
                 : m_ptr { ptr }
             {
-                HAL_ASSERT(valid(), debug::last_error());
+                HAL_ASSERT(valid(), last_error());
             }
 
             pointer release()

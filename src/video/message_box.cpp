@@ -16,9 +16,9 @@ namespace
     }
 }
 
-void message_box::show(type tp, std::string_view title, std::string_view body)
+outcome message_box::show(type tp, const char* title, const char* body)
 {
-    HAL_ASSERT_VITAL(::SDL_ShowSimpleMessageBox(std::to_underlying(tp), title.data(), body.data(), nullptr) == 0, debug::last_error());
+    return ::SDL_ShowSimpleMessageBox(std::to_underlying(tp), title, body, nullptr);
 }
 
 msbb::builder()
@@ -35,16 +35,16 @@ msbb::builder()
 {
 }
 
-msbb& msbb::title(std::string_view text)
+msbb& msbb::title(const char* text)
 {
-    m_data.title = text.data();
+    m_data.title = text;
 
     return *this;
 }
 
-msbb& msbb::body(std::string_view text)
+msbb& msbb::body(const char* text)
 {
-    m_data.message = text.data();
+    m_data.message = text;
 
     return *this;
 }
@@ -56,13 +56,13 @@ msbb& msbb::type(message_box::type tp)
     return *this;
 }
 
-msbb& msbb::buttons(std::initializer_list<std::string_view> names)
+msbb& msbb::buttons(std::initializer_list<const char*> names)
 {
     namespace mb = message_box;
 
     m_data.numbuttons = static_cast<int>(names.size());
 
-    m_btn.resize(m_data.numbuttons);
+    m_btn = decltype(m_btn) { names.size() };
 
     for (mb::button_t i { 0 }; i < m_data.numbuttons; ++i)
     {
@@ -71,7 +71,7 @@ msbb& msbb::buttons(std::initializer_list<std::string_view> names)
 
         btn_it->buttonid = i;
         btn_it->flags    = 0;
-        btn_it->text     = str_it->data();
+        btn_it->text     = *str_it;
     }
 
     return *this;
@@ -119,7 +119,8 @@ message_box::button_t msbb::operator()()
 
     int ret;
 
-    HAL_ASSERT_VITAL(::SDL_ShowMessageBox(&m_data, &ret) == 0, debug::last_error());
-
-    return static_cast<button_t>(ret);
+    if (::SDL_ShowMessageBox(&m_data, &ret) == 0)
+        return static_cast<button_t>(ret);
+    else
+        return -1;
 }

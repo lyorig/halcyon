@@ -17,7 +17,7 @@ namespace hal
         using make_printable_int = std::conditional_t<sizeof(T) == 1, std::conditional_t<std::is_signed_v<T>, i16, u16>, T>;
     }
 
-    // Ensure a number is printable; that is, if 'val' is of a type tbat
+    // Ensure a number is printable; that is, if 'val' is of a type that
     // would cause it to be interpreted as a character by output streams,
     // it'll be widened to the next smallest integer type.
     template <meta::arithmetic T>

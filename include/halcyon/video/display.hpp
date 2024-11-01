@@ -1,8 +1,8 @@
 #pragma once
 
-#include <halcyon/utility/pass_key.hpp>
-
 #include <halcyon/video/types.hpp>
+
+#include <halcyon/utility/pass_key.hpp>
 
 #include "SDL_video.h"
 
@@ -13,51 +13,24 @@ namespace hal
 {
     namespace proxy
     {
-        class display;
+        class video;
     }
 
-    namespace display
+    // Display device data.
+    class display : private SDL_DisplayMode
     {
+    public:
         using id_t = u8;
-        using hz_t = hal::u16;
-    }
+        using hz_t = u16;
 
-    namespace info
-    {
-        namespace sdl
-        {
-            class display;
-        }
+        display() = default;
 
-        class display
-        {
-        public:
-            display() = default;
-            display(const sdl::display& src);
+        pixel::point  size() const;
+        pixel::format format() const;
+        hz_t          hz() const;
 
-            pixel::point       size;
-            pixel::format      fmt;
-            hal::display::hz_t hz;
-        };
+        SDL_DisplayMode* ptr(pass_key<proxy::video>);
 
-        namespace sdl
-        {
-            // Display device data.
-            class display : private SDL_DisplayMode
-            {
-            public:
-                display() = default;
-                display(hal::display::id_t id, pass_key<proxy::display>);
-                display(const info::display& src);
-
-                pixel::point       size() const;
-                pixel::format      format() const;
-                hal::display::hz_t hz() const;
-
-                friend std::ostream& operator<<(std::ostream& str, const info::display& disp);
-            };
-
-            static_assert(sizeof(display) == sizeof(SDL_DisplayMode));
-        }
-    }
+        friend std::ostream& operator<<(std::ostream& str, const display& disp);
+    };
 }

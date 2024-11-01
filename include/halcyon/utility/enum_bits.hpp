@@ -6,6 +6,7 @@
 
 #include <bit>
 #include <initializer_list>
+#include <type_traits>
 
 // utility/enum_bits.hpp:
 // Helper template class for bit manipulation with enums.
@@ -16,9 +17,9 @@ namespace hal
 {
     template <typename T>
         requires std::is_enum_v<T>
-    meta::underlying_type<T> to_underlying(T val)
+    std::underlying_type_t<T> to_underlying(T val)
     {
-        return static_cast<meta::underlying_type<T>>(val);
+        return static_cast<std::underlying_type_t<T>>(val);
     }
 
     // A bitset-like class for (scoped) enums defined as bit masks (i.e. 0b1, 0b10, 0b100...).

@@ -8,6 +8,9 @@
 #include <halcyon/utility/enum_bits.hpp>
 #include <halcyon/utility/pass_key.hpp>
 
+#include <halcyon/types/c_string.hpp>
+#include <halcyon/types/result.hpp>
+
 #include <span>
 
 namespace hal
@@ -29,7 +32,7 @@ namespace hal
                 device(proxy::audio sys);
 
                 // Choose a specific audio device.
-                device& name(std::string_view name);
+                device& name(c_string name);
 
                 // Have this be a capture device.
                 device& capture(bool val = true);
@@ -39,13 +42,13 @@ namespace hal
                 device& changes(enum_bitmask<change> allowed_changes);
 
                 audio::device operator()();
-                audio::device operator()(sdl::spec& obtained);
+                audio::device operator()(class spec& obtained);
 
             private:
-                sdl::spec   m_spec;
-                const char* m_name;
-                int         m_allowedChanges;
-                bool        m_capture;
+                class spec m_spec;
+                c_string   m_name;
+                int        m_allowedChanges;
+                bool       m_capture;
             };
         }
 
@@ -56,20 +59,19 @@ namespace hal
 
             // Device querying functions return -1 to signalize an unknown
             // amount of devices etc., but don't intend it to be an error.
-            constexpr static id_t invalid_id { static_cast<id_t>(-1) };
-            static_assert(static_cast<int>(-1) == invalid_id);
+            constexpr static id_t invalid_id = -1;
 
             // Default constructor. Creates an invalid device.
             device();
 
             // [private] Construct an audio device via hal::audio::builder::device.
-            device(const char* name, bool capture, const SDL_AudioSpec* desired, SDL_AudioSpec* obtained, int allowed_changes, pass_key<builder::device>);
+            device(c_string name, bool capture, const SDL_AudioSpec* desired, SDL_AudioSpec* obtained, int allowed_changes, pass_key<builder::device>);
             ~device();
 
             device(const device&)            = delete;
             device& operator=(const device&) = delete;
 
-            void queue(std::span<std::byte> bytes);
+            outcome queue(std::span<std::byte> bytes);
 
             void pause(bool p);
 

@@ -45,24 +45,24 @@ surface::surface(SDL_Surface* ptr, pass_key<builder::font_glyph>)
 {
 }
 
-void surface::fill(color clr)
+outcome surface::fill(color clr)
 {
-    HAL_ASSERT_VITAL(::SDL_FillRect(get(), nullptr, mapped(get()->format, clr)) == 0, debug::last_error());
+    return ::SDL_FillRect(get(), nullptr, mapped(get()->format, clr));
 }
 
-void surface::fill(pixel::rect area, color clr)
+outcome surface::fill(pixel::rect area, color clr)
 {
-    HAL_ASSERT_VITAL(::SDL_FillRect(get(), area.addr(), mapped(get()->format, clr)) == 0, debug::last_error());
+    return ::SDL_FillRect(get(), area.addr(), mapped(get()->format, clr));
 }
 
-void surface::fill(std::span<const pixel::rect> areas, color clr)
+outcome surface::fill(std::span<const pixel::rect> areas, color clr)
 {
-    HAL_ASSERT_VITAL(::SDL_FillRects(get(), reinterpret_cast<const SDL_Rect*>(areas.data()), static_cast<int>(areas.size()), mapped(get()->format, clr)) == 0, debug::last_error());
+    return ::SDL_FillRects(get(), reinterpret_cast<const SDL_Rect*>(areas.data()), static_cast<int>(areas.size()), mapped(get()->format, clr));
 }
 
-void surface::lock()
+outcome surface::lock()
 {
-    HAL_ASSERT(::SDL_LockSurface(get()) == 0, debug::last_error());
+    return ::SDL_LockSurface(get());
 }
 
 void surface::unlock()
@@ -70,9 +70,9 @@ void surface::unlock()
     ::SDL_UnlockSurface(get());
 }
 
-void surface::save(outputter dst) const
+outcome surface::save(outputter dst) const
 {
-    HAL_ASSERT_VITAL(::SDL_SaveBMP_RW(get(), dst.use(pass_key<surface> {}), true) == 0, debug::last_error());
+    return ::SDL_SaveBMP_RW(get(), dst.use(pass_key<surface> {}), true);
 }
 
 blitter surface::blit(surface& dst) const
@@ -130,46 +130,40 @@ pixel_reference surface::operator[](pixel::point pos)
     return { static_cast<std::byte*>(get()->pixels), get()->pitch, get()->format, pos, pass_key<surface> {} };
 }
 
-blend_mode surface::blend() const
+result<blend_mode> surface::blend() const
 {
     SDL_BlendMode bm;
 
-    HAL_ASSERT_VITAL(::SDL_GetSurfaceBlendMode(get(), &bm) == 0, debug::last_error());
-
-    return blend_mode(bm);
+    return { ::SDL_GetSurfaceBlendMode(get(), &bm), static_cast<blend_mode>(bm) };
 }
 
-void surface::blend(blend_mode bm)
+outcome surface::blend(blend_mode bm)
 {
-    HAL_ASSERT_VITAL(::SDL_SetSurfaceBlendMode(get(), SDL_BlendMode(bm)) == 0, debug::last_error());
+    return ::SDL_SetSurfaceBlendMode(get(), SDL_BlendMode(bm));
 }
 
-color surface::color_mod() const
+result<color> surface::color_mod() const
 {
     color ret;
 
-    HAL_ASSERT_VITAL(::SDL_GetSurfaceColorMod(get(), &ret.r, &ret.g, &ret.b) == 0, debug::last_error());
-
-    return ret;
+    return { ::SDL_GetSurfaceColorMod(get(), &ret.r, &ret.g, &ret.b), ret };
 }
 
-void surface::color_mod(color col)
+outcome surface::color_mod(color col)
 {
-    HAL_ASSERT_VITAL(::SDL_SetSurfaceColorMod(get(), col.r, col.g, col.b) == 0, debug::last_error());
+    return ::SDL_SetSurfaceColorMod(get(), col.r, col.g, col.b) == 0;
 }
 
-color::value_t surface::alpha_mod() const
+result<color::value_t> surface::alpha_mod() const
 {
     color::value_t ret;
 
-    HAL_ASSERT_VITAL(::SDL_GetSurfaceAlphaMod(get(), &ret) == 0, debug::last_error());
-
-    return ret;
+    return { ::SDL_GetSurfaceAlphaMod(get(), &ret) == 0, ret };
 }
 
-void surface::alpha_mod(color::value_t val)
+outcome surface::alpha_mod(color::value_t val)
 {
-    HAL_ASSERT_VITAL(::SDL_SetSurfaceAlphaMod(get(), val) == 0, debug::last_error());
+    return ::SDL_SetSurfaceAlphaMod(get(), val);
 }
 
 // Const pixel reference.
@@ -240,26 +234,22 @@ void pixel_reference::set_mapped(Uint32 mapped)
 
 // Blitter.
 
-void blitter::operator()()
+outcome blitter::operator()()
 {
-    HAL_ASSERT_VITAL(::SDL_BlitScaled(
-                         m_this.get(),
-                         m_src.pos.x == unset_pos<src_t>() ? nullptr : reinterpret_cast<const SDL_Rect*>(m_src.addr()),
-                         m_pass.get(),
-                         m_dst.pos.x == unset_pos<dst_t>() ? nullptr : reinterpret_cast<SDL_Rect*>(m_dst.addr()))
-            == 0,
-        debug::last_error());
+    return ::SDL_BlitScaled(
+        m_this.get(),
+        m_src.pos.x == unset_pos<src_t>() ? nullptr : reinterpret_cast<const SDL_Rect*>(m_src.addr()),
+        m_pass.get(),
+        m_dst.pos.x == unset_pos<dst_t>() ? nullptr : reinterpret_cast<SDL_Rect*>(m_dst.addr()));
 }
 
-void blitter::operator()(HAL_TAG_NAME(keep_dst)) const
+outcome blitter::operator()(HAL_TAG_NAME(keep_dst)) const
 {
     pixel::rect copy { m_dst };
 
-    HAL_ASSERT_VITAL(::SDL_BlitScaled(
-                         m_this.get(),
-                         m_src.pos.x == unset_pos<src_t>() ? nullptr : m_src.addr(),
-                         m_pass.get(),
-                         m_dst.pos.x == unset_pos<dst_t>() ? nullptr : copy.addr())
-            == 0,
-        debug::last_error());
+    return ::SDL_BlitScaled(
+        m_this.get(),
+        m_src.pos.x == unset_pos<src_t>() ? nullptr : m_src.addr(),
+        m_pass.get(),
+        m_dst.pos.x == unset_pos<dst_t>() ? nullptr : copy.addr());
 }

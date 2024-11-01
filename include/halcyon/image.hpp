@@ -77,7 +77,7 @@ namespace hal
 
             // Save a surface with a specified format.
             // JPEG files are currently saved at a hard-coded 90 quality.
-            void save(ref<const surface>, save_format fmt, outputter dst) const;
+            outcome save(ref<const surface>, save_format fmt, outputter dst) const;
 
             // Check an image's format.
             // This modifies the accessor, but ultimately sets it back where it was.
@@ -94,7 +94,7 @@ namespace hal
         static_assert(::IMG_GetError == ::SDL_GetError);
     }
 
-    constexpr std::string_view to_string(image::init_format fmt)
+    constexpr const char* to_string(image::init_format fmt)
     {
         using enum image::init_format;
 
@@ -123,7 +123,7 @@ namespace hal
         }
     }
 
-    constexpr std::string_view to_string(image::save_format fmt)
+    constexpr const char* to_string(image::save_format fmt)
     {
         using enum image::save_format;
 
@@ -140,7 +140,7 @@ namespace hal
         }
     }
 
-    constexpr std::string_view to_string(image::load_format fmt)
+    constexpr const char* to_string(image::load_format fmt)
     {
         using enum image::load_format;
 

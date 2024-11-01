@@ -5,6 +5,8 @@
 #include <halcyon/internal/resource.hpp>
 #include <halcyon/internal/system.hpp>
 
+#include <halcyon/types/result.hpp>
+
 #include <span>
 
 namespace hal
@@ -27,19 +29,22 @@ namespace hal
         class stream : public detail::resource<SDL_AudioStream, ::SDL_FreeAudioStream>
         {
         public:
+            static constexpr i32 processing_failed { -1 };
+
             // Default constructor. Creates an invalid stream.
             stream() = default;
 
             stream(proxy::audio sys, config src, config dst);
 
-            void flush();
+            outcome flush();
 
             void clear();
 
-            void put(std::span<const std::byte> data);
+            outcome put(std::span<const std::byte> data);
 
             i32 available() const;
 
+            // Returns the amount of bytes written, or processing_failed on failure.
             i32 get_processed(std::span<std::byte> buffer) const;
         };
     }

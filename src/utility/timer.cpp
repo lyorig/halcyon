@@ -1,5 +1,7 @@
 #include <halcyon/utility/timer.hpp>
 
+#include <ostream>
+
 using namespace hal;
 
 timer::timer()

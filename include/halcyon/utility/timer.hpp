@@ -3,6 +3,7 @@
 #include <halcyon/types/numeric.hpp>
 
 #include <chrono>
+#include <iosfwd>
 
 // utility/timer.hpp:
 // Timing facilities.

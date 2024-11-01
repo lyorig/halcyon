@@ -26,6 +26,9 @@ namespace hal
     public:
         using id_t = u8;
 
+        static constexpr id_t          invalid_id { 0 };
+        static constexpr display::id_t invalid_display_index = -1;
+
         enum class flag : u16
         {
             none                  = 0,
@@ -44,17 +47,20 @@ namespace hal
         // Create a window with specific flags.
         // If you want fullscreen, a tagged constructor exists for that purpose
         // and using it is recommended.
-        window(proxy::video sys, std::string_view title, pixel::point size, flag_bitmask f = {});
+        window(proxy::video sys, c_string title, pixel::point size, flag_bitmask f = {});
 
         // Create a window in fullscreen mode.
-        window(proxy::video sys, std::string_view title, HAL_TAG_NAME(fullscreen));
+        window(proxy::video sys, c_string title, HAL_TAG_NAME(fullscreen));
 
         // Get the index of the display this window is currently on.
+        // In case of failure, returns invalid_display_index.
         display::id_t display_index() const;
 
         pixel::format pixel_format() const;
 
-        u8 id() const;
+        // Get this window's ID – used in window events, for example.
+        // In case of failure, returns 0.
+        id_t id() const;
 
         flag_bitmask flags() const;
 
@@ -65,12 +71,15 @@ namespace hal
         void         size(pixel::point sz);
         void         size(scaler scl);
 
-        std::string_view title() const;
-        void             title(std::string_view val);
+        c_string title() const;
+        void     title(const char* val);
 
         // Returns true if the window is fullscreen or fullscreen borderless.
         bool fullscreen() const;
-        void fullscreen(bool set);
+
+        // Set whether the window is in fullscreen.
+        // Returns whether the operation succeeded.
+        outcome fullscreen(bool set);
 
         ref<const renderer> renderer() const;
         ref<class renderer> renderer();

@@ -10,15 +10,14 @@ using adb = audio::builder::device;
 
 adb::device(proxy::audio)
     : m_spec { 44100, format::i32, 2, 4096 }
-    , m_name { nullptr }
     , m_allowedChanges { 0 }
     , m_capture { false }
 {
 }
 
-adb& adb::name(std::string_view name)
+adb& adb::name(c_string name)
 {
-    m_name = name.data();
+    m_name = name;
     return *this;
 }
 
@@ -45,7 +44,7 @@ audio::device adb::operator()()
     return { m_name, m_capture, m_spec.get(pass_key<device> {}), nullptr, m_allowedChanges, pass_key<device> {} };
 }
 
-audio::device adb::operator()(sdl::spec& obtained)
+audio::device adb::operator()(class spec& obtained)
 {
     return { m_name, m_capture, m_spec.get(pass_key<device> {}), obtained.get(pass_key<device> {}), m_allowedChanges, pass_key<device> {} };
 }
@@ -55,10 +54,11 @@ audio::device::device()
 {
 }
 
-audio::device::device(const char* name, bool capture, const SDL_AudioSpec* desired, SDL_AudioSpec* obtained, int allowed_changes, pass_key<builder::device>)
-    : m_id { ::SDL_OpenAudioDevice(name, capture, desired, obtained, allowed_changes) }
+audio::device::device(c_string name, bool capture, const SDL_AudioSpec* desired, SDL_AudioSpec* obtained, int allowed_changes, pass_key<builder::device>)
+    : m_id { ::SDL_OpenAudioDevice(name.data(), capture, desired, obtained, allowed_changes) }
 {
-    HAL_ASSERT(m_id != 0, debug::last_error());
+    if (id() == 0)
+        throw hal::exception {};
 }
 
 audio::device::~device()
@@ -66,9 +66,9 @@ audio::device::~device()
     ::SDL_CloseAudioDevice(m_id);
 }
 
-void audio::device::queue(std::span<std::byte> bytes)
+outcome audio::device::queue(std::span<std::byte> bytes)
 {
-    HAL_ASSERT_VITAL(::SDL_QueueAudio(m_id, bytes.data(), static_cast<Uint32>(bytes.size_bytes())) == 0, debug::last_error());
+    return ::SDL_QueueAudio(m_id, bytes.data(), static_cast<Uint32>(bytes.size_bytes()));
 }
 
 void audio::device::pause(bool p)

@@ -131,7 +131,7 @@ if(Halcyon_BUILD_TESTS)
     add_test(NAME InvalidEvent COMMAND ${ExeName} --invalid-event)
 
     # Set which tests are expected to fail.
-    set_tests_properties(AssertFail InvalidBuffer InvalidTexture InvalidEvent PROPERTIES WILL_FAIL TRUE)
+    set_tests_properties(AssertFail InvalidBuffer InvalidEvent PROPERTIES WILL_FAIL TRUE)
 endif()
 
 # Examples.

@@ -16,22 +16,17 @@ driver::index_t driver::amount()
         return 0;
 }
 
-const char* driver::name()
+c_string driver::name()
 {
     return ::SDL_GetCurrentVideoDriver();
 }
 
-const char* driver::name(index_t idx)
+c_string driver::name(index_t idx)
 {
     return ::SDL_GetVideoDriver(idx);
 }
 
-info::sdl::renderer driver::info(index_t idx)
+outcome driver::info(renderer_info& info, index_t idx)
 {
-    info::sdl::renderer ret;
-
-    if (::SDL_GetRenderDriverInfo(idx, ret.get()) != 0)
-        throw hal::exception {};
-
-    return ret;
+    return ::SDL_GetRenderDriverInfo(idx, &info);
 }

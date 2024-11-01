@@ -39,7 +39,6 @@
 
 // More necessary include files.
 // Separated to have all Halcyon includes before the STL.
-#include <string_view>
 #include <utility>
 
 namespace hal
@@ -63,6 +62,8 @@ namespace hal
         };
     }
 
+    const char* last_error();
+
     class debug
     {
     public:
@@ -80,8 +81,6 @@ namespace hal
         debug()             = delete;
         debug(const debug&) = delete;
         debug(debug&&)      = delete;
-
-        static std::string_view last_error();
 
 #ifdef HAL_DEBUG_ENABLED
         // Output any amount of arguments to stdout/stderr and an output file.
@@ -102,7 +101,7 @@ namespace hal
         // Show a message box with an error message.
         // Do not rely on this function exiting the program, as this behavior can be overriden with HAL_NO_EXIT_ON_PANIC.
         template <meta::printable... Args>
-        [[noreturn]] static void panic(std::string_view function, std::string_view file, u32 line, Args&&... extra_info)
+        [[noreturn]] static void panic(const char* function, const char* file, u32 line, Args&&... extra_info)
         {
             debug::print_severity(severity::error, string_from_pack(std::forward<Args>(extra_info)...), " [", function, ", ", file, ':', line, "]");
 
@@ -124,7 +123,7 @@ namespace hal
 
         // Check a condition, and panic if it's false.
         template <meta::printable... Args>
-        static void verify(bool condition, std::string_view cond_string, std::string_view func, std::string_view file, u32 line,
+        static void verify(bool condition, const char* cond_string, const char* func, const char* file, u32 line,
             Args&&... extra_info)
         {
             if (!condition) [[unlikely]]

@@ -34,8 +34,7 @@ int main(int, char*[])
     // "vid" only makes this function available if it's an lvalue.
     // Temporaries cannot create objects that rely on them.
     // Thus, subsystem initialization is guaranteed at this point, eliminating possible errors.
-    hal::window wnd = vid.make_window("Okno", // std::string_view cannot be constructed from nullptr.
-        { 640, 480 });
+    hal::window wnd = vid.make_window("Okno", { 640, 480 });
 
     // Likewise for "wnd".
     hal::renderer rnd { wnd.make_renderer() };

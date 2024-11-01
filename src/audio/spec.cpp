@@ -6,7 +6,8 @@
 
 using namespace hal;
 
-using ass = audio::sdl::spec;
+// I am very mature.
+using ass = audio::spec;
 
 ass::spec(freq_t samples_per_second, audio::format fmt, u8 channels, u16 buffer_size_in_frames)
     : SDL_AudioSpec {
@@ -20,11 +21,6 @@ ass::spec(freq_t samples_per_second, audio::format fmt, u8 channels, u16 buffer_
         .callback = nullptr,
         .userdata = nullptr
     }
-{
-}
-
-ass::spec(const audio::spec& src)
-    : spec { src.hz, src.fmt, src.channels, src.buffer_size_in_frames }
 {
 }
 
@@ -53,30 +49,12 @@ SDL_AudioSpec* ass::get(pass_key<builder::device>)
     return this;
 }
 
-SDL_AudioSpec* ass::get(pass_key<proxy::audio_outputs>)
+SDL_AudioSpec* ass::get(pass_key<proxy::audio>)
 {
     return this;
 }
 
-SDL_AudioSpec* ass::get(pass_key<proxy::audio_inputs>)
-{
-    return this;
-}
-
-std::ostream& hal::audio::sdl::operator<<(std::ostream& str, const sdl::spec& s)
+std::ostream& hal::audio::operator<<(std::ostream& str, const spec& s)
 {
     return str << '[' << s.hz() << " Hz, format: " << s.format() << ", channels: " << hal::to_printable_int(s.channels()) << ", buffer size: " << s.buffer_size() << ']';
-}
-
-audio::spec::spec(freq_t samples_per_second, audio::format fmt, u8 channels, u16 buffer_size_in_frames)
-    : hz { samples_per_second }
-    , fmt { fmt }
-    , channels { channels }
-    , buffer_size_in_frames { buffer_size_in_frames }
-{
-}
-
-audio::spec::spec(const sdl::spec& src)
-    : spec { src.hz(), src.format(), src.channels(), src.buffer_size() }
-{
 }

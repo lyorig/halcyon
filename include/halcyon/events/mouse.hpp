@@ -8,8 +8,6 @@
 
 #include "SDL_mouse.h"
 
-#include <string_view>
-
 // event/mouse.hpp:
 // Mouse button access and data.
 
@@ -22,7 +20,7 @@ namespace hal
 
     namespace proxy
     {
-        class mouse;
+        class events;
     }
 
     namespace mouse
@@ -42,7 +40,7 @@ namespace hal
         {
         public:
             // [private] A snapshot of the current mouse state is provided by the event subsystem.
-            state(pass_key<proxy::mouse>);
+            state(pass_key<proxy::events>);
 
             // [private] Constructor meant for events.
             state(Uint32 mask, pass_key<event::mouse_motion>);
@@ -59,7 +57,7 @@ namespace hal
         pixel::point pos_abs();
     }
 
-    constexpr std::string_view to_string(mouse::button btn)
+    constexpr const char* to_string(mouse::button btn)
     {
         using enum hal::mouse::button;
 

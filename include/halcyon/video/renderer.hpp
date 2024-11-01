@@ -1,5 +1,6 @@
 #pragma once
 
+#include <halcyon/video/driver.hpp>
 #include <halcyon/video/texture.hpp>
 
 #include <halcyon/internal/drawer.hpp>
@@ -8,16 +9,15 @@
 #include <halcyon/utility/buffer.hpp>
 #include <halcyon/utility/enum_bits.hpp>
 
-#include <span>
+#include <halcyon/types/c_string.hpp>
 
 // video/renderer.hpp:
 // A proxy for creating and rendering textures etc. - more info below.
 
 namespace hal
 {
-    class surface;
-
     // Forward declarations for parameters and return types.
+    class surface;
     class window;
     class copyer;
     class renderer;
@@ -26,6 +26,8 @@ namespace hal
     class static_texture;
     class target_texture;
 
+    class renderer_info;
+
     enum class flip : u8
     {
         none = SDL_FLIP_NONE,
@@ -33,11 +35,6 @@ namespace hal
         y    = SDL_FLIP_VERTICAL,
         both = SDL_FLIP_HORIZONTAL | SDL_FLIP_VERTICAL
     };
-
-    namespace info::sdl
-    {
-        class renderer;
-    }
 
     // A wrapper of SDL_Renderer. Essentially, this is the thing that does the rendering, and
     // is attached to a window. Multiple renderers can exist for a single window, i.e. a hardware-
@@ -62,10 +59,10 @@ namespace hal
         renderer(lref<const window> wnd, flag_bitmask f = {});
 
         // Clear (fill) the render target with the current draw color.
-        void clear();
+        outcome clear();
 
         // Present the back-buffer and clear it.
-        void present();
+        outcome present();
 
         // Drawing & filling:
         // Each of these functions has an additional overload since
@@ -74,35 +71,35 @@ namespace hal
         // so if you plan to do multiple draw/fill operations, prefer the color guard.
 
         // Draw a single point (pixel) with the current color.
-        void draw(coord::point pt);
-        void draw(coord::point pt, color c);
+        outcome draw(coord::point pt);
+        outcome draw(coord::point pt, color c);
 
         // Draw a line with the current color.
-        void draw(coord::point from, coord::point to);
-        void draw(coord::point from, coord::point to, color c);
+        outcome draw(coord::point from, coord::point to);
+        outcome draw(coord::point from, coord::point to, color c);
 
         // Outline a rectangle with the current color.
-        void draw(coord::rect area);
-        void draw(coord::rect area, color c);
+        outcome draw(coord::rect area);
+        outcome draw(coord::rect area, color c);
 
         // Draw a texture. Returns a builder-like class
         [[nodiscard]] copyer draw(ref<const texture> tx);
 
         // Fill an area.
-        void fill(coord::rect area);
-        void fill(coord::rect area, color c);
+        outcome fill(coord::rect area);
+        outcome fill(coord::rect area, color c);
 
         // Fill an array of areas.
-        void fill(std::span<const coord::rect> areas);
-        void fill(std::span<const coord::rect> areas, color c);
+        outcome fill(std::span<const coord::rect> areas);
+        outcome fill(std::span<const coord::rect> areas, color c);
 
         // Fill the entire rendering target.
-        void fill();
-        void fill(color c);
+        outcome fill();
+        outcome fill(color c);
 
         // Get/set the rendering target.
-        void target(ref<target_texture> tx);
-        void reset_target();
+        outcome target(ref<target_texture> tx);
+        outcome reset_target();
 
         surface read_pixels() const;
 
@@ -112,21 +109,21 @@ namespace hal
         surface read_pixels(pixel::rect area) const;
 
         // Get/set the color used for draw/fill operations.
-        hal::color color() const;
-        void       color(hal::color clr);
+        result<hal::color> color() const;
+        outcome            color(hal::color clr);
 
         // Get/set the blend mode used foor draw/fill operations.
-        blend_mode blend() const;
-        void       blend(blend_mode bm);
+        result<blend_mode> blend() const;
+        outcome            blend(blend_mode bm);
 
-        pixel::point size() const;
-        void         size(pixel::point sz);
-        void         size(scaler scl);
+        result<pixel::point> size() const;
+        outcome              size(pixel::point sz);
+        outcome              size(scaler scl);
 
         ref<const window> window() const;
         ref<class window> window();
 
-        info::sdl::renderer info() const;
+        outcome info(renderer_info& info) const;
 
         // Texture creation functions.
         [[nodiscard]] static_texture    make_static_texture(ref<const surface> surf);
@@ -135,51 +132,27 @@ namespace hal
 
     private:
         // Helper for setting the render target.
-        void common_target(SDL_Texture* target);
+        outcome internal_target(SDL_Texture* target);
     };
 
-    namespace info
+    class renderer_info : private SDL_RendererInfo
     {
-        class renderer;
+    public:
+        renderer_info() = default;
 
-        namespace sdl
-        {
-            class renderer : SDL_RendererInfo
-            {
-            public:
-                renderer() = default;
+        c_string name() const;
 
-                renderer(ref<const hal::renderer> rnd, pass_key<hal::renderer>);
+        renderer::flag_bitmask flags() const;
 
-                std::string_view name() const;
+        std::span<const pixel::format> formats() const;
 
-                hal::renderer::flag_bitmask flags() const;
+        pixel::point max_texture_size() const;
 
-                std::span<const pixel::format> formats() const;
+        friend outcome renderer::info(renderer_info& info) const;
+        friend outcome driver::info(renderer_info& info, driver::index_t index);
 
-                pixel::point max_texture_size() const;
-
-                SDL_RendererInfo* get();
-
-                friend std::ostream& operator<<(std::ostream& str, const info::sdl::renderer& inf);
-            };
-        }
-
-        class renderer
-        {
-        public:
-            renderer() = default;
-
-            // Compress native renderer info.
-            renderer(const sdl::renderer& src);
-
-            std::string_view name;
-            pixel::point     max_texture_size;
-
-            hal::renderer::flag_bitmask flags;
-            buffer<pixel::format>       formats;
-        };
-    }
+        friend std::ostream& operator<<(std::ostream& str, const renderer_info& inf);
+    };
 
     class copyer : public detail::drawer<const texture, coord_t, renderer, copyer>
     {
@@ -205,7 +178,7 @@ namespace hal
         [[nodiscard]] copyer& outline(color c);
 
         // Finish the operation.
-        void operator()();
+        outcome operator()();
 
     private:
         f64 m_angle { 0.0 };

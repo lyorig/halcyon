@@ -3,6 +3,9 @@
 #include <halcyon/audio.hpp>
 #include <halcyon/video.hpp>
 
+#include <halcyon/image.hpp>
+#include <halcyon/ttf.hpp>
+
 #include "data.hpp"
 
 // Halcyon testing.
@@ -26,9 +29,9 @@ namespace test
     {
         constexpr hal::pixel::point new_size { 120, 120 };
 
-        hal::init<hal::system::video> vid;
+        hal::cleanup_init<hal::system::video> vid;
 
-        hal::window wnd { vid.make_window("HalTest: Window resize", { 640, 480 }, { hal::window::flag::hidden }) };
+        hal::window wnd { vid, "HalTest: Window resize", { 640, 480 }, hal::window::flag::hidden };
 
         hal::event::holder e;
 
@@ -65,11 +68,11 @@ namespace test
     {
         HAL_ASSERT(!hal::initialized(hal::system::video), "Video should not be initialized at this point");
 
-        hal::init<hal::system::video> vid;
+        hal::cleanup_init<hal::system::video> vid;
 
         HAL_ASSERT(hal::initialized(hal::system::video), "Video should report initialization by now");
 
-        hal::window   wnd { vid.make_window("HalTest: Basic init", { 640, 480 }, { hal::window::flag::hidden }) };
+        hal::window   wnd { vid, "HalTest: Basic init", { 640, 480 }, hal::window::flag::hidden };
         hal::renderer rnd { wnd.make_renderer() };
 
         hal::event::holder e;
@@ -85,11 +88,11 @@ namespace test
     {
         constexpr char text[] { "We can be heroes - just for one day." };
 
-        hal::init<hal::system::video> vid;
+        hal::cleanup_init<hal::system::video> vid;
 
-        vid.clipboard.text(text);
+        vid.clipboard(text);
 
-        if (!vid.clipboard.has_text() || vid.clipboard.text() != text)
+        if (!vid.clipboard_has_text() || vid.clipboard() != text)
             return EXIT_FAILURE;
 
         return EXIT_SUCCESS;
@@ -111,7 +114,7 @@ namespace test
     // Sending a quit event and checking whether it gets caught.
     int events()
     {
-        hal::init<hal::system::events> evt;
+        hal::cleanup_init<hal::system::events> evt;
 
         hal::event::holder eh;
 
@@ -162,7 +165,7 @@ namespace test
 
     int rvalues()
     {
-        hal::init<hal::system::video> {}.clipboard.text("Hello from HalTest!");
+        hal::cleanup_init<hal::system::video> {}.clipboard("Hello from HalTest!");
 
         return EXIT_SUCCESS;
     }
@@ -217,7 +220,7 @@ namespace test
 
     int references()
     {
-        hal::init<hal::system::video> vid;
+        hal::cleanup_init<hal::system::video> vid;
 
         hal::window           wnd { vid, "HalTest Views", { 128, 128 } };
         hal::ref<hal::window> r1 = wnd;
@@ -254,18 +257,18 @@ namespace test
 
     int audio_init()
     {
-        hal::init<hal::system::audio> a;
+        hal::cleanup_init<hal::system::audio> a;
 
-        hal::audio::sdl::spec gotten;
-        hal::audio::device    dev = a.build_device().spec({ 44100, hal::audio::format::f32, 2, 4096 })(gotten);
-        hal::audio::stream    str = a.make_stream({ hal::audio::format::i32, 2, 44100 }, { hal::audio::format::u8, 1, 48000 });
+        hal::audio::spec   gotten;
+        hal::audio::device dev = a.build_device().spec({ 44100, hal::audio::format::f32, 2, 4096 })(gotten);
+        hal::audio::stream str = a.make_stream({ hal::audio::format::i32, 2, 44100 }, { hal::audio::format::u8, 1, 48000 });
 
         // Also enumerate devices while we're at it.
-        for (hal::audio::device::id_t i = 0; i < a.outputs.size(); ++i)
-            HAL_PRINT("Output #", i, ": ", a.outputs.name(i));
+        for (hal::audio::device::id_t i = 0; i < a.outputs_size(); ++i)
+            HAL_PRINT("Output #", i, ": ", a.outputs_name(i));
 
-        for (hal::audio::device::id_t i = 0; i < a.inputs.size(); ++i)
-            HAL_PRINT("Input #", i, ": ", a.inputs.name(i));
+        for (hal::audio::device::id_t i = 0; i < a.inputs_size(); ++i)
+            HAL_PRINT("Input #", i, ": ", a.inputs_name(i));
 
         return EXIT_SUCCESS;
     }
@@ -285,27 +288,23 @@ namespace test
     }
 
     // Drawing a null texture.
-    // This test should fail.
     int invalid_texture()
     {
-        hal::init<hal::system::video> vid;
+        hal::cleanup_init<hal::system::video> vid;
 
-        hal::window   wnd { vid.make_window("HalTest: Invalid texture", { 640, 480 }, { hal::window::flag::hidden }) };
+        hal::window   wnd { vid, "HalTest: Invalid texture", { 640, 480 }, hal::window::flag::hidden };
         hal::renderer rnd { wnd.make_renderer() };
 
         hal::static_texture tex;
 
-        // Failure should occur here.
-        rnd.draw(tex)();
-
-        return EXIT_SUCCESS;
+        return rnd.draw(tex)().valid() ? EXIT_FAILURE : EXIT_SUCCESS;
     }
 
     // Accessing an invalid event.
     // This test should fail.
     int invalid_event()
     {
-        hal::init<hal::system::events> sys;
+        hal::cleanup_init<hal::system::events> sys;
 
         hal::event::holder eh;
 
@@ -354,8 +353,6 @@ int main(int argc, char* argv[])
     }
 
     const int ret { iter->second() };
-
-    hal::cleanup();
 
     return ret;
 }

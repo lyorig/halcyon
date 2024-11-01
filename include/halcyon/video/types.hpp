@@ -5,8 +5,6 @@
 #include "SDL_blendmode.h"
 #include "SDL_pixels.h"
 
-#include <string_view>
-
 // types/render.hpp:
 // Rendering-related types used throughout Halcyon.
 // Defining HAL_FAST_TYPES maps Halcyon's types directly to SDL's where applicable.
@@ -22,7 +20,7 @@ namespace hal
         color_multiply = SDL_BLENDMODE_MUL
     };
 
-    constexpr std::string_view to_string(blend_mode bm)
+    constexpr const char* to_string(blend_mode bm)
     {
         switch (bm)
         {
@@ -238,7 +236,7 @@ namespace hal
         }
     }
 
-    constexpr std::string_view to_string(pixel::format fmt)
+    constexpr const char* to_string(pixel::format fmt)
     {
         using enum pixel::format;
 
@@ -372,7 +370,7 @@ namespace hal
         }
     }
 
-    constexpr std::string_view to_string(pixel::storage tp)
+    constexpr const char* to_string(pixel::storage tp)
     {
         using enum pixel::storage;
 
@@ -422,7 +420,7 @@ namespace hal
         }
     }
 
-    constexpr std::string_view to_string(pixel::bitmap_order o)
+    constexpr const char* to_string(pixel::bitmap_order o)
     {
         using enum pixel::bitmap_order;
 
@@ -442,7 +440,7 @@ namespace hal
         }
     }
 
-    constexpr std::string_view to_string(pixel::packed_order o)
+    constexpr const char* to_string(pixel::packed_order o)
     {
         using enum pixel::packed_order;
 
@@ -480,7 +478,7 @@ namespace hal
         }
     }
 
-    constexpr std::string_view to_string(pixel::array_order o)
+    constexpr const char* to_string(pixel::array_order o)
     {
         using enum pixel::array_order;
 
@@ -512,7 +510,7 @@ namespace hal
         }
     }
 
-    constexpr std::string_view to_string(pixel::packed_layout pl)
+    constexpr const char* to_string(pixel::packed_layout pl)
     {
         using enum pixel::packed_layout;
 

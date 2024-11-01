@@ -2,16 +2,12 @@
 
 using namespace hal;
 
-proxy::mouse::mouse(pass_key<events>)
+mouse::state proxy::events::mouse_state() const
 {
+    return { pass_key<proxy::events> {} };
 }
 
-mouse::state proxy::mouse::state() const
-{
-    return { pass_key<proxy::mouse> {} };
-}
-
-pixel::point proxy::mouse::pos_abs() const
+pixel::point proxy::events::mouse_pos_abs() const
 {
     pixel::point ret;
 
@@ -20,7 +16,7 @@ pixel::point proxy::mouse::pos_abs() const
     return ret;
 }
 
-pixel::point proxy::mouse::pos_rel() const
+pixel::point proxy::events::mouse_pos_rel() const
 {
     pixel::point ret;
 
@@ -29,18 +25,14 @@ pixel::point proxy::mouse::pos_rel() const
     return ret;
 }
 
-proxy::keyboard::keyboard(pass_key<events>)
+keyboard::state_reference proxy::events::keyboard_state() const
 {
+    return pass_key<proxy::events> {};
 }
 
-keyboard::state_reference proxy::keyboard::state_ref() const
+keyboard::mod_state proxy::events::keyboard_mod() const
 {
-    return pass_key<proxy::keyboard> {};
-}
-
-keyboard::mod_state proxy::keyboard::mod() const
-{
-    return pass_key<proxy::keyboard> {};
+    return pass_key<proxy::events> {};
 }
 
 proxy::events::events(pass_key<proxy::video>)
@@ -49,8 +41,6 @@ proxy::events::events(pass_key<proxy::video>)
 }
 
 proxy::events::events()
-    : mouse { pass_key<proxy::events> {} }
-    , keyboard { pass_key<proxy::events> {} }
 {
     // Disable unused events.
     for (SDL_EventType type : {
@@ -119,7 +109,7 @@ void proxy::events::push(const event::holder& eh)
 #endif
         ::SDL_PushEvent(&eh.get(pass_key<events> {}));
 
-    HAL_ASSERT(ret >= 0, debug::last_error());
+    HAL_ASSERT(ret >= 0, last_error());
     HAL_WARN_IF(ret == 0, "Pushed event of type ", eh.kind(), " was filtered");
 }
 

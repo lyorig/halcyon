@@ -6,6 +6,7 @@
 #include <halcyon/internal/scaler.hpp>
 
 #include <halcyon/types/color.hpp>
+#include <halcyon/types/result.hpp>
 
 #include "SDL_surface.h"
 
@@ -63,20 +64,20 @@ namespace hal
         surface(SDL_Surface* ptr, pass_key<builder::font_glyph>);
 
         // Fill the entire surface with a color.
-        void fill(color clr);
+        outcome fill(color clr);
 
         // Fill a rectangle with a color.
-        void fill(pixel::rect area, color clr);
+        outcome fill(pixel::rect area, color clr);
 
         // Fill an array of rectangles with a color.
-        void fill(std::span<const pixel::rect> areas, color clr);
+        outcome fill(std::span<const pixel::rect> areas, color clr);
 
-        void lock();
-        void unlock();
+        outcome lock();
+        void    unlock();
 
         // Save this surface in a BMP format.
         // More formats are made available by the image context.
-        void save(outputter dst) const;
+        outcome save(outputter dst) const;
 
         // Create a blitter.
         // Not all pixel formats can be blitted,
@@ -107,16 +108,16 @@ namespace hal
         pixel_reference       operator[](pixel::point pt);
 
         // Get/set this surface's blend mode.
-        blend_mode blend() const;
-        void       blend(blend_mode bm);
+        result<blend_mode> blend() const;
+        outcome            blend(blend_mode bm);
 
         // Get/set this surface's color modifiers.
-        color color_mod() const;
-        void  color_mod(color col);
+        result<color> color_mod() const;
+        outcome       color_mod(color col);
 
         // Get/set this surface's alpha modifier.
-        color::value_t alpha_mod() const;
-        void           alpha_mod(color::value_t val);
+        result<color::value_t> alpha_mod() const;
+        outcome                alpha_mod(color::value_t val);
     };
 
     class const_pixel_reference
@@ -160,11 +161,11 @@ namespace hal
         // Finish the operation.
         // SDL's blitting function overwrites the destination rectangle.
         // If you with to reuse this object, use the "keep_dst" overload.
-        void operator()();
+        outcome operator()();
 
         // Finish the operation.
         // SDL's blitting function overwrites the destination rectangle.
         // This overload uses a copy to ensure it remains unchanged.
-        void operator()(HAL_TAG_NAME(keep_dst)) const;
+        outcome operator()(HAL_TAG_NAME(keep_dst)) const;
     };
 }

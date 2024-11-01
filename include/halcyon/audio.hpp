@@ -11,29 +11,6 @@ namespace hal
 {
     namespace proxy
     {
-        class audio_outputs
-        {
-        public:
-            audio_outputs(pass_key<audio>);
-
-            hal::audio::device::id_t size() const;
-            std::string_view         name(hal::audio::device::id_t idx) const;
-            hal::audio::sdl::spec    spec(hal::audio::device::id_t idx) const;
-        };
-
-        class audio_inputs
-        {
-        public:
-            audio_inputs(pass_key<audio>);
-
-            hal::audio::device::id_t size() const;
-            std::string_view         name(hal::audio::device::id_t idx) const;
-            hal::audio::sdl::spec    spec(hal::audio::device::id_t idx) const;
-        };
-    }
-
-    namespace proxy
-    {
         class audio
         {
         public:
@@ -43,8 +20,13 @@ namespace hal
 
             [[nodiscard]] hal::audio::stream make_stream(hal::audio::config src, hal::audio::config dst);
 
-            HAL_NO_SIZE proxy::audio_outputs outputs;
-            HAL_NO_SIZE proxy::audio_inputs inputs;
+            hal::audio::device::id_t outputs_size() const;
+            c_string                 outputs_name(hal::audio::device::id_t idx) const;
+            result<hal::audio::spec> outputs_spec(hal::audio::device::id_t idx) const;
+
+            hal::audio::device::id_t inputs_size() const;
+            c_string                 inputs_name(hal::audio::device::id_t idx) const;
+            result<hal::audio::spec> inputs_spec(hal::audio::device::id_t idx) const;
 
         protected:
             audio();

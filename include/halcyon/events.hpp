@@ -13,37 +13,6 @@ namespace hal
 {
     namespace proxy
     {
-        class events;
-        class video;
-
-        class mouse
-        {
-        public:
-            mouse(pass_key<events>);
-
-            // Get a snapshot of the current mouse state.
-            hal::mouse::state state() const;
-
-            // Get the current mouse state relative to the desktop.
-            pixel::point pos_abs() const;
-
-            // Get the current mouse state relative to the focus window.
-            pixel::point pos_rel() const;
-        };
-
-        class keyboard
-        {
-        public:
-            keyboard(pass_key<events>);
-
-            // Get a reference to the keyboard state.
-            hal::keyboard::state_reference state_ref() const;
-            hal::keyboard::mod_state       mod() const;
-        };
-    }
-
-    namespace proxy
-    {
         // A system that represents the event queue.
         class events
         {
@@ -73,12 +42,21 @@ namespace hal
             // Check if there are any events of a given type in the queue.
             bool has(event::type t) const;
 
+            hal::keyboard::state_reference keyboard_state() const;
+            hal::keyboard::mod_state       keyboard_mod() const;
+
+            // Get a snapshot of the current mouse state.
+            hal::mouse::state mouse_state() const;
+
+            // Get the current mouse state relative to the desktop.
+            pixel::point mouse_pos_abs() const;
+
+            // Get the current mouse state relative to the focus window.
+            pixel::point mouse_pos_rel() const;
+
             // Start/stop text inputs.
             void text_input_start();
             void text_input_stop();
-
-            HAL_NO_SIZE proxy::mouse mouse;
-            HAL_NO_SIZE proxy::keyboard keyboard;
 
         protected:
             // [private] Delegating constructor.

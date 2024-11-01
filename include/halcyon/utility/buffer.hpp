@@ -32,6 +32,11 @@ namespace hal
             std::copy(span.begin(), span.end(), begin());
         }
 
+        constexpr buffer(std::initializer_list<T> il)
+            : buffer { std::span<const T> { il.begin(), il.end() } }
+        {
+        }
+
         constexpr std::size_t size() const
         {
             return m_size;

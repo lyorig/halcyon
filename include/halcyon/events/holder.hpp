@@ -183,8 +183,8 @@ namespace hal
             hal::window::id_t window_id() const;
             text_input&       window_id(hal::window::id_t id);
 
-            std::string_view text() const;
-            text_input&      text(std::string_view t);
+            c_string    text() const;
+            text_input& text(c_string t);
         };
 
         static_assert(sizeof(text_input) == sizeof(SDL_TextInputEvent));
@@ -293,7 +293,7 @@ namespace hal
         };
     }
 
-    constexpr std::string_view to_string(event::type evt)
+    constexpr const char* to_string(event::type evt)
     {
         using enum event::type;
 
@@ -355,7 +355,7 @@ namespace hal
         }
     }
 
-    constexpr std::string_view to_string(enum event::display::type evt)
+    constexpr const char* to_string(enum event::display::type evt)
     {
         using enum event::display::type;
 
@@ -378,7 +378,7 @@ namespace hal
         }
     }
 
-    constexpr std::string_view to_string(enum event::window::type evt)
+    constexpr const char* to_string(enum event::window::type evt)
     {
         using enum event::window::type;
 

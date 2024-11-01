@@ -6,7 +6,7 @@
 
 using namespace hal;
 
-string::string(char* ptr, pass_key<proxy::clipboard>)
+string::string(char* ptr, pass_key<proxy::video>)
     : resource { ptr }
 {
 }
@@ -51,7 +51,7 @@ string::const_pointer string::c_str() const
     return get();
 }
 
-bool hal::operator==(string lhs, std::string_view rhs)
+bool hal::operator==(string lhs, const char* rhs)
 {
-    return rhs == lhs.c_str();
+    return std::strcmp(lhs.c_str(), rhs) == 0;
 }

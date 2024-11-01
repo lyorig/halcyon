@@ -71,7 +71,7 @@ hal::surface image::context::load(accessor src, load_format fmt) const
     HAL_PANIC("Trying to load image of unknown type");
 }
 
-void image::context::save(ref<const surface> surf, save_format fmt, outputter dst) const
+outcome image::context::save(ref<const surface> surf, save_format fmt, outputter dst) const
 {
     constexpr u8 jpg_quality { 90 };
 
@@ -79,11 +79,11 @@ void image::context::save(ref<const surface> surf, save_format fmt, outputter ds
     {
         using enum save_format;
     case png:
-        HAL_ASSERT_VITAL(::IMG_SavePNG_RW(surf.get(), dst.use(pass_key<context> {}), true) == 0, debug::last_error());
+        return ::IMG_SavePNG_RW(surf.get(), dst.use(pass_key<context> {}), true);
         break;
 
     case jpg:
-        HAL_ASSERT_VITAL(::IMG_SaveJPG_RW(surf.get(), dst.use(pass_key<context> {}), true, jpg_quality) == 0, debug::last_error());
+        return ::IMG_SaveJPG_RW(surf.get(), dst.use(pass_key<context> {}), true, jpg_quality);
         break;
     }
 }

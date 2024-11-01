@@ -9,9 +9,9 @@ audio::stream::stream(proxy::audio, config src, config dst)
 {
 }
 
-void audio::stream::flush()
+outcome audio::stream::flush()
 {
-    HAL_ASSERT_VITAL(::SDL_AudioStreamFlush(get()) == 0, debug::last_error());
+    return ::SDL_AudioStreamFlush(get());
 }
 
 void audio::stream::clear()
@@ -19,9 +19,9 @@ void audio::stream::clear()
     ::SDL_AudioStreamClear(get());
 }
 
-void audio::stream::put(std::span<const std::byte> data)
+outcome audio::stream::put(std::span<const std::byte> data)
 {
-    HAL_ASSERT_VITAL(::SDL_AudioStreamPut(get(), data.data(), static_cast<int>(data.size_bytes())) == 0, debug::last_error());
+    return ::SDL_AudioStreamPut(get(), data.data(), static_cast<int>(data.size_bytes()));
 }
 
 i32 audio::stream::available() const
@@ -31,9 +31,5 @@ i32 audio::stream::available() const
 
 i32 audio::stream::get_processed(std::span<std::byte> buffer) const
 {
-    const int ret { ::SDL_AudioStreamGet(get(), std::data(buffer), std::size(buffer)) };
-
-    HAL_ASSERT(ret != -1, debug::last_error());
-
-    return ret;
+    return ::SDL_AudioStreamGet(get(), std::data(buffer), std::size(buffer));
 }
