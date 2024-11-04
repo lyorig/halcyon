@@ -2,6 +2,7 @@
 
 #include <halcyon/debug.hpp>
 
+#include <halcyon/types/exception.hpp>
 #include <halcyon/utility/pass_key.hpp>
 
 #include <memory>
@@ -28,7 +29,6 @@ namespace hal
             resource(pointer ptr)
                 : m_ptr { ptr }
             {
-                HAL_ASSERT(valid(), last_error());
             }
 
             pointer release()

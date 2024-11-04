@@ -57,7 +57,7 @@ result<blend_mode> texture::blend() const
 
 outcome texture::blend(blend_mode bm)
 {
-    return ::SDL_SetTextureBlendMode(get(), static_cast<SDL_BlendMode>(bm)) == 0;
+    return ::SDL_SetTextureBlendMode(get(), static_cast<SDL_BlendMode>(bm));
 }
 
 result<pixel::format> texture::pixel_format() const

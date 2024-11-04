@@ -6,9 +6,9 @@ using namespace hal;
 
 namespace
 {
-    bool ttf_init()
+    outcome ttf_init()
     {
-        return ::TTF_Init() == 0;
+        return ::TTF_Init();
     }
 }
 
@@ -18,7 +18,7 @@ font::font(accessor src, pt_t size, pass_key<ttf::context>)
     HAL_WARN_IF(height() != skip(), '\"', family(), ' ', style(), "\" has different height (", height(), "px) & skip (", skip(), "px). size_text() might not return accurate vertical results.");
 }
 
-builder::font_text font::render(const char* text) const
+builder::font_text font::render(c_string text) const
 {
     return { *this, text, pass_key<font> {} };
 }
@@ -28,11 +28,11 @@ builder::font_glyph font::render(char32_t glyph) const
     return { *this, glyph, pass_key<font> {} };
 }
 
-pixel::point font::size_text(const char* text) const
+pixel::point font::size_text(c_string text) const
 {
     point<int> size;
 
-    ::TTF_SizeUTF8(get(), text, &size.x, &size.y);
+    ::TTF_SizeUTF8(get(), text.data(), &size.x, &size.y);
 
     return pixel::point(size);
 }
@@ -79,7 +79,7 @@ ttf::context::context(std::nothrow_t)
 
 ttf::context::~context()
 {
-    HAL_WARN_IF(initialized(), "TTF context not initialized at destruction");
+    HAL_WARN_IF(!initialized(), "TTF context not initialized at destruction");
 
     ::TTF_Quit();
 }
@@ -96,7 +96,7 @@ bool ttf::initialized()
 
 using bft = builder::font_text;
 
-bft::font_text(ref<const font> fnt, const char* text, pass_key<font> pk)
+bft::font_text(ref<const font> fnt, c_string text, pass_key<font> pk)
     : font_builder_base { fnt, pk }
     , m_text { text }
     , m_wrapLength { invalid() }
@@ -119,16 +119,16 @@ surface bft::operator()(font::render_type rt)
         switch (rt)
         {
         case solid:
-            return { ::TTF_RenderUTF8_Solid(m_font->get(), m_text, static_cast<SDL_Color>(m_fg)), pass_key<font_text> {} };
+            return { ::TTF_RenderUTF8_Solid(m_font->get(), m_text.data(), static_cast<SDL_Color>(m_fg)), pass_key<font_text> {} };
 
         case shaded:
-            return { ::TTF_RenderUTF8_Shaded(m_font->get(), m_text, static_cast<SDL_Color>(m_fg), static_cast<SDL_Color>(m_bg)), pass_key<font_text> {} };
+            return { ::TTF_RenderUTF8_Shaded(m_font->get(), m_text.data(), static_cast<SDL_Color>(m_fg), static_cast<SDL_Color>(m_bg)), pass_key<font_text> {} };
 
         case blended:
-            return { ::TTF_RenderUTF8_Blended(m_font->get(), m_text, static_cast<SDL_Color>(m_fg)), pass_key<font_text> {} };
+            return { ::TTF_RenderUTF8_Blended(m_font->get(), m_text.data(), static_cast<SDL_Color>(m_fg)), pass_key<font_text> {} };
 
         case lcd:
-            return { ::TTF_RenderUTF8_LCD(m_font->get(), m_text, static_cast<SDL_Color>(m_fg), static_cast<SDL_Color>(m_bg)), pass_key<font_text> {} };
+            return { ::TTF_RenderUTF8_LCD(m_font->get(), m_text.data(), static_cast<SDL_Color>(m_fg), static_cast<SDL_Color>(m_bg)), pass_key<font_text> {} };
         }
     }
 
@@ -137,16 +137,16 @@ surface bft::operator()(font::render_type rt)
         switch (rt)
         {
         case solid:
-            return { ::TTF_RenderUTF8_Solid_Wrapped(m_font->get(), m_text, static_cast<SDL_Color>(m_fg), m_wrapLength), pass_key<font_text> {} };
+            return { ::TTF_RenderUTF8_Solid_Wrapped(m_font->get(), m_text.data(), static_cast<SDL_Color>(m_fg), m_wrapLength), pass_key<font_text> {} };
 
         case shaded:
-            return { ::TTF_RenderUTF8_Shaded_Wrapped(m_font->get(), m_text, static_cast<SDL_Color>(m_fg), static_cast<SDL_Color>(m_bg), m_wrapLength), pass_key<font_text> {} };
+            return { ::TTF_RenderUTF8_Shaded_Wrapped(m_font->get(), m_text.data(), static_cast<SDL_Color>(m_fg), static_cast<SDL_Color>(m_bg), m_wrapLength), pass_key<font_text> {} };
 
         case blended:
-            return { ::TTF_RenderUTF8_Blended_Wrapped(m_font->get(), m_text, static_cast<SDL_Color>(m_fg), m_wrapLength), pass_key<font_text> {} };
+            return { ::TTF_RenderUTF8_Blended_Wrapped(m_font->get(), m_text.data(), static_cast<SDL_Color>(m_fg), m_wrapLength), pass_key<font_text> {} };
 
         case lcd:
-            return { ::TTF_RenderUTF8_LCD_Wrapped(m_font->get(), m_text, static_cast<SDL_Color>(m_fg), static_cast<SDL_Color>(m_bg), m_wrapLength), pass_key<font_text> {} };
+            return { ::TTF_RenderUTF8_LCD_Wrapped(m_font->get(), m_text.data(), static_cast<SDL_Color>(m_fg), static_cast<SDL_Color>(m_bg), m_wrapLength), pass_key<font_text> {} };
         }
     }
 

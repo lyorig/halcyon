@@ -123,12 +123,7 @@ namespace hal
         ref<const window> window() const;
         ref<class window> window();
 
-        outcome info(renderer_info& info) const;
-
-        // Texture creation functions.
-        [[nodiscard]] static_texture    make_static_texture(ref<const surface> surf);
-        [[nodiscard]] target_texture    make_target_texture(pixel::point size, pixel::format);
-        [[nodiscard]] streaming_texture make_streaming_texture(pixel::point size, pixel::format fmt);
+        result<renderer_info> info() const;
 
     private:
         // Helper for setting the render target.
@@ -148,8 +143,8 @@ namespace hal
 
         pixel::point max_texture_size() const;
 
-        friend outcome renderer::info(renderer_info& info) const;
-        friend outcome driver::info(renderer_info& info, driver::index_t index);
+        friend result<renderer_info> renderer::info() const;
+        friend outcome               driver::info(renderer_info& info, driver::index_t index);
 
         friend std::ostream& operator<<(std::ostream& str, const renderer_info& inf);
     };

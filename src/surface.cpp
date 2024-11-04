@@ -151,14 +151,14 @@ result<color> surface::color_mod() const
 
 outcome surface::color_mod(color col)
 {
-    return ::SDL_SetSurfaceColorMod(get(), col.r, col.g, col.b) == 0;
+    return ::SDL_SetSurfaceColorMod(get(), col.r, col.g, col.b);
 }
 
 result<color::value_t> surface::alpha_mod() const
 {
     color::value_t ret;
 
-    return { ::SDL_GetSurfaceAlphaMod(get(), &ret) == 0, ret };
+    return { ::SDL_GetSurfaceAlphaMod(get(), &ret), ret };
 }
 
 outcome surface::alpha_mod(color::value_t val)

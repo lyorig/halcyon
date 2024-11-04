@@ -41,6 +41,8 @@
 // Separated to have all Halcyon includes before the STL.
 #include <utility>
 
+#include <halcyon/types/c_string.hpp>
+
 namespace hal
 {
     namespace compile_settings
@@ -62,7 +64,7 @@ namespace hal
         };
     }
 
-    const char* last_error();
+    c_string last_error();
 
     class debug
     {

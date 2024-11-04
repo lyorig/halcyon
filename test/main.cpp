@@ -73,7 +73,7 @@ namespace test
         HAL_ASSERT(hal::initialized(hal::system::video), "Video should report initialization by now");
 
         hal::window   wnd { vid, "HalTest: Basic init", { 640, 480 }, hal::window::flag::hidden };
-        hal::renderer rnd { wnd.make_renderer() };
+        hal::renderer rnd { wnd };
 
         hal::event::holder e;
         vid.events.poll(e);
@@ -260,8 +260,8 @@ namespace test
         hal::cleanup_init<hal::system::audio> a;
 
         hal::audio::spec   gotten;
-        hal::audio::device dev = a.build_device().spec({ 44100, hal::audio::format::f32, 2, 4096 })(gotten);
-        hal::audio::stream str = a.make_stream({ hal::audio::format::i32, 2, 44100 }, { hal::audio::format::u8, 1, 48000 });
+        hal::audio::device dev = hal::audio::builder::device { a }.spec({ 44100, hal::audio::format::f32, 2, 4096 })(gotten);
+        hal::audio::stream str { a, { hal::audio::format::i32, 2, 44100 }, { hal::audio::format::u8, 1, 48000 } };
 
         // Also enumerate devices while we're at it.
         for (hal::audio::device::id_t i = 0; i < a.outputs_size(); ++i)
@@ -293,11 +293,11 @@ namespace test
         hal::cleanup_init<hal::system::video> vid;
 
         hal::window   wnd { vid, "HalTest: Invalid texture", { 640, 480 }, hal::window::flag::hidden };
-        hal::renderer rnd { wnd.make_renderer() };
+        hal::renderer rnd { wnd };
 
         hal::static_texture tex;
 
-        return rnd.draw(tex)().valid() ? EXIT_FAILURE : EXIT_SUCCESS;
+        return rnd.draw(tex)() ? EXIT_FAILURE : EXIT_SUCCESS;
     }
 
     // Accessing an invalid event.

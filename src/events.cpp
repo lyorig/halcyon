@@ -100,17 +100,11 @@ void proxy::events::pump()
     ::SDL_PumpEvents();
 }
 
-void proxy::events::push(const event::holder& eh)
+outcome proxy::events::push(const event::holder& eh)
 {
     eh.get(pass_key<events> {}).common.timestamp = ::SDL_GetTicks();
 
-#ifdef HAL_DEBUG_ENABLED
-    const auto ret =
-#endif
-        ::SDL_PushEvent(&eh.get(pass_key<events> {}));
-
-    HAL_ASSERT(ret >= 0, last_error());
-    HAL_WARN_IF(ret == 0, "Pushed event of type ", eh.kind(), " was filtered");
+    return ::SDL_PushEvent(&eh.get(pass_key<events> {}));
 }
 
 void proxy::events::flush(event::type t)

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <ostream>
-#include <string_view>
+#include <string>
 
 namespace hal
 {
@@ -15,6 +15,11 @@ namespace hal
 
         c_string(const char* str)
             : m_str { str }
+        {
+        }
+
+        c_string(const std::string& str)
+            : c_string { str.c_str() }
         {
         }
 

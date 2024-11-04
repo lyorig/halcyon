@@ -16,10 +16,6 @@ namespace hal
         public:
             constexpr static system system { system::audio };
 
-            [[nodiscard]] hal::audio::builder::device build_device();
-
-            [[nodiscard]] hal::audio::stream make_stream(hal::audio::config src, hal::audio::config dst);
-
             hal::audio::device::id_t outputs_size() const;
             c_string                 outputs_name(hal::audio::device::id_t idx) const;
             result<hal::audio::spec> outputs_spec(hal::audio::device::id_t idx) const;

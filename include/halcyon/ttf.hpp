@@ -3,6 +3,8 @@
 #include <halcyon/internal/rwops.hpp>
 #include <halcyon/surface.hpp>
 
+#include <halcyon/types/c_string.hpp>
+
 #include "SDL_ttf.h"
 
 // ttf.hpp:
@@ -42,14 +44,14 @@ namespace hal
         font(accessor src, pt_t size, pass_key<ttf::context>);
 
         // Render text to a surface.
-        [[nodiscard]] builder::font_text render(const char* text) const;
+        [[nodiscard]] builder::font_text render(c_string text) const;
 
         // Render a single glyph to a surface.
         [[nodiscard]] builder::font_glyph render(char32_t glyph) const;
 
         // When sizing text, it's important to know that the vertical size
         // doesn't necessarily have to match that of the rendered surface.
-        pixel::point size_text(const char* text) const;
+        pixel::point size_text(c_string text) const;
 
         pixel_t height() const;
         pixel_t skip() const;
@@ -155,7 +157,7 @@ namespace hal
         class font_text : public detail::font_builder_base<font_text>
         {
         public:
-            [[nodiscard]] font_text(ref<const font>, const char* text, pass_key<font>);
+            [[nodiscard]] font_text(ref<const font>, c_string text, pass_key<font>);
 
             // How many characters to wrap this text at.
             // Zero means only wrap on newlines.
@@ -169,8 +171,8 @@ namespace hal
                 return std::numeric_limits<pixel_t>::max();
             }
 
-            const char* m_text;
-            pixel_t     m_wrapLength;
+            c_string m_text;
+            pixel_t  m_wrapLength;
         };
 
         class font_glyph : public detail::font_builder_base<font_glyph>

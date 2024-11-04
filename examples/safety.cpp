@@ -26,7 +26,7 @@ int main(int, char*[])
 
     // SDL enrolls its own main function on Windows, which is a common source of headaches.
     // A compile-time check is provided to ensure your program passes this part of the cross-platform check.
-    static_assert(hal::meta::is_correct_main<main>);
+    static_assert(hal::is_correct_main<main>);
 
     // Subsystem initialization.
     hal::init<hal::system::video> vid;
@@ -34,10 +34,10 @@ int main(int, char*[])
     // "vid" only makes this function available if it's an lvalue.
     // Temporaries cannot create objects that rely on them.
     // Thus, subsystem initialization is guaranteed at this point, eliminating possible errors.
-    hal::window wnd = vid.make_window("Okno", { 640, 480 });
+    hal::window wnd { vid, "Okno", { 640, 480 } };
 
     // Likewise for "wnd".
-    hal::renderer rnd { wnd.make_renderer() };
+    hal::renderer rnd { wnd };
 
     // Image loading is only possible with an image context, however, it's only needed for
     // the loading itself, and can be discarded immediately afterwards.
@@ -83,5 +83,5 @@ private:
     HAL_NO_SIZE hal::image::context m_img;
     HAL_NO_SIZE hal::ttf::context m_ttf;
 
-    HAL_NO_SIZE hal::init<hal::system::video> m_video;
+    HAL_NO_SIZE hal::cleanup_init<hal::system::video> m_video;
 };

@@ -31,7 +31,7 @@ namespace hal
             bool poll(event::holder& eh);
 
             // Push an event onto the queue.
-            void push(const event::holder& eh);
+            outcome push(const event::holder& eh);
 
             // Remove all events of a given type from the queue.
             void flush(event::type t);

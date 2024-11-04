@@ -156,10 +156,10 @@ result<pixel::point> renderer::size() const
     hal::point<int> sz;
     ::SDL_RenderGetLogicalSize(get(), &sz.x, &sz.y);
 
-    if (sz.x)
+    if (sz.x == 0)
         return { ::SDL_GetRendererOutputSize(get(), &sz.x, &sz.y), static_cast<pixel::point>(sz) };
 
-    return { true, static_cast<pixel::point>(sz) };
+    return { 0, static_cast<pixel::point>(sz) };
 }
 
 outcome renderer::size(pixel::point sz)
@@ -182,24 +182,11 @@ ref<window> renderer::window()
     return { ::SDL_RenderGetWindow(get()), pass_key<renderer> {} };
 }
 
-outcome renderer::info(renderer_info& info) const
+result<renderer_info> renderer::info() const
 {
-    return ::SDL_GetRendererInfo(get(), &info);
-}
+    renderer_info ret;
 
-static_texture renderer::make_static_texture(ref<const surface> surf)
-{
-    return { *this, surf };
-}
-
-target_texture renderer::make_target_texture(pixel::point size, pixel::format fmt)
-{
-    return { *this, size, fmt };
-}
-
-streaming_texture renderer::make_streaming_texture(pixel::point size, pixel::format fmt)
-{
-    return { *this, size, fmt };
+    return { ::SDL_GetRendererInfo(get(), &ret), ret };
 }
 
 outcome renderer::internal_target(SDL_Texture* target)

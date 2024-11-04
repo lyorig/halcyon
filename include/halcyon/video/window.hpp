@@ -87,7 +87,5 @@ namespace hal
         // View the surface associated with this window.
         // Only works if a software renderer is used.
         ref<const surface> surface() const;
-
-        [[nodiscard]] class renderer make_renderer(renderer::flag_bitmask flags = {});
     };
 }

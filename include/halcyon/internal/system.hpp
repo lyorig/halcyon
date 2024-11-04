@@ -7,6 +7,8 @@
 
 #include <halcyon/misc.hpp>
 
+#include <halcyon/types/result.hpp>
+
 #include "SDL.h"
 
 #include <new> // std::nothrow_t
@@ -76,9 +78,9 @@ namespace hal
             // Flag checks to ensure some unnecessary BS doesn't happen.
             static_assert(!systems().all({ system::video, system::events }), "Incompatible event types; Events is already initialized by Video.");
 
-            static bool do_init()
+            static outcome do_init()
             {
-                return ::SDL_InitSubSystem(systems().mask()) == 0;
+                return ::SDL_InitSubSystem(systems().mask());
             }
 
         public:
@@ -92,7 +94,7 @@ namespace hal
 
             // Initialize chosen subsystems.
             // This constructor stores the initialization result in [succeeded].
-            init_base(bool& succeeded)
+            init_base(outcome& succeeded)
             {
                 succeeded = do_init();
             }

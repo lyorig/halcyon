@@ -8,6 +8,12 @@
 
 namespace hal
 {
+    // This is a weird class but it has its use.
+    // First of all, I don't have to write "== 0" after every
+    // SDL call, and in addition, after SDL3 chooses to return
+    // bools everywhere as well, I can just replace it with:
+    //		using outcome = bool;
+    // and that's it.
     class outcome
     {
     public:
@@ -59,7 +65,7 @@ namespace hal
 
         constexpr T& get()
         {
-            if (!valid())
+            if (!valid()) [[unlikely]]
                 throw hal::exception {};
 
             return m_value;
@@ -67,10 +73,30 @@ namespace hal
 
         constexpr const T& get() const
         {
-            if (!valid())
+            if (!valid()) [[unlikely]]
                 throw hal::exception {};
 
             return m_value;
+        }
+
+        constexpr T& operator*()
+        {
+            return get();
+        }
+
+        constexpr const T& operator*() const
+        {
+            return get();
+        }
+
+        constexpr T* operator->()
+        {
+            return &get();
+        }
+
+        constexpr const T* operator->() const
+        {
+            return &get();
         }
 
     private:

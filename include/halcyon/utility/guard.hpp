@@ -51,7 +51,7 @@ namespace hal
         public:
             blend(T& obj, blend_mode bm)
                 : m_ref { obj }
-                , m_old { m_ref->blend() }
+                , m_old { m_ref->blend().get() }
             {
                 set(bm);
             }
