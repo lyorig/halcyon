@@ -44,7 +44,7 @@ namespace hal
     };
 
     template <typename T>
-    class result : outcome
+    class result : public outcome
     {
     public:
         constexpr result() = default;
