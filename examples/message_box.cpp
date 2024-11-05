@@ -1,22 +1,26 @@
 #include <halcyon/utility/strutil.hpp>
 #include <halcyon/video/message_box.hpp>
 
+#include <halcyon/main.hpp>
+
 // message_box.cpp:
 // Examples of using message boxes in Halcyon.
 
 int main(int, char*[])
 {
-    static_assert(hal::meta::is_correct_main<main>);
+    static_assert(hal::is_correct_main<main>);
 
     using enum hal::message_box::type;
     using namespace hal::palette;
 
     // Creation via builder.
-    auto msgb = hal::message_box::builder()
-                    .buttons({ "1", "2", "3", "4", "5", "6", "7" })
-                    .colors(blue, red, red, orange, yellow)
-                    .title("Hello from Halcyon!")
-                    .body("Nothing more to say.");
+    auto msgb = std::move(hal::message_box::builder()
+            .buttons({ "1", "2", "3", "4", "5", "6", "7" })
+            .colors(blue, red, red, orange, yellow)
+            .title("Hello from Halcyon!")
+            .body("Nothing more to say."));
+
+    auto x = hal::message_box::builder();
 
     for (auto type : { info, warning, error })
     {

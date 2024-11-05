@@ -6,12 +6,14 @@
 
 #include <halcyon/utility/strutil.hpp>
 
+#include <halcyon/main.hpp>
+
 // invertor.cpp:
 // Inverts a given image.
 
 int main(int argc, char* argv[])
 {
-    static_assert(hal::meta::is_correct_main<main>);
+    static_assert(hal::is_correct_main<main>);
 
     if (argc == 1)
     {

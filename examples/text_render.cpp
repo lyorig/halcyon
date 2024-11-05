@@ -3,12 +3,14 @@
 
 #include <halcyon/video.hpp>
 
+#include <halcyon/ttf.hpp>
+
 // text_render.cpp:
 // Renders the first command-line argument as text into a window.
 
 int main(int argc, char* argv[])
 {
-    static_assert(hal::meta::is_correct_main<main>);
+    static_assert(hal::is_correct_main<main>);
 
     constexpr hal::pixel::point padding { 20, 20 };
     constexpr hal::font::pt_t   font_size { 128 };
@@ -19,12 +21,12 @@ int main(int argc, char* argv[])
         return EXIT_FAILURE;
     }
 
-    hal::init<hal::system::video> vid;
+    hal::cleanup_init<hal::system::video> vid;
 
-    hal::window        wnd { vid.make_window("Text renderer", { 100, 100 }) };
+    hal::window        wnd { vid, "Text renderer", { 100, 100 } };
     hal::event::holder evt;
 
-    hal::renderer       rnd { wnd.make_renderer() };
+    hal::renderer       rnd { wnd };
     hal::static_texture tex;
 
     // Deallocate as much as we can before the main loop.
@@ -34,9 +36,9 @@ int main(int argc, char* argv[])
         const hal::font    fnt { tctx.load("assets/m5x7.ttf", font_size) };
         const hal::surface surf { fnt.render(argv[1]).fg(hal::palette::black)() };
 
-        tex = rnd.make_static_texture(surf);
+        tex = { rnd, surf };
 
-        HAL_PRINT("Pixel format: ", tex.pixel_format(), ", type: ", hal::pixel::storage_of(tex.pixel_format()));
+        HAL_PRINT("Pixel format: ", tex.pixel_format().get(), ", type: ", hal::pixel::storage_of(tex.pixel_format().get()));
         HAL_PRINT("Must lock? ", surf.must_lock());
     }
 
@@ -65,8 +67,6 @@ int main(int argc, char* argv[])
         rnd.draw(tex).to(padding / 2)();
         rnd.present();
     }
-
-    hal::cleanup();
 
     return EXIT_SUCCESS;
 }

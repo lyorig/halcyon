@@ -92,7 +92,7 @@ namespace hal
 
         template <std::size_t N>
         accessor(std::span<const std::byte, N> data)
-            : rwops { ::SDL_RWFromConstMem(data.data(), N) }
+            : rwops { ::SDL_RWFromConstMem(data.data(), data.size_bytes()) }
         {
         }
 
@@ -113,7 +113,7 @@ namespace hal
 
         template <std::size_t N>
         outputter(std::span<std::byte, N> data)
-            : rwops { ::SDL_RWFromMem(data.data(), N) }
+            : rwops { ::SDL_RWFromMem(data.data(), data.size_bytes()) }
         {
         }
 

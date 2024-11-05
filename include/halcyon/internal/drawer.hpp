@@ -76,12 +76,12 @@ namespace hal::detail
             return get_this();
         }
 
-        // Set the destination's scale using a function.
+        // Set the destination's scale using a callable.
         // Call after setting the destination and before anchoring.
-        template <typename F>
-        [[nodiscard]] this_ref scale(F&& func)
+        template <std::invocable<dst_point> F>
+        [[nodiscard]] this_ref scale(F&& scale_func)
         {
-            func(m_dst.size);
+            m_dst.size = scale_func(m_dst.size);
             return get_this();
         }
 

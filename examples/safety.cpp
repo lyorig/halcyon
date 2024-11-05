@@ -1,5 +1,8 @@
 #include <halcyon/video.hpp>
 
+#include <halcyon/image.hpp>
+#include <halcyon/ttf.hpp>
+
 int main(int, char*[])
 {
     // Halcyon employs some safeguards to make sure you don't use uninitialized systems.
@@ -29,7 +32,7 @@ int main(int, char*[])
     static_assert(hal::is_correct_main<main>);
 
     // Subsystem initialization.
-    hal::init<hal::system::video> vid;
+    hal::cleanup_init<hal::system::video> vid;
 
     // "vid" only makes this function available if it's an lvalue.
     // Temporaries cannot create objects that rely on them.
@@ -63,8 +66,6 @@ int main(int, char*[])
     // - HAL_FAST_TYPES switch for switching all integer types to fast variants (hal::i16 -> std::int_fast16_t)
     // - compile time settings (hal::compile_settings)
 
-    hal::cleanup();
-
     return EXIT_SUCCESS;
 }
 
@@ -80,8 +81,8 @@ public:
     }
 
 private:
-    HAL_NO_SIZE hal::image::context m_img;
-    HAL_NO_SIZE hal::ttf::context m_ttf;
+    HAL_NO_SIZE hal::image::context                m_img;
+    HAL_NO_SIZE [[maybe_unused]] hal::ttf::context m_ttf;
 
     HAL_NO_SIZE hal::cleanup_init<hal::system::video> m_video;
 };

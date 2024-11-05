@@ -2,6 +2,7 @@
 
 #include <halcyon/debug.hpp>
 
+#include <ostream>
 #include <type_traits>
 #include <utility>
 
@@ -45,14 +46,14 @@ namespace hal
     public:
         constexpr result() = default;
 
-        constexpr result(int func_ret, const T& val)
+        constexpr result(outcome func_ret, const T& val)
             requires std::is_trivially_copyable_v<T>
             : m_valid { func_ret }
             , m_value { val }
         {
         }
 
-        constexpr result(int func_ret, T&& val)
+        constexpr result(outcome func_ret, T&& val)
             requires(!std::is_trivially_move_constructible_v<T>)
             : m_valid { func_ret }
             , m_value { std::move(val) }
@@ -96,6 +97,16 @@ namespace hal
         constexpr const T* operator->() const
         {
             return &get();
+        }
+
+        friend std::ostream& operator<<(std::ostream& str, const result<T>& res)
+        {
+            if (res.valid())
+                str << res.get();
+            else
+                str << "[invalid value]";
+
+            return str;
         }
 
     private:

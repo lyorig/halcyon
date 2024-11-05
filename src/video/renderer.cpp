@@ -112,7 +112,8 @@ surface renderer::read_pixels() const
     pixel::format fmt { window()->pixel_format() };
     hal::surface  surf { size().get(), fmt };
 
-    static_cast<void>(::SDL_RenderReadPixels(get(), nullptr, static_cast<Uint32>(fmt), surf.get()->pixels, surf.get()->pitch));
+    if (!outcome { ::SDL_RenderReadPixels(get(), nullptr, static_cast<Uint32>(fmt), surf.get()->pixels, surf.get()->pitch) })
+        surf.reset();
 
     return surf;
 }
@@ -122,7 +123,8 @@ surface renderer::read_pixels(pixel::rect area) const
     pixel::format fmt { window()->pixel_format() };
     hal::surface  surf { area.size, fmt };
 
-    static_cast<void>(::SDL_RenderReadPixels(get(), area.addr(), static_cast<Uint32>(fmt), surf.get()->pixels, surf.get()->pitch));
+    if (!outcome { ::SDL_RenderReadPixels(get(), area.addr(), static_cast<Uint32>(fmt), surf.get()->pixels, surf.get()->pitch) })
+        surf.reset();
 
     return surf;
 }
@@ -153,13 +155,13 @@ outcome renderer::blend(blend_mode bm)
 
 result<pixel::point> renderer::size() const
 {
-    hal::point<int> sz;
+    pixel::point sz;
     ::SDL_RenderGetLogicalSize(get(), &sz.x, &sz.y);
 
     if (sz.x == 0)
-        return { ::SDL_GetRendererOutputSize(get(), &sz.x, &sz.y), static_cast<pixel::point>(sz) };
-
-    return { 0, static_cast<pixel::point>(sz) };
+        return { ::SDL_GetRendererOutputSize(get(), &sz.x, &sz.y), sz };
+    else
+        return { outcome::success, sz };
 }
 
 outcome renderer::size(pixel::point sz)
