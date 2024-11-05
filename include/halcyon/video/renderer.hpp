@@ -4,7 +4,6 @@
 #include <halcyon/video/texture.hpp>
 
 #include <halcyon/internal/drawer.hpp>
-#include <halcyon/internal/scaler.hpp>
 
 #include <halcyon/utility/buffer.hpp>
 #include <halcyon/utility/enum_bits.hpp>
@@ -118,7 +117,6 @@ namespace hal
 
         result<pixel::point> size() const;
         outcome              size(pixel::point sz);
-        outcome              size(scaler scl);
 
         ref<const window> window() const;
         ref<class window> window();

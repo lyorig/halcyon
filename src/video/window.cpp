@@ -10,7 +10,8 @@ namespace
     {
         display d;
 
-        HAL_WARN_IF_VITAL(!v.display_info_native(d, index), "Could not get display info: ", last_error());
+        if (!v.display_info_native(d, index))
+            throw exception { "fullscreen window creation display size query" };
 
         return d.size();
     }
@@ -74,11 +75,6 @@ void window::size(pixel::point sz)
     HAL_WARN_IF(fullscreen(), "Setting size of fullscreen window - this does nothing");
 
     ::SDL_SetWindowSize(get(), sz.x, sz.y);
-}
-
-void window::size(scaler scl)
-{
-    size(scl(size()));
 }
 
 c_string window::title() const

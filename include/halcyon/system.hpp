@@ -13,7 +13,7 @@
 
 #include <new> // std::nothrow_t
 
-// internal/system.hpp:
+// system.hpp:
 // A representation of SDL subsystems.
 
 namespace hal
@@ -89,7 +89,7 @@ namespace hal
             init_base()
             {
                 if (!do_init())
-                    throw hal::exception {};
+                    throw exception { "system initialization" };
             }
 
             // Initialize chosen subsystems.

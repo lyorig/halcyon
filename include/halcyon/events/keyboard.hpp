@@ -1,6 +1,6 @@
 #pragma once
 
-#include <halcyon/internal/system.hpp>
+#include <halcyon/system.hpp>
 
 #include <halcyon/utility/enum_bits.hpp>
 #include <halcyon/utility/pass_key.hpp>

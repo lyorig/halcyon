@@ -190,6 +190,16 @@ namespace hal
             return ret;
         }
 
+        constexpr point scale_width(T desired_width) const
+        {
+            return operator*(static_cast<f64>(desired_width / x));
+        }
+
+        constexpr point scale_height(T desired_height) const
+        {
+            return operator*(static_cast<f64>(desired_height / y));
+        }
+
         // Comparisons.
         constexpr auto operator<=>(const point& cmp) const = default;
 

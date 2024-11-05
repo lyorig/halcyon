@@ -13,9 +13,9 @@ const timer   debug::m_timer {};
 
 #endif
 
-c_string hal::last_error()
+const char* debug::last_error()
 {
-    if (c_string err { ::SDL_GetError() }; err[0] == '\0')
+    if (const char* const err { ::SDL_GetError() }; err[0] == '\0')
         return "[no SDL error]";
     else
         return err;

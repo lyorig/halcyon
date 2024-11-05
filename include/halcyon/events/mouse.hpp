@@ -4,7 +4,7 @@
 
 #include <halcyon/utility/pass_key.hpp>
 
-#include <halcyon/internal/system.hpp>
+#include <halcyon/system.hpp>
 
 #include "SDL_mouse.h"
 

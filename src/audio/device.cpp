@@ -58,7 +58,7 @@ audio::device::device(c_string name, bool capture, const SDL_AudioSpec* desired,
     : m_id { ::SDL_OpenAudioDevice(name.data(), capture, desired, obtained, allowed_changes) }
 {
     if (id() == 0)
-        throw hal::exception {};
+        throw exception { "audio device creation" };
 }
 
 audio::device::~device()

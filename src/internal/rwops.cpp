@@ -6,58 +6,26 @@
 
 using namespace hal;
 
-namespace
+const char* detail::path_cvt(const char* path)
 {
-    // If filesystem paths are narrow, don't bother.
-    [[maybe_unused]] const char* path_cvt(const char* path)
-    {
-        return path;
-    }
-
-    class wchar_cvt
-    {
-    public:
-        wchar_cvt(const wchar_t* path)
-            : m_buf(std::wcslen(path) * sizeof(wchar_t) + 1)
-        {
-            HAL_ASSERT_VITAL(std::wcstombs(m_buf.data(), path, m_buf.size()) != -1, "Couldn't convert wchar_t string to char string");
-        }
-
-        operator const char*() const
-        {
-            return m_buf.data();
-        }
-
-    private:
-        buffer<char> m_buf;
-    };
-
-    // Otherwise, do indeed bother, and do it in the simplest way possible.
-    [[maybe_unused]] wchar_cvt path_cvt(const wchar_t* path)
-    {
-        return path;
-    }
+    return path;
 }
 
-accessor::accessor(const char* path)
-    : rwops { ::SDL_RWFromFile(path, "r") }
-
+detail::wchar_cvt::wchar_cvt(const wchar_t* path)
+    : m_buf(std::wcslen(path) * sizeof(wchar_t) + 1)
 {
+    if (std::wcstombs(m_buf.data(), path, m_buf.size()) == -1)
+        m_buf = {};
 }
 
-accessor::accessor(std::string_view path)
-    : accessor { path.data() }
+detail::wchar_cvt::operator const char*() const
 {
+    return m_buf.data();
 }
 
-accessor::accessor(const std::string& path)
-    : accessor { path.data() }
+detail::wchar_cvt detail::path_cvt(const wchar_t* path)
 {
-}
-
-accessor::accessor(const std::filesystem::path& path)
-    : accessor { path_cvt(path.c_str()) }
-{
+    return path;
 }
 
 SDL_RWops* accessor::get(pass_key<image::context>) const
@@ -78,27 +46,6 @@ SDL_RWops* accessor::use(pass_key<font>)
 SDL_RWops* accessor::use(pass_key<image::context>)
 {
     return resource::release();
-}
-
-outputter::outputter(const char* path)
-    : rwops { ::SDL_RWFromFile(path, "w") }
-
-{
-}
-
-outputter::outputter(std::string_view path)
-    : outputter { path.data() }
-{
-}
-
-outputter::outputter(const std::string& path)
-    : outputter { path.data() }
-{
-}
-
-outputter::outputter(const std::filesystem::path& path)
-    : outputter { path_cvt(path.c_str()) }
-{
 }
 
 SDL_RWops* outputter::use(pass_key<surface>)

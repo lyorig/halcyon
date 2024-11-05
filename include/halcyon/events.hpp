@@ -2,7 +2,7 @@
 
 #include <halcyon/events/holder.hpp>
 
-#include <halcyon/internal/system.hpp>
+#include <halcyon/system.hpp>
 
 #include <halcyon/main.hpp>
 

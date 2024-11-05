@@ -3,7 +3,6 @@
 #include <halcyon/internal/drawer.hpp>
 #include <halcyon/internal/resource.hpp>
 #include <halcyon/internal/rwops.hpp>
-#include <halcyon/internal/scaler.hpp>
 
 #include <halcyon/types/color.hpp>
 #include <halcyon/types/result.hpp>
@@ -96,7 +95,6 @@ namespace hal
         // Get a resized copy of the surface. Useful for saving
         // memory after converting to a texture.
         surface resize(pixel::point sz) const;
-        surface resize(scaler scl) const;
 
         // Whether the surface must be locked before reading/writing pixels.
         bool must_lock() const;

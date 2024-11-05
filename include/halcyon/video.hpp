@@ -9,7 +9,7 @@
 #include <halcyon/video/texture.hpp>
 #include <halcyon/video/window.hpp>
 
-#include <halcyon/internal/string.hpp>
+#include <halcyon/types/string.hpp>
 // video.hpp:
 // Master include file for Halcyon Video.
 

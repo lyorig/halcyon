@@ -3,8 +3,7 @@
 #include <halcyon/video/display.hpp>
 #include <halcyon/video/renderer.hpp>
 
-#include <halcyon/internal/scaler.hpp>
-#include <halcyon/internal/system.hpp>
+#include <halcyon/system.hpp>
 
 #include <halcyon/surface.hpp>
 
@@ -69,7 +68,6 @@ namespace hal
 
         pixel::point size() const;
         void         size(pixel::point sz);
-        void         size(scaler scl);
 
         c_string title() const;
         void     title(const char* val);

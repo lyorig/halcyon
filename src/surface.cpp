@@ -107,11 +107,6 @@ surface surface::resize(pixel::point sz) const
     return ret;
 }
 
-surface surface::resize(scaler scl) const
-{
-    return resize(scl(size()));
-}
-
 bool surface::must_lock() const
 {
     return SDL_MUSTLOCK(get());

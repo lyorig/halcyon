@@ -17,7 +17,7 @@ image::context::context(init_bitmask formats)
     HAL_WARN_IF(initialized(), "Image context already exists");
 
     if (!img_init(formats))
-        throw hal::exception {};
+        throw exception { "image context creation" };
 }
 
 image::context::context(init_bitmask formats, std::nothrow_t)

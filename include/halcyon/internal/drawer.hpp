@@ -5,7 +5,6 @@
 #include <halcyon/utility/pass_key.hpp>
 
 #include <halcyon/internal/resource.hpp>
-#include <halcyon/internal/scaler.hpp>
 
 #include <limits>
 
@@ -77,11 +76,12 @@ namespace hal::detail
             return get_this();
         }
 
-        // Set the destination's scale.
+        // Set the destination's scale using a function.
         // Call after setting the destination and before anchoring.
-        [[nodiscard]] this_ref scale(hal::scaler scl)
+        template <typename F>
+        [[nodiscard]] this_ref scale(F&& func)
         {
-            m_dst.size = scl(m_dst.size);
+            func(m_dst.size);
             return get_this();
         }
 

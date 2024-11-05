@@ -1,4 +1,4 @@
-#include <halcyon/internal/string.hpp>
+#include <halcyon/types/string.hpp>
 
 #include <halcyon/utility/strutil.hpp>
 

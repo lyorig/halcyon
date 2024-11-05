@@ -175,14 +175,9 @@ namespace test
         constexpr hal::pixel::point src { 50, 100 };
         constexpr hal::pixel::point dst { 100, 200 };
 
-        if (hal::scale::width(100)(src) != dst)
-            return EXIT_FAILURE;
-
-        if (hal::scale::height(200)(src) != dst)
-            return EXIT_FAILURE;
-
-        if (hal::scale::mul(2.0)(src) != dst)
-            return EXIT_FAILURE;
+        static_assert(src.scale_width(100) == dst);
+        static_assert(src.scale_height(200) == dst);
+        static_assert(src * 2 == dst);
 
         return EXIT_SUCCESS;
     }

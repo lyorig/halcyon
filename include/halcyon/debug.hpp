@@ -64,8 +64,6 @@ namespace hal
         };
     }
 
-    c_string last_error();
-
     class debug
     {
     public:
@@ -77,6 +75,8 @@ namespace hal
             init,
             load
         };
+
+        static const char* last_error();
 
         // This is a class just for the purpose of using private variables.
         // It is not meant to be constructed.

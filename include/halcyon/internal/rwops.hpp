@@ -2,6 +2,7 @@
 
 #include <halcyon/internal/resource.hpp>
 
+#include <halcyon/utility/buffer.hpp>
 #include <halcyon/utility/metaprogramming.hpp>
 #include <halcyon/utility/pass_key.hpp>
 
@@ -22,33 +23,76 @@ namespace hal
 
     namespace detail
     {
+        enum class mode : bool
+        {
+            read,
+            write
+        };
+
+        // This just returns the string if paths are narrow.
+        const char* path_cvt(const char* path);
+
+        // Helper class to convert wide strings to narrow ones.
+        class wchar_cvt
+        {
+        public:
+            wchar_cvt(const wchar_t* path);
+
+            operator const char*() const;
+
+        private:
+            buffer<char> m_buf;
+        };
+
+        // This performs the conversion if paths are wide (i.e. on Windows).
+        wchar_cvt path_cvt(const wchar_t* path);
+
         // Base class for SDL_RWops operations.
+        template <mode M>
         class rwops : public resource<SDL_RWops, ::SDL_RWclose>
         {
+        public:
+            rwops(const char* path)
+                : resource { ::SDL_RWFromFile(path, M == mode::read ? "r" : "w") }
+            {
+            }
+
+            rwops(std::nullptr_t) = delete;
+
+            rwops(c_string path)
+                : rwops { path.data() }
+            {
+            }
+
+            rwops(std::string_view path)
+                : rwops { path.data() }
+            {
+            }
+
+            rwops(const std::string& path)
+                : rwops { path.data() }
+            {
+            }
+
+            rwops(const std::filesystem::path& path)
+                : rwops { static_cast<const char*>(path_cvt(path.c_str())) }
+            {
+            }
+
         protected:
             using resource::resource;
         };
     }
 
     // An abstraction of various methods of accessing data.
-    class accessor : public detail::rwops
+    class accessor : public detail::rwops<detail::mode::read>
     {
     public:
-        // File accessors:
+        using rwops::rwops;
 
-        accessor(const char* path);
-        accessor(std::nullptr_t) = delete;
-
-        accessor(std::string_view path);
-        accessor(const std::string& path);
-
-        accessor(const std::filesystem::path& path);
-
-        // Memory accessors:
-
-        template <std::size_t Size>
-        accessor(std::span<const std::byte, Size> buffer)
-            : rwops { ::SDL_RWFromConstMem(buffer.data(), buffer.size_bytes()) }
+        template <std::size_t N>
+        accessor(std::span<const std::byte, N> data)
+            : rwops { ::SDL_RWFromConstMem(data.data(), N) }
         {
         }
 
@@ -61,38 +105,15 @@ namespace hal
         SDL_RWops* use(pass_key<image::context>); // Image loading.
     };
 
-    namespace meta
-    {
-        template <typename T>
-        concept buffer = requires(const T& x) { std::begin(x); std::end(x); std::size(x); std::data(x); };
-    }
-
-    // Shorthand for creating a readable byte span from a compatible array-like object.
-    template <meta::buffer T>
-    auto as_bytes(const T& buffer)
-    {
-        return std::as_bytes(std::span(buffer));
-    }
-
     // An abstraction of various methods of outputting data.
-    class outputter : public detail::rwops
+    class outputter : public detail::rwops<detail::mode::write>
     {
     public:
-        // File outputters:
+        using rwops::rwops;
 
-        outputter(const char* path);
-        outputter(std::nullptr_t) = delete;
-
-        outputter(std::string_view path);
-        outputter(const std::string& path);
-
-        outputter(const std::filesystem::path& path);
-
-        // Memory outputters:
-
-        template <std::size_t Size>
-        outputter(std::span<std::byte, Size> buffer)
-            : rwops { ::SDL_RWFromMem(buffer.data(), buffer.size_bytes()) }
+        template <std::size_t N>
+        outputter(std::span<std::byte, N> data)
+            : rwops { ::SDL_RWFromMem(data.data(), N) }
         {
         }
 
@@ -101,10 +122,23 @@ namespace hal
         SDL_RWops* use(pass_key<image::context>); // Image saving.
     };
 
+    namespace meta
+    {
+        template <typename T>
+        concept buffer = requires(const T& x) { std::begin(x); std::end(x); std::size(x); std::data(x); };
+    }
+
     // Shorthand for creating a writeable byte span from a compatible array-like object.
     template <meta::buffer T>
     auto as_bytes(T& buffer)
     {
         return std::as_writable_bytes(std::span(buffer));
+    }
+    //
+    // Shorthand for creating a readable byte span from a compatible array-like object.
+    template <meta::buffer T>
+    auto as_bytes(const T& buffer)
+    {
+        return std::as_bytes(std::span(buffer));
     }
 }

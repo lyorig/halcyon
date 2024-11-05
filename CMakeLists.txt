@@ -46,9 +46,8 @@ set(Halcyon_SOURCES
     events/keyboard.cpp
     events/mouse.cpp
     internal/rwops.cpp
-    internal/string.cpp
-    internal/system.cpp
     types/color.cpp
+    types/string.cpp
 	utility/guard.cpp
     utility/timer.cpp
     video/display.cpp
@@ -63,6 +62,7 @@ set(Halcyon_SOURCES
     image.cpp
 	misc.cpp
     surface.cpp
+	system.cpp
     templates.cpp
     ttf.cpp
     video.cpp

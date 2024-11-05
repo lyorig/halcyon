@@ -1,5 +1,5 @@
 #include <SDL.h>
-#include <halcyon/internal/system.hpp>
+#include <halcyon/system.hpp>
 
 using namespace hal;
 

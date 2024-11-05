@@ -3,13 +3,14 @@
 #include <halcyon/audio/spec.hpp>
 
 #include <halcyon/internal/resource.hpp>
-#include <halcyon/internal/system.hpp>
 
 #include <halcyon/utility/enum_bits.hpp>
 #include <halcyon/utility/pass_key.hpp>
 
 #include <halcyon/types/c_string.hpp>
 #include <halcyon/types/result.hpp>
+
+#include <halcyon/system.hpp>
 
 #include <span>
 

@@ -167,11 +167,6 @@ outcome renderer::size(pixel::point sz)
     return ::SDL_RenderSetLogicalSize(get(), sz.x, sz.y);
 }
 
-outcome renderer::size(scaler scl)
-{
-    return size(scl(size().get()));
-}
-
 ref<const window> renderer::window() const
 {
     return { ::SDL_RenderGetWindow(get()), pass_key<renderer> {} };

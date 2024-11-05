@@ -3,9 +3,10 @@
 #include <halcyon/audio/types.hpp>
 
 #include <halcyon/internal/resource.hpp>
-#include <halcyon/internal/system.hpp>
 
 #include <halcyon/types/result.hpp>
+
+#include <halcyon/system.hpp>
 
 #include <span>
 

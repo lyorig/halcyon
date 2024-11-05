@@ -67,7 +67,7 @@ ttf::context::context()
     HAL_WARN_IF(initialized(), "TTF context already exists");
 
     if (!ttf_init())
-        throw hal::exception {};
+        throw exception { "TTF context initialization" };
 }
 
 ttf::context::context(std::nothrow_t)

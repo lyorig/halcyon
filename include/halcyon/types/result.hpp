@@ -1,7 +1,6 @@
 #pragma once
 
-#include <halcyon/types/exception.hpp>
-#include <halcyon/utility/metaprogramming.hpp>
+#include <halcyon/debug.hpp>
 
 #include <type_traits>
 #include <utility>
@@ -17,9 +16,11 @@ namespace hal
     class outcome
     {
     public:
+        static constexpr int success { 0 }, failure { 1 };
+
         // Directly construct from an SDL call.
         constexpr outcome(int func_ret)
-            : outcome { func_ret == 0 }
+            : outcome { func_ret == success }
         {
         }
 
@@ -29,14 +30,9 @@ namespace hal
         {
         }
 
-        constexpr bool valid() const
-        {
-            return m_valid;
-        }
-
         constexpr operator bool() const
         {
-            return valid();
+            return m_valid;
         }
 
     private:
@@ -44,37 +40,40 @@ namespace hal
     };
 
     template <typename T>
-    class result : public outcome
+    class result
     {
     public:
         constexpr result() = default;
 
         constexpr result(int func_ret, const T& val)
             requires std::is_trivially_copyable_v<T>
-            : outcome { func_ret }
+            : m_valid { func_ret }
             , m_value { val }
         {
         }
 
         constexpr result(int func_ret, T&& val)
             requires(!std::is_trivially_move_constructible_v<T>)
-            : outcome { func_ret }
+            : m_valid { func_ret }
             , m_value { std::move(val) }
         {
         }
 
+        bool valid() const
+        {
+            return m_valid;
+        }
+
         constexpr T& get()
         {
-            if (!valid()) [[unlikely]]
-                throw hal::exception {};
+            HAL_ASSERT(valid(), "get() called on invalid value; ", debug::last_error());
 
             return m_value;
         }
 
         constexpr const T& get() const
         {
-            if (!valid()) [[unlikely]]
-                throw hal::exception {};
+            HAL_ASSERT(valid(), "get() called on invalid value; ", debug::last_error());
 
             return m_value;
         }
@@ -100,6 +99,7 @@ namespace hal
         }
 
     private:
-        T m_value;
+        outcome m_valid;
+        T       m_value;
     };
 }
