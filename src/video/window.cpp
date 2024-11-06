@@ -6,14 +6,14 @@ using namespace hal;
 
 namespace
 {
-    pixel::point display_size(proxy::video v, display::id_t index)
+    window make_fullscreen(proxy::video sys, c_string title)
     {
-        display d;
+        window ret;
 
-        if (!v.display_info_native(d, index))
-            throw exception { "fullscreen window creation display size query" };
+        if (const auto res = sys.display_info_native(0); res.valid())
+            ret = { sys, title, res->size(), window::flag::fullscreen };
 
-        return d.size();
+        return ret;
     }
 }
 
@@ -23,7 +23,7 @@ window::window(proxy::video, c_string title, pixel::point size, flag_bitmask f)
 }
 
 window::window(proxy::video sys, c_string title, HAL_TAG_NAME(fullscreen))
-    : window { sys, title, display_size(sys, 0), { flag::fullscreen } }
+    : window { make_fullscreen(sys, title) }
 {
 }
 

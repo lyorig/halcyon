@@ -65,6 +65,11 @@ namespace hal
             return m_valid;
         }
 
+        bool operator!() const
+        {
+            return !valid();
+        }
+
         constexpr T& get()
         {
             HAL_ASSERT(valid(), "get() called on invalid value; ", debug::last_error());

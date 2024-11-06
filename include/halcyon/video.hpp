@@ -28,8 +28,8 @@ namespace hal
             outcome clipboard(const char* text);
             bool    clipboard_has_text() const;
 
-            outcome display_info_native(display& d, display::id_t index) const;
-            outcome display_info_current(display& d, display::id_t index) const;
+            result<display> display_info_native(display::id_t index) const;
+            result<display> display_info_current(display::id_t index) const;
 
         protected:
             video();

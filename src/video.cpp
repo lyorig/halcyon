@@ -25,12 +25,14 @@ bool proxy::video::clipboard_has_text() const
     return ::SDL_HasClipboardText() == SDL_TRUE;
 }
 
-outcome proxy::video::display_info_native(display& d, display::id_t index) const
+result<display> proxy::video::display_info_native(display::id_t index) const
 {
-    return ::SDL_GetDesktopDisplayMode(index, d.ptr(pass_key<video> {}));
+    display ret;
+    return { ::SDL_GetDesktopDisplayMode(index, ret.ptr(pass_key<video> {})), ret };
 }
 
-outcome proxy::video::display_info_current(display& d, display::id_t index) const
+result<display> proxy::video::display_info_current(display::id_t index) const
 {
-    return ::SDL_GetCurrentDisplayMode(index, d.ptr(pass_key<video> {}));
+    display ret;
+    return { ::SDL_GetCurrentDisplayMode(index, ret.ptr(pass_key<video> {})), ret };
 }
