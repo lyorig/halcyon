@@ -192,12 +192,21 @@ namespace hal
 
         constexpr point scale_width(T desired_width) const
         {
-            return operator*(static_cast<f64>(desired_width / x));
+            const f64 mul { desired_width / static_cast<f64>(x) };
+            return {
+                static_cast<T>(x * mul),
+                static_cast<T>(y * mul),
+            };
         }
 
         constexpr point scale_height(T desired_height) const
         {
-            return operator*(static_cast<f64>(desired_height / y));
+            const f64 mul { desired_height / static_cast<f64>(y) };
+
+            return {
+                static_cast<T>(x * mul),
+                static_cast<T>(y * mul),
+            };
         }
 
         // Comparisons.

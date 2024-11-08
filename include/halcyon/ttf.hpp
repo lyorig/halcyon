@@ -93,8 +93,12 @@ namespace hal
         {
         public:
             // Initialize the TTF context.
+            // Throws in case of failure.
             context();
-            context(std::nothrow_t);
+
+            // Initialize the TTF context.
+            // Writes success state to res.
+            context(outcome& res);
 
             context(const context&) = delete;
             context(context&&)      = delete;

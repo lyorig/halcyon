@@ -78,32 +78,25 @@ namespace hal
             // Flag checks to ensure some unnecessary BS doesn't happen.
             static_assert(!systems().all({ system::video, system::events }), "Incompatible event types; Events is already initialized by Video.");
 
-            static outcome do_init()
+            static outcome sdl_init()
             {
                 return ::SDL_InitSubSystem(systems().mask());
             }
 
         public:
             // Initialize chosen subsystems.
-            // This constructor throws if initialization fails.
+            // Throws in case of failure.
             init_base()
             {
-                if (!do_init())
+                if (!sdl_init())
                     throw exception { "system initialization" };
             }
 
             // Initialize chosen subsystems.
-            // This constructor stores the initialization result in [succeeded].
-            init_base(outcome& succeeded)
+            // Writes success state to res.
+            init_base(outcome& res)
             {
-                succeeded = do_init();
-            }
-
-            // Initialize chosen subsystems.
-            // This constructor does no error checking whatsoever.
-            init_base(std::nothrow_t)
-            {
-                static_cast<void>(do_init());
+                res = sdl_init();
             }
 
             init_base(const init_base&) = delete;

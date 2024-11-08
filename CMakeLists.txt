@@ -120,18 +120,16 @@ if(Halcyon_BUILD_TESTS)
     add_test(NAME Events COMMAND ${ExeName} --events)
     add_test(NAME TTFInit COMMAND ${ExeName} --ttf-init)
     add_test(NAME RValues COMMAND ${ExeName} --rvalues)
-    add_test(NAME Scaler COMMAND ${ExeName} --scaler)
     add_test(NAME Outputter COMMAND ${ExeName} --outputter)
     add_test(NAME PngCheck COMMAND ${ExeName} --png-check)
     add_test(NAME References COMMAND ${ExeName} --references)
-    add_test(NAME Metaprogramming COMMAND ${ExeName} --metaprogramming)
     add_test(NAME AudioInit COMMAND ${ExeName} --audio-init)
     add_test(NAME InvalidBuffer COMMAND ${ExeName} --invalid-buffer)
     add_test(NAME InvalidTexture COMMAND ${ExeName} --invalid-texture)
     add_test(NAME InvalidEvent COMMAND ${ExeName} --invalid-event)
 
     # Set which tests are expected to fail.
-    set_tests_properties(AssertFail InvalidBuffer InvalidEvent PROPERTIES WILL_FAIL TRUE)
+    set_tests_properties(AssertFail InvalidEvent PROPERTIES WILL_FAIL TRUE)
 endif()
 
 # Examples.

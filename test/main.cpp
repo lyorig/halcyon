@@ -12,8 +12,42 @@
 // A single test-runner executable that contains all tests.
 // Tests are added to CTest by specifiying the appropriate command-line argument.
 
+#define FAIL_IF(cond, ...)                                      \
+    if (cond)                                                   \
+    {                                                           \
+        HAL_PRINT(__VA_ARGS__, "; ", hal::debug::last_error()); \
+        return EXIT_FAILURE;                                    \
+    }
+
 namespace test
 {
+    // Compile-time tests first.
+    // You know that these tests pass when this file compiles.
+    consteval void scaler()
+    {
+        constexpr hal::pixel::point src { 50, 100 };
+        constexpr hal::pixel::point dst { 100, 200 };
+
+        static_assert(src.scale_width(100) == dst);
+        static_assert(src.scale_height(200) == dst);
+        static_assert(src * 2 == dst);
+    }
+
+    consteval void metaprogramming()
+    {
+        using ret_t    = std::string;
+        using first_t  = std::tuple<int, double, short>;
+        using second_t = std::vector<double>;
+
+        using list = hal::meta::type_list<first_t, second_t>;
+
+        static_assert(std::is_same_v<first_t, list::at<0>> && std::is_same_v<second_t, list::at<1>>);
+
+        using info = hal::meta::func_info<ret_t(first_t, second_t)>;
+
+        static_assert(std::is_same_v<ret_t, info::return_type> && std::is_same_v<first_t, info::args::at<0>> && std::is_same_v<second_t, info::args::at<1>>);
+    }
+
     // Debug assertion testing.
     // This test should fail.
     int assert_fail()
@@ -41,24 +75,9 @@ namespace test
         wnd.size(new_size);
         vid.events.poll(e);
 
-        if (e.kind() != hal::event::type::window_event)
-        {
-            HAL_PRINT("HalTest: Event type mismatch (desired window event, actually ", hal::to_string(e.kind()), ')');
-            return EXIT_FAILURE;
-        }
-
-        if (e.window().kind() != hal::event::window::type::size_changed)
-        {
-            HAL_PRINT("HalTest: Window event type mismatch (desired resized, actually ",
-                hal::to_string(e.window().kind()), ')');
-            return EXIT_FAILURE;
-        }
-
-        if (e.window().point() != new_size)
-        {
-            HAL_PRINT("HalTest: Window size mismatch (desired ", new_size, ", actually ", e.window().point(), ')');
-            return EXIT_FAILURE;
-        }
+        FAIL_IF(e.kind() != hal::event::type::window_event, "Event type mismatch (desired \"window\", actual ", e.kind(), ')')
+        FAIL_IF(e.window().kind() != hal::event::window::type::size_changed, "Window event type mismatch (desired \"resized\", actual ", e.window().kind(), ')');
+        FAIL_IF(e.window().point() != new_size, "Window size mismatch (desired ", new_size, ", actual ", e.window().point(), ')');
 
         return EXIT_SUCCESS;
     }
@@ -66,11 +85,14 @@ namespace test
     // Basic Halcyon initialization.
     int basic_init()
     {
-        HAL_ASSERT(!hal::initialized(hal::system::video), "Video should not be initialized at this point");
+        FAIL_IF(hal::initialized(hal::system::video), "Video initialized when it shouldn't be");
 
-        hal::cleanup_init<hal::system::video> vid;
+        hal::outcome                          o;
+        hal::cleanup_init<hal::system::video> vid { o };
 
-        HAL_ASSERT(hal::initialized(hal::system::video), "Video should report initialization by now");
+        FAIL_IF(!o, "Video initialization failed");
+
+        FAIL_IF(!hal::initialized(hal::system::video), "Video not initialized when it should be");
 
         hal::window   wnd { vid, "HalTest: Basic init", { 640, 480 }, hal::window::flag::hidden };
         hal::renderer rnd { wnd };
@@ -92,8 +114,8 @@ namespace test
 
         vid.clipboard(text);
 
-        if (!vid.clipboard_has_text() || vid.clipboard() != text)
-            return EXIT_FAILURE;
+        FAIL_IF(!vid.clipboard_has_text(), "Clipboard doesn't have text when it should");
+        FAIL_IF(vid.clipboard() != text, "Clipboard text mismatch");
 
         return EXIT_SUCCESS;
     }
@@ -105,8 +127,7 @@ namespace test
 
         hal::surface s { ictx.load(hal::as_bytes(png_2x1)) };
 
-        if (s[{ 0, 0 }].color() != hal::palette::red || s[{ 1, 0 }].color() != hal::palette::blue)
-            return EXIT_FAILURE;
+        FAIL_IF((s[{ 0, 0 }].color() != hal::palette::red || s[{ 1, 0 }].color() != hal::palette::blue), "Surface color mismatch");
 
         return EXIT_SUCCESS;
     }
@@ -124,10 +145,10 @@ namespace test
             ;
 
         eh.kind(quit_requested);
-        evt.push(eh);
 
-        if (!(evt.poll(eh) && eh.kind() == quit_requested))
-            return EXIT_FAILURE;
+        FAIL_IF(!evt.push(eh), "Couldn't push event");
+        FAIL_IF(!evt.poll(eh), "Couldn't poll event");
+        FAIL_IF(eh.kind() != quit_requested, "Event type mismatch (desired \"quit_requested\", actual ", eh.kind(), ')');
 
         constexpr std::string_view text { "aaaaaaaaaabbbbbbbbbbccccccccccd" };
 
@@ -140,11 +161,7 @@ namespace test
         eh.text_input().text(text);
         evt.push(eh);
 
-        if (!(evt.poll(eh) && eh.kind() == text_input && eh.text_input().text() == text))
-        {
-            HAL_PRINT(hal::to_string(eh.kind()));
-            return EXIT_FAILURE;
-        }
+        FAIL_IF(eh.kind() != text_input, "Event type mismatch (desired \"text_input\", actual ", eh.kind(), ')');
 
         return EXIT_SUCCESS;
     }
@@ -155,29 +172,18 @@ namespace test
         {
             hal::ttf::context tctx;
 
-            HAL_ASSERT(hal::ttf::initialized(), "TTF context should be initialized");
+            FAIL_IF(!hal::ttf::initialized(), "TTF context not initialized when it should be");
         }
 
-        HAL_ASSERT(!hal::ttf::initialized(), "TTF context should not be initialized");
+        FAIL_IF(hal::ttf::initialized(), "TTF context initialized when it shouldn't be");
 
         return EXIT_SUCCESS;
     }
 
     int rvalues()
     {
-        hal::cleanup_init<hal::system::video> {}.clipboard("Hello from HalTest!");
-
-        return EXIT_SUCCESS;
-    }
-
-    int scaler()
-    {
-        constexpr hal::pixel::point src { 50, 100 };
-        constexpr hal::pixel::point dst { 100, 200 };
-
-        static_assert(src.scale_width(100) == dst);
-        static_assert(src.scale_height(200) == dst);
-        static_assert(src * 2 == dst);
+        hal::outcome o;
+        hal::cleanup_init<hal::system::video> { o }.clipboard("Hello from HalTest!");
 
         return EXIT_SUCCESS;
     }
@@ -191,11 +197,11 @@ namespace test
         s[{ 0, 1 }].color(0x00A4EF);
         s[{ 1, 1 }].color(0xFFB900);
 
-        s.save("DontSueMeDaddyGates.bmp");
+        FAIL_IF(!s.save("DontSueMeDaddyGates.bmp"), "Could not save 2x2 surface to file");
 
-        std::byte buf[1000];
+        std::byte buf[1024];
 
-        s.save(hal::as_bytes(buf));
+        FAIL_IF(!s.save(hal::as_bytes(buf)), "Could not save 2x2 surface to buffer");
 
         return EXIT_SUCCESS;
     }
@@ -208,7 +214,7 @@ namespace test
 
         const hal::image::load_format ret { ictx.query(hal::as_bytes(png_2x1)) };
 
-        HAL_ASSERT(ret == hal::image::load_format::png, "PNG query returned a different type: ", ret);
+        FAIL_IF(ret != hal::image::load_format::png, "PNG data not recognized as PNG data");
 
         return EXIT_SUCCESS;
     }
@@ -220,32 +226,16 @@ namespace test
         hal::window           wnd { vid, "HalTest Views", { 128, 128 } };
         hal::ref<hal::window> r1 = wnd;
 
-        HAL_ASSERT(wnd.get() == r1->get(), "RAII and view pointers don't match.");
+        FAIL_IF(wnd.get() != r1->get(), "Reference not same as object after assignment");
 
         hal::ref<hal::window> r_cpy = r1;
 
-        HAL_ASSERT(r1->get() == r_cpy->get(), "View and its copy have different pointers");
+        FAIL_IF(r1->get() != r_cpy->get(), "Reference not same as another reference after assignment");
 
         hal::ref<hal::window> r_mv = std::move(r1);
 
-        HAL_ASSERT(!r1->valid() && r_mv->get() == wnd.get(), "View move has unexpected results");
-
-        return EXIT_SUCCESS;
-    }
-
-    int metaprogramming()
-    {
-        using ret_t    = std::string;
-        using first_t  = std::tuple<int, double, short>;
-        using second_t = std::vector<double>;
-
-        using list = hal::meta::type_list<first_t, second_t>;
-
-        static_assert(std::is_same_v<first_t, list::at<0>> && std::is_same_v<second_t, list::at<1>>);
-
-        using info = hal::meta::func_info<ret_t(first_t, second_t)>;
-
-        static_assert(std::is_same_v<ret_t, info::return_type> && std::is_same_v<first_t, info::args::at<0>> && std::is_same_v<second_t, info::args::at<1>>);
+        FAIL_IF(r1->valid(), "Moved-from reference is valid");
+        FAIL_IF(r_mv->get() != wnd.get(), "Moved-to refence not same as object");
 
         return EXIT_SUCCESS;
     }
@@ -268,18 +258,25 @@ namespace test
         return EXIT_SUCCESS;
     }
 
+    int utilities()
+    {
+        hal::buffer<int> b1 { 9, 0, 2, 1, 0 }, b2 = b1;
+
+        FAIL_IF(std::memcmp(b1.data(), b2.data(), b1.size_bytes()) != 0, "Buffer data doesn't match");
+
+        return EXIT_SUCCESS;
+    }
+
     // Passing a zeroed-out buffer to a function expecting valid image data.
-    // This test should fail.
     int invalid_buffer()
     {
         constexpr std::uint8_t data[1024] {};
 
         hal::image::context ictx { hal::image::init_format::png };
 
-        // Failure should occur here.
         const hal::surface s { ictx.load(hal::as_bytes(data)) };
 
-        return EXIT_FAILURE;
+        return s.valid() ? EXIT_FAILURE : EXIT_SUCCESS;
     }
 
     // Drawing a null texture.
@@ -308,7 +305,7 @@ namespace test
 
         return EXIT_SUCCESS;
     }
-} // namespace test
+}
 
 int main(int argc, char* argv[])
 {
@@ -322,11 +319,9 @@ int main(int argc, char* argv[])
         { "--events", test::events },
         { "--ttf-init", test::ttf_init },
         { "--rvalues", test::rvalues },
-        { "--scaler", test::scaler },
         { "--outputter", test::outputter },
         { "--png-check", test::png_check },
         { "--references", test::references },
-        { "--metaprogramming", test::metaprogramming },
         { "--audio-init", test::audio_init },
         { "--invalid-buffer", test::invalid_buffer },
         { "--invalid-texture", test::invalid_texture },

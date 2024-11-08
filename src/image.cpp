@@ -6,7 +6,7 @@ using namespace hal;
 
 namespace
 {
-    bool img_init(image::init_bitmask formats)
+    outcome img_init(image::init_bitmask formats)
     {
         return ::IMG_Init(formats.mask()) == formats.mask();
     }
@@ -17,14 +17,14 @@ image::context::context(init_bitmask formats)
     HAL_WARN_IF(initialized(), "Image context already exists");
 
     if (!img_init(formats))
-        throw exception { "image context creation" };
+        throw exception { "Image context creation" };
 }
 
-image::context::context(init_bitmask formats, std::nothrow_t)
+image::context::context(init_bitmask formats, outcome& res)
 {
     HAL_WARN_IF(initialized(), "Image context already exists.");
 
-    static_cast<void>(img_init(formats));
+    res = img_init(formats);
 }
 
 image::context::~context()
@@ -34,12 +34,12 @@ image::context::~context()
     ::IMG_Quit();
 }
 
-hal::surface image::context::load(accessor src) const
+surface image::context::load(accessor src) const
 {
     return { ::IMG_Load_RW(src.use(pass_key<context> {}), true), pass_key<context> {} };
 }
 
-hal::surface image::context::load(accessor src, load_format fmt) const
+surface image::context::load(accessor src, load_format fmt) const
 {
     using enum load_format;
 

@@ -18,7 +18,7 @@ namespace hal
         {
         }
 
-        constexpr buffer(std::uintptr_t sz)
+        constexpr buffer(std::size_t sz)
             : m_arr { std::make_unique<T[]>(sz) }
             , m_size { sz }
         {
@@ -37,9 +37,25 @@ namespace hal
         {
         }
 
+        constexpr buffer(const buffer& other)
+            : buffer(other.size())
+        {
+            std::copy(other.begin(), other.end(), begin());
+        }
+
+        constexpr buffer(buffer&&) = default;
+
+        constexpr buffer& operator=(const buffer&) = default;
+        constexpr buffer& operator=(buffer&&)      = default;
+
         constexpr std::size_t size() const
         {
             return m_size;
+        }
+
+        constexpr std::size_t size_bytes() const
+        {
+            return size() * sizeof(T);
         }
 
         constexpr T& operator[](std::size_t idx)
@@ -84,6 +100,6 @@ namespace hal
 
     private:
         std::unique_ptr<T[]> m_arr;
-        std::uintptr_t       m_size;
+        std::size_t          m_size;
     };
 }

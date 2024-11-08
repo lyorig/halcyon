@@ -14,11 +14,11 @@ int main(int, char*[])
     using namespace hal::palette;
 
     // Creation via builder.
-    auto msgb = std::move(hal::message_box::builder()
-            .buttons({ "1", "2", "3", "4", "5", "6", "7" })
-            .colors(blue, red, red, orange, yellow)
-            .title("Hello from Halcyon!")
-            .body("Nothing more to say."));
+    auto msgb = hal::message_box::builder()
+                    .buttons({ "1", "2", "3", "4", "5", "6", "7" })
+                    .colors(blue, red, red, orange, yellow)
+                    .title("Hello from Halcyon!")
+                    .body("Nothing more to say.");
 
     auto x = hal::message_box::builder();
 

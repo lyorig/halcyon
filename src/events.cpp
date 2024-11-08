@@ -104,7 +104,7 @@ outcome proxy::events::push(const event::holder& eh)
 {
     eh.get(pass_key<events> {}).common.timestamp = ::SDL_GetTicks();
 
-    return ::SDL_PushEvent(&eh.get(pass_key<events> {}));
+    return ::SDL_PushEvent(&eh.get(pass_key<events> {})) >= 0;
 }
 
 void proxy::events::flush(event::type t)

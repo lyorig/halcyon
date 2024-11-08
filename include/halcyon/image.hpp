@@ -61,8 +61,12 @@ namespace hal
         {
         public:
             // Initialize the image context with chosen types.
+            // Throws in case of failure.
             context(init_bitmask formats);
-            context(init_bitmask formats, std::nothrow_t);
+            //
+            // Initialize the image context with chosen types.
+            // Writes success state to res.
+            context(init_bitmask formats, outcome& res);
 
             context(const context&) = delete;
             context(context&&)      = delete;

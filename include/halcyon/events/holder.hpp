@@ -177,13 +177,16 @@ namespace hal
         class text_input : private SDL_TextInputEvent
         {
         public:
-            // The maximum string length this event can handle.
+            // The maximum string length this event can handle, not including the null terminator.
             static constexpr std::size_t max_size { meta::array_size<decltype(SDL_TextInputEvent::text)> - 1 };
 
             hal::window::id_t window_id() const;
             text_input&       window_id(hal::window::id_t id);
 
-            c_string    text() const;
+            c_string text() const;
+
+            // The string must be shorter than text_input::max_size chars.
+            // Ensuring this is your responsibility - in debug mode, it's asserted.
             text_input& text(c_string t);
         };
 

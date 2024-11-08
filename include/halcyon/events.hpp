@@ -42,11 +42,11 @@ namespace hal
             // Check if there are any events of a given type in the queue.
             bool has(event::type t) const;
 
-            hal::keyboard::state_reference keyboard_state() const;
-            hal::keyboard::mod_state       keyboard_mod() const;
+            keyboard::state_reference keyboard_state() const;
+            keyboard::mod_state       keyboard_mod() const;
 
             // Get a snapshot of the current mouse state.
-            hal::mouse::state mouse_state() const;
+            mouse::state mouse_state() const;
 
             // Get the current mouse state relative to the desktop.
             pixel::point mouse_pos_abs() const;
