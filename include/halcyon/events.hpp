@@ -17,8 +17,6 @@ namespace hal
         class events
         {
         public:
-            constexpr static system system { system::events };
-
             // [private] The video subsystem implicitly initializes events.
             events(pass_key<video>);
 

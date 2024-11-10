@@ -1,7 +1,5 @@
 #pragma once
 
-#include <halcyon/utility/metaprogramming.hpp>
-
 #include <memory>
 #include <span>
 
@@ -38,7 +36,7 @@ namespace hal
         }
 
         constexpr buffer(const buffer& other)
-            : buffer(other.size())
+            : buffer(other.size()) // Don't unintentionally choose the initializer_list constructor.
         {
             std::copy(other.begin(), other.end(), begin());
         }
@@ -55,7 +53,7 @@ namespace hal
 
         constexpr std::size_t size_bytes() const
         {
-            return size() * sizeof(T);
+            return m_size * sizeof(T);
         }
 
         constexpr T& operator[](std::size_t idx)

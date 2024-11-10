@@ -3,7 +3,7 @@
 #include <type_traits>
 
 // utility/metaprogramming.hpp:
-// Template metaprogramming. Everything here resides in namespace hal::meta.
+// Template metaprogramming. Almost everything here resides in namespace hal::meta.
 
 namespace hal
 {
@@ -14,7 +14,7 @@ namespace hal
     {
         consteval void consteval_static_assert(bool b)
         {
-            static_cast<void>(0 / static_cast<int>(b));
+            static_cast<void>(0 / b);
         }
     }
 

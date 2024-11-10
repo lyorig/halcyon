@@ -1,12 +1,9 @@
 #pragma once
 
-#include <halcyon/types/numeric.hpp>
-
 #include <halcyon/utility/metaprogramming.hpp>
 
 #include <bit>
 #include <initializer_list>
-#include <type_traits>
 
 // utility/enum_bits.hpp:
 // Helper template class for bit manipulation with enums.

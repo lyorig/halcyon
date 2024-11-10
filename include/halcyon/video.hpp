@@ -20,8 +20,6 @@ namespace hal
         class video
         {
         public:
-            constexpr static system system { system::video };
-
             HAL_NO_SIZE proxy::events events;
 
             string  clipboard() const;

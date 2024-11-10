@@ -26,12 +26,12 @@ This library is still under heavy developement; some namespaces etc. might not b
 #include <halcyon/video.hpp>
 
 int main(int argc, char* argv[]) {
-  static_assert(hal::meta::is_correct_main<main>);
+  static_assert(hal::is_correct_main<main>);
 
-  hal::init<hal::system::video> vid;
+  hal::cleanup_init<hal::system::video> vid;
 
-  hal::window   wnd{vid.make_window("Example", {640, 480})};
-  hal::renderer rnd{wnd.make_renderer()};
+  hal::window   wnd{vid, "Example", {640, 480}};
+  hal::renderer rnd{wnd};
 
   hal::event::holder evt;
 
@@ -43,8 +43,6 @@ int main(int argc, char* argv[]) {
 
     rnd.present();
   }
-
-  hal::cleanup();
 
   return EXIT_SUCCESS;
 }

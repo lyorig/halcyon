@@ -11,8 +11,6 @@
 
 #include "SDL.h"
 
-#include <new> // std::nothrow_t
-
 // system.hpp:
 // A representation of SDL subsystems.
 

@@ -14,8 +14,6 @@ namespace hal
         class audio
         {
         public:
-            constexpr static system system { system::audio };
-
             hal::audio::device::id_t outputs_size() const;
             c_string                 outputs_name(hal::audio::device::id_t idx) const;
             result<hal::audio::spec> outputs_spec(hal::audio::device::id_t idx) const;
