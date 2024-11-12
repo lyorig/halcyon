@@ -35,7 +35,7 @@ namespace hal
             using this_ref = builder&;
 
         public:
-            static constexpr button_t invalid_button = -1;
+            constexpr static button_t invalid_button = -1;
 
             builder();
 

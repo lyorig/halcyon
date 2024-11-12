@@ -178,7 +178,7 @@ namespace hal
         {
         public:
             // The maximum string length this event can handle, not including the null terminator.
-            static constexpr std::size_t max_size { meta::array_size<decltype(SDL_TextInputEvent::text)> - 1 };
+            constexpr static std::size_t max_size { meta::array_size<decltype(SDL_TextInputEvent::text)> - 1 };
 
             hal::window::id_t window_id() const;
             text_input&       window_id(hal::window::id_t id);

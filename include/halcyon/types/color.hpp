@@ -25,7 +25,7 @@ namespace hal
         // A single R, G, B or A value.
         using value_t = decltype(SDL_Color::r);
 
-        static constexpr value_t opaque      = SDL_ALPHA_OPAQUE,
+        constexpr static value_t opaque      = SDL_ALPHA_OPAQUE,
                                  transparent = SDL_ALPHA_TRANSPARENT;
 
         // Helper struct that represents the difference of two colors.

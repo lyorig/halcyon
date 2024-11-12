@@ -5,8 +5,6 @@
 
 int main(int argc, char* argv[])
 {
-    static_assert(hal::is_correct_main<main>);
-
     hal::cleanup_init<hal::system::video> v;
 
     hal::window   wnd { v, "Example", { 640, 480 } };

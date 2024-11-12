@@ -14,7 +14,8 @@ namespace hal
 {
     class surface;
 
-    // Common texture functionality. Cannot be constructed, instead use static, target, or streaming textures.
+    // Base texture class. Do not create directly.
+    //
     class texture : public detail::resource<SDL_Texture, &::SDL_DestroyTexture>
     {
     protected:
@@ -68,7 +69,7 @@ namespace hal
         // Update the texture with pixels of a surface. The surface's pixel format must match the texture's.
         outcome update(ref<const surface> surf, pixel::point pos = { 0, 0 });
 
-        // Update the textzre with pixels of a surface and stretch them to a certain area.
+        // Update the texture with pixels of a surface and stretch them to a certain area.
         // The surface's pixel format must match the texture's, and its size must be >= the area's.
         outcome update(ref<const surface> surf, pixel::rect area);
 

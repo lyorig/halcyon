@@ -43,28 +43,28 @@ namespace hal
     {
         // Proxy dispatch.
         template <system S>
-        struct prox_dsp;
+        struct system_to_proxy;
 
         template <>
-        struct prox_dsp<system::video>
+        struct system_to_proxy<system::video>
         {
             using type = proxy::video;
         };
 
         template <>
-        struct prox_dsp<system::audio>
+        struct system_to_proxy<system::audio>
         {
             using type = proxy::audio;
         };
 
         template <>
-        struct prox_dsp<system::events>
+        struct system_to_proxy<system::events>
         {
             using type = proxy::events;
         };
 
         template <system... Systems>
-        class init_base : public prox_dsp<Systems>::type...
+        class init_base : public system_to_proxy<Systems>::type...
         {
         public:
             consteval static system_mask systems()

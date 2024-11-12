@@ -17,16 +17,20 @@ namespace hal
     class outcome
     {
     public:
-        static constexpr int success { 0 }, failure { 1 };
+        enum
+        {
+            success = 0,
+            failure = 1
+        };
 
         constexpr outcome()
-            : outcome { false }
+            : m_valid { false }
         {
         }
 
         // Directly construct from an SDL call.
         constexpr outcome(int func_ret)
-            : outcome { func_ret == success }
+            : m_valid { func_ret == success }
         {
         }
 

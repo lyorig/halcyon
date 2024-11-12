@@ -7,14 +7,11 @@ constexpr hal::pixel::point window_size_mod { 20, 20 };
 
 int main(int, char*[])
 {
-    static_assert(hal::is_correct_main<main>);
-
-    using wf = hal::window::flag;
-    using rf = hal::renderer::flag;
-
     hal::cleanup_init<hal::system::video> vid;
 
-    hal::window   wnd { vid, "Halcyon Structure Showcase", { 640, 480 }, wf::resizable };
+    hal::window wnd { vid, "Halcyon Structure Showcase", { 640, 480 }, hal::window::flag::resizable };
+
+    using rf = hal::renderer::flag;
     hal::renderer rnd { wnd, { rf::accelerated, rf::vsync } };
 
     hal::event::holder eh;

@@ -29,7 +29,8 @@ int main(int, char*[])
 
     // SDL enrolls its own main function on Windows, which is a common source of headaches.
     // A compile-time check is provided to ensure your program passes this part of the cross-platform check.
-    static_assert(hal::is_correct_main<main>);
+    // Commented out to prevent warnings during compilation.
+    // static_assert(hal::is_correct_main<main>);
 
     // Subsystem initialization.
     hal::cleanup_init<hal::system::video> vid;

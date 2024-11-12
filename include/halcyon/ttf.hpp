@@ -36,7 +36,7 @@ namespace hal
             lcd
         };
 
-        static constexpr render_type default_render_type { render_type::solid };
+        constexpr static render_type default_render_type { render_type::solid };
 
         font() = default;
 

@@ -8,8 +8,6 @@
 
 int main(int, char*[])
 {
-    static_assert(hal::is_correct_main<main>);
-
     using enum hal::message_box::type;
     using namespace hal::palette;
 

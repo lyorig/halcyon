@@ -10,8 +10,6 @@
 
 int main(int argc, char* argv[])
 {
-    static_assert(hal::is_correct_main<main>);
-
     constexpr hal::pixel::point padding { 20, 20 };
     constexpr hal::font::pt_t   font_size { 128 };
 

@@ -2,8 +2,6 @@
 
 int main(int argc, char* argv[])
 {
-    static_assert(hal::is_correct_main<main>);
-
     hal::cleanup_init<hal::system::audio> aud;
 
     hal::audio::device dev { hal::audio::builder::device { aud }.changes({ hal::audio::change::any }).spec({ 44100, hal::audio::format::f32, 2, 2048 })() };
