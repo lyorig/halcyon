@@ -57,7 +57,7 @@ namespace hal
         pixel::point pos_abs();
     }
 
-    constexpr const char* to_string(mouse::button btn)
+    constexpr c_string to_string(mouse::button btn)
     {
         using enum hal::mouse::button;
 

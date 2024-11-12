@@ -62,7 +62,7 @@ namespace hal
         bool mono() const;
     };
 
-    constexpr const char* to_string(font::render_type rt)
+    constexpr c_string to_string(font::render_type rt)
     {
         switch (rt)
         {

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <halcyon/types/c_string.hpp>
 #include <halcyon/types/rectangle.hpp>
 
 #include "SDL_blendmode.h"
@@ -20,7 +21,7 @@ namespace hal
         color_multiply = SDL_BLENDMODE_MUL
     };
 
-    constexpr const char* to_string(blend_mode bm)
+    constexpr c_string to_string(blend_mode bm)
     {
         switch (bm)
         {
@@ -236,7 +237,7 @@ namespace hal
         }
     }
 
-    constexpr const char* to_string(pixel::format fmt)
+    constexpr c_string to_string(pixel::format fmt)
     {
         using enum pixel::format;
 
@@ -370,7 +371,7 @@ namespace hal
         }
     }
 
-    constexpr const char* to_string(pixel::storage tp)
+    constexpr c_string to_string(pixel::storage tp)
     {
         using enum pixel::storage;
 
@@ -420,7 +421,7 @@ namespace hal
         }
     }
 
-    constexpr const char* to_string(pixel::bitmap_order o)
+    constexpr c_string to_string(pixel::bitmap_order o)
     {
         using enum pixel::bitmap_order;
 
@@ -440,7 +441,7 @@ namespace hal
         }
     }
 
-    constexpr const char* to_string(pixel::packed_order o)
+    constexpr c_string to_string(pixel::packed_order o)
     {
         using enum pixel::packed_order;
 
@@ -478,7 +479,7 @@ namespace hal
         }
     }
 
-    constexpr const char* to_string(pixel::array_order o)
+    constexpr c_string to_string(pixel::array_order o)
     {
         using enum pixel::array_order;
 
@@ -510,7 +511,7 @@ namespace hal
         }
     }
 
-    constexpr const char* to_string(pixel::packed_layout pl)
+    constexpr c_string to_string(pixel::packed_layout pl)
     {
         using enum pixel::packed_layout;
 

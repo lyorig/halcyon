@@ -32,12 +32,12 @@ keyboard::mod_state::mod_state(pass_key<proxy::events>)
 {
 }
 
-const char* hal::to_string(keyboard::button btn)
+c_string hal::to_string(keyboard::button btn)
 {
     return ::SDL_GetScancodeName(static_cast<SDL_Scancode>(btn));
 }
 
-const char* hal::to_string(keyboard::key k)
+c_string hal::to_string(keyboard::key k)
 {
     return ::SDL_GetKeyName(static_cast<SDL_KeyCode>(k));
 }

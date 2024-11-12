@@ -76,7 +76,7 @@ namespace hal
             load
         };
 
-        static const char* last_error();
+        static c_string last_error();
 
         // This is a class just for the purpose of using private variables.
         // It is not meant to be constructed.

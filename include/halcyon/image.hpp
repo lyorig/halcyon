@@ -98,7 +98,7 @@ namespace hal
         static_assert(::IMG_GetError == ::SDL_GetError);
     }
 
-    constexpr const char* to_string(image::init_format fmt)
+    constexpr c_string to_string(image::init_format fmt)
     {
         using enum image::init_format;
 
@@ -127,7 +127,7 @@ namespace hal
         }
     }
 
-    constexpr const char* to_string(image::save_format fmt)
+    constexpr c_string to_string(image::save_format fmt)
     {
         using enum image::save_format;
 
@@ -144,7 +144,7 @@ namespace hal
         }
     }
 
-    constexpr const char* to_string(image::load_format fmt)
+    constexpr c_string to_string(image::load_format fmt)
     {
         using enum image::load_format;
 

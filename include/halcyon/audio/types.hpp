@@ -1,5 +1,6 @@
 #pragma once
 
+#include <halcyon/types/c_string.hpp>
 #include <halcyon/types/numeric.hpp>
 
 #include "SDL_audio.h"
@@ -45,7 +46,7 @@ namespace hal
         };
     }
 
-    constexpr const char* to_string(audio::format fmt)
+    constexpr c_string to_string(audio::format fmt)
     {
         using enum audio::format;
 
@@ -86,7 +87,7 @@ namespace hal
         }
     }
 
-    constexpr const char* to_string(audio::change ch)
+    constexpr c_string to_string(audio::change ch)
     {
         using enum audio::change;
 

@@ -13,7 +13,7 @@ const timer   debug::m_timer {};
 
 #endif
 
-const char* debug::last_error()
+c_string debug::last_error()
 {
     if (const char* const err { ::SDL_GetError() }; err[0] == '\0')
         return "[no SDL error]";

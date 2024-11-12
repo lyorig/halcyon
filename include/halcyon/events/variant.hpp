@@ -296,7 +296,7 @@ namespace hal
         };
     }
 
-    constexpr const char* to_string(event::type evt)
+    constexpr c_string to_string(event::type evt)
     {
         using enum event::type;
 
@@ -358,7 +358,7 @@ namespace hal
         }
     }
 
-    constexpr const char* to_string(enum event::display::type evt)
+    constexpr c_string to_string(enum event::display::type evt)
     {
         using enum event::display::type;
 
@@ -381,7 +381,7 @@ namespace hal
         }
     }
 
-    constexpr const char* to_string(enum event::window::type evt)
+    constexpr c_string to_string(enum event::window::type evt)
     {
         using enum event::window::type;
 
