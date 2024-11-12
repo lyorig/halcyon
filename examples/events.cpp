@@ -14,7 +14,7 @@ int main(int, char*[])
     using rf = hal::renderer::flag;
     hal::renderer rnd { wnd, { rf::accelerated, rf::vsync } };
 
-    hal::event::holder eh;
+    hal::event::variant eh;
 
     // The application's main loop starts here.
     while (true) // As long as the program is running...

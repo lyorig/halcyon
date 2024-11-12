@@ -30,7 +30,7 @@ int main(int argc, char* argv[])
         rnd.present();
     }
 
-    hal::event::holder h;
+    hal::event::variant h;
 
     while (true)
     {

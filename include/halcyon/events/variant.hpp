@@ -6,8 +6,8 @@
 #include <halcyon/video/display.hpp>
 #include <halcyon/video/window.hpp>
 
-// event/events.hpp:
-// A thin wrapper of SDL's event handling system.
+// events/variant.hpp:
+// A class that holds information about one of several event types.
 
 namespace hal
 {
@@ -222,12 +222,12 @@ namespace hal
             clipboard_updated = SDL_CLIPBOARDUPDATE
         };
 
-        class holder
+        class variant
         {
         public:
             // Constructor that disables unused events.
             // This should reduce heap allocations on SDL's part.
-            holder();
+            variant();
 
             // Get/set this event's current type.
             type kind() const;

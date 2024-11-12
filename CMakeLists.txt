@@ -42,7 +42,7 @@ set(Halcyon_SOURCES
     audio/device.cpp
     audio/spec.cpp
     audio/stream.cpp
-    events/holder.cpp
+    events/variant.cpp
     events/keyboard.cpp
     events/mouse.cpp
     internal/rwops.cpp

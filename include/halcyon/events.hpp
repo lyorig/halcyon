@@ -1,6 +1,6 @@
 #pragma once
 
-#include <halcyon/events/holder.hpp>
+#include <halcyon/events/variant.hpp>
 
 #include <halcyon/system.hpp>
 
@@ -26,10 +26,10 @@ namespace hal
 
             // Get and remove an event from the queue.
             // Returns whether there are still events to process.
-            bool poll(event::holder& eh);
+            bool poll(event::variant& eh);
 
             // Push an event onto the queue.
-            outcome push(const event::holder& eh);
+            outcome push(const event::variant& eh);
 
             // Remove all events of a given type from the queue.
             void flush(event::type t);

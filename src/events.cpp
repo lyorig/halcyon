@@ -90,7 +90,7 @@ proxy::events::events()
     text_input_stop();
 }
 
-bool proxy::events::poll(event::holder& eh)
+bool proxy::events::poll(event::variant& eh)
 {
     return static_cast<bool>(::SDL_PollEvent(&eh.get(pass_key<events> {})));
 }
@@ -100,7 +100,7 @@ void proxy::events::pump()
     ::SDL_PumpEvents();
 }
 
-outcome proxy::events::push(const event::holder& eh)
+outcome proxy::events::push(const event::variant& eh)
 {
     eh.get(pass_key<events> {}).common.timestamp = ::SDL_GetTicks();
 

@@ -33,7 +33,7 @@ int main(int argc, char* argv[]) {
   hal::window   wnd{vid, "Example", {640, 480}};
   hal::renderer rnd{wnd};
 
-  hal::event::holder evt;
+  hal::event::variant evt;
 
   while (true) {
     while (vid.events.poll(evt)) {

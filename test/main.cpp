@@ -67,7 +67,7 @@ namespace test
 
         hal::window wnd { vid, "HalTest: Window resize", { 640, 480 }, hal::window::flag::hidden };
 
-        hal::event::holder e;
+        hal::event::variant e;
 
         while (vid.events.poll(e)) // Clear events.
             ;
@@ -97,7 +97,7 @@ namespace test
         hal::window   wnd { vid, "HalTest: Basic init", { 640, 480 }, hal::window::flag::hidden };
         hal::renderer rnd { wnd };
 
-        hal::event::holder e;
+        hal::event::variant e;
         vid.events.poll(e);
 
         rnd.present();
@@ -112,7 +112,7 @@ namespace test
 
         hal::cleanup_init<hal::system::video> vid;
 
-        vid.clipboard(text);
+        FAIL_IF(!vid.clipboard(text), "Could not set clipboard text");
 
         FAIL_IF(!vid.clipboard_has_text(), "Clipboard doesn't have text when it should");
         FAIL_IF(vid.clipboard() != text, "Clipboard text mismatch");
@@ -137,7 +137,7 @@ namespace test
     {
         hal::cleanup_init<hal::system::events> evt;
 
-        hal::event::holder eh;
+        hal::event::variant eh;
 
         using enum hal::event::type;
 
@@ -298,7 +298,7 @@ namespace test
     {
         hal::cleanup_init<hal::system::events> sys;
 
-        hal::event::holder eh;
+        hal::event::variant eh;
 
         // Failure should occur here.
         eh.text_input().text("amogus sus").window_id(69);
@@ -327,22 +327,12 @@ int main(int argc, char* argv[])
         { "--invalid-texture", test::invalid_texture },
         { "--invalid-event", test::invalid_event } };
 
-    if (argc == 1)
-    {
-        std::cout << "No test type given.\n";
-        return EXIT_FAILURE;
-    }
+    FAIL_IF(argc == 1, "No test name given.");
 
     const auto iter = std::find_if(std::begin(tests), std::end(tests), [&](const auto& pair)
         { return pair.first == argv[1]; });
 
-    if (iter == std::end(tests))
-    {
-        std::cout << "Invalid option specified: " << argv[1] << '\n';
-        return EXIT_FAILURE;
-    }
+    FAIL_IF(iter == std::end(tests), "Invalid option specified: ", argv[1]);
 
-    const int ret { iter->second() };
-
-    return ret;
+    return iter->second();
 }

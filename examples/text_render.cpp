@@ -21,8 +21,8 @@ int main(int argc, char* argv[])
 
     hal::cleanup_init<hal::system::video> vid;
 
-    hal::window        wnd { vid, "Text renderer", { 100, 100 } };
-    hal::event::holder evt;
+    hal::window         wnd { vid, "Text renderer", { 100, 100 } };
+    hal::event::variant evt;
 
     hal::renderer       rnd { wnd };
     hal::static_texture tex;
