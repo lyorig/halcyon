@@ -20,7 +20,10 @@ namespace hal
     {
     protected:
         // A special integer value that tells SDL to do the thing it's named after when creating a texture.
-        constexpr static pixel::format use_renderer_native { 0 };
+        constexpr static pixel::format use_renderer_native()
+        {
+            return static_cast<pixel::format>(0);
+        }
 
         enum class access : u8
         {
@@ -63,7 +66,7 @@ namespace hal
     public:
         static_texture() = default;
 
-        static_texture(lref<const renderer> rnd, pixel::point size, pixel::format fmt = use_renderer_native);
+        static_texture(lref<const renderer> rnd, pixel::point size, pixel::format fmt = use_renderer_native());
         static_texture(lref<const renderer> rnd, ref<const surface> surf);
 
         // Update the texture with pixels of a surface. The surface's pixel format must match the texture's.
@@ -84,7 +87,7 @@ namespace hal
     public:
         target_texture() = default;
 
-        target_texture(lref<const renderer> rnd, pixel::point size, pixel::format fmt = use_renderer_native);
+        target_texture(lref<const renderer> rnd, pixel::point size, pixel::format fmt = use_renderer_native());
     };
 
     // A texture whose pixels can be accessed.
@@ -94,7 +97,7 @@ namespace hal
     public:
         streaming_texture() = default;
 
-        streaming_texture(lref<const renderer> rnd, pixel::point size, pixel::format fmt = use_renderer_native);
+        streaming_texture(lref<const renderer> rnd, pixel::point size, pixel::format fmt = use_renderer_native());
 
         struct data
         {

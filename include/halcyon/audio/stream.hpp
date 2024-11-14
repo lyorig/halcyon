@@ -30,7 +30,10 @@ namespace hal
         class stream : public detail::resource<SDL_AudioStream, ::SDL_FreeAudioStream>
         {
         public:
-            constexpr static i32 processing_failed { -1 };
+            constexpr static i32 processing_failed()
+            {
+                return -1;
+            }
 
             // Default constructor. Creates an invalid stream.
             stream() = default;

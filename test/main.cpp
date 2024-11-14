@@ -152,7 +152,7 @@ namespace test
 
         constexpr std::string_view text { "aaaaaaaaaabbbbbbbbbbccccccccccd" };
 
-        static_assert(text.size() <= hal::event::text_input::max_size);
+        static_assert(text.size() <= hal::event::text_input::max_size());
 
         while (evt.poll(eh))
             ;

@@ -60,7 +60,10 @@ namespace hal
 
             // Device querying functions return -1 to signalize an unknown
             // amount of devices etc., but don't intend it to be an error.
-            constexpr static id_t invalid_id = -1;
+            constexpr static id_t invalid_id()
+            {
+                return -1;
+            }
 
             // Default constructor. Creates an invalid device.
             device();

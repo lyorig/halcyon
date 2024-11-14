@@ -36,7 +36,10 @@ namespace hal
             lcd
         };
 
-        constexpr static render_type default_render_type { render_type::solid };
+        constexpr static render_type default_render_type()
+        {
+            return render_type::solid;
+        }
 
         font() = default;
 
@@ -167,7 +170,7 @@ namespace hal
             // Zero means only wrap on newlines.
             [[nodiscard]] font_text& wrap(pixel_t wl);
 
-            [[nodiscard]] surface operator()(font::render_type rt = font::default_render_type);
+            [[nodiscard]] surface operator()(font::render_type rt = font::default_render_type());
 
         private:
             consteval static pixel_t invalid()
@@ -184,7 +187,7 @@ namespace hal
         public:
             [[nodiscard]] font_glyph(ref<const font>, char32_t glyph, pass_key<font>);
 
-            [[nodiscard]] surface operator()(font::render_type rt = font::default_render_type);
+            [[nodiscard]] surface operator()(font::render_type rt = font::default_render_type());
 
         private:
             char32_t m_glyph;

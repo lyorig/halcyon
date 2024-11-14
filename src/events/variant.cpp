@@ -336,7 +336,7 @@ c_string event::text_input::text() const
 
 event::text_input& event::text_input::text(c_string t)
 {
-    HAL_ASSERT(t.length() <= max_size, "String too large at ", t.length(), " chars (max: ", max_size, " chars)");
+    HAL_ASSERT(t.length() <= max_size(), "String too large at ", t.length(), " chars (max: ", max_size, " chars)");
 
     // We now know that it's safe to copy this string.
     std::strcpy(SDL_TextInputEvent::text, t.data());

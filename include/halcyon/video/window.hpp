@@ -25,8 +25,15 @@ namespace hal
     public:
         using id_t = u8;
 
-        constexpr static id_t          invalid_id { 0 };
-        constexpr static display::id_t invalid_display_index = -1;
+        constexpr static id_t invalid_id()
+        {
+            return 0;
+        }
+
+        constexpr static display::id_t invalid_display_index()
+        {
+            return -1;
+        }
 
         enum class flag : u16
         {

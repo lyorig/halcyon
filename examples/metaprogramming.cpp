@@ -25,7 +25,7 @@ int main(int, char*[])
     using info_qsort = hal::meta::func_info<decltype(std::qsort)>;
 
     using joined = hal::meta::join<info_main::args, info_qsort::args>;
-    static_assert(joined::size == info_main::args::size + info_qsort::args::size);
+    static_assert(joined::size() == info_main::args::size() + info_qsort::args::size());
 
     using variant = joined::wrap<std::variant>;
 

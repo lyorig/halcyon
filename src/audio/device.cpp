@@ -50,7 +50,7 @@ audio::device adb::operator()(class spec& obtained)
 }
 
 audio::device::device()
-    : m_id { invalid_id }
+    : m_id { invalid_id() }
 {
 }
 

@@ -51,7 +51,10 @@ namespace hal
         template <std::size_t I, typename What, typename... Ts>
         struct find<I, What, What, Ts...>
         {
-            constexpr static std::size_t value { I };
+            constexpr static std::size_t value()
+            {
+                return I;
+            }
         };
 
         template <typename>
@@ -60,7 +63,10 @@ namespace hal
         template <typename T, std::size_t N>
         struct array_size<T[N]>
         {
-            constexpr static std::size_t value { N };
+            constexpr static std::size_t value()
+            {
+                return N;
+            }
         };
 
         template <typename T>
@@ -104,7 +110,7 @@ namespace hal
         // This will report the index of the first occurrence.
         template <typename What, typename... Where>
             requires is_present<What, Where...>
-        constexpr inline std::size_t find { detail::find<0, What, Where...>::value };
+        constexpr inline std::size_t find { detail::find<0, What, Where...>::value() };
 
         // Check if a type is "innermost", as in, it is not a pointer, reference, and has no cv-qualifiers.
         template <typename T>
@@ -119,7 +125,7 @@ namespace hal
         using at = detail::at<0, I, Ts...>::type;
 
         template <typename T>
-        constexpr inline std::size_t array_size { detail::array_size<T>::value };
+        constexpr inline std::size_t array_size { detail::array_size<T>::value() };
 
         template <typename T>
         using remove_pointer_to_const = detail::remove_pointer_to_const<T>::type;
@@ -135,18 +141,24 @@ namespace hal
         template <typename... Ts>
         struct type_list
         {
-            constexpr static std::size_t size { sizeof...(Ts) };
+            constexpr static std::size_t size()
+            {
+                return sizeof...(Ts);
+            }
 
             // Get the index of a type.
             template <typename T>
-            constexpr static std::size_t find { meta::find<T, Ts...> };
+            constexpr static std::size_t find()
+            {
+                return meta::find<T, Ts...>;
+            }
 
             // Get the type at index N.
             template <std::size_t N>
             using at = meta::at<N, Ts...>;
 
             using front = at<0>;
-            using back  = at<size - 1>;
+            using back  = at<size() - 1>;
 
             // Wrap the provided type list in a type that takes a parameter pack.
             // Hopefully, that's understandable to you, 'cause it sure ain't to me.

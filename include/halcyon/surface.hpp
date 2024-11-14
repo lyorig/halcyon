@@ -40,12 +40,15 @@ namespace hal
     class surface : public detail::resource<SDL_Surface, ::SDL_FreeSurface>
     {
     public:
-        constexpr static pixel::format default_pixel_format { pixel::format::rgba32 };
+        constexpr static pixel::format default_pixel_format()
+        {
+            return pixel::format::rgba32;
+        }
 
         surface() = default;
 
         // Create a sized surface with an optional pixel format.
-        surface(pixel::point sz, pixel::format fmt = default_pixel_format);
+        surface(pixel::point sz, pixel::format fmt = default_pixel_format());
 
         // Load a BMP image. This works natively without having to initialize anything.
         surface(accessor src);
