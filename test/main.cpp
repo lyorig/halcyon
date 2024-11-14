@@ -6,17 +6,23 @@
 #include <halcyon/image.hpp>
 #include <halcyon/ttf.hpp>
 
+#include <halcyon/utility/guard.hpp>
+
 #include "data.hpp"
+#include "halcyon/video/types.hpp"
 
 // Halcyon testing.
 // A single test-runner executable that contains all tests.
 // Tests are added to CTest by specifiying the appropriate command-line argument.
 
-#define FAIL_IF(cond, ...)                                      \
-    if (cond)                                                   \
-    {                                                           \
-        HAL_PRINT(__VA_ARGS__, "; ", hal::debug::last_error()); \
-        return EXIT_FAILURE;                                    \
+#define FAIL(...)                                           \
+    HAL_PRINT(__VA_ARGS__, "; ", hal::debug::last_error()); \
+    return EXIT_FAILURE;
+
+#define FAIL_IF(cond, ...) \
+    if (cond)              \
+    {                      \
+        FAIL(__VA_ARGS__); \
     }
 
 namespace test
@@ -183,7 +189,16 @@ namespace test
     int rvalues()
     {
         hal::outcome o;
-        hal::cleanup_init<hal::system::video> { o }.clipboard("Hello from HalTest!");
+        try
+        {
+            o = hal::cleanup_init<hal::system::video> {}.clipboard("Hello from HalTest!");
+        }
+        catch (hal::exception e)
+        {
+            FAIL(e.what());
+        }
+
+        FAIL_IF(!o, "Could not set clipboard on rvalue system");
 
         return EXIT_SUCCESS;
     }
@@ -267,6 +282,27 @@ namespace test
         return EXIT_SUCCESS;
     }
 
+    int texture_manipulation()
+    {
+        hal::outcome                          o;
+        hal::cleanup_init<hal::system::video> vid { o };
+
+        hal::window   wnd { vid, "HalTest: Texture manipulation", { 640, 480 }, hal::window::flag::hidden };
+        hal::renderer rnd { wnd };
+
+        hal::streaming_texture tex { rnd, { 256, 256 } };
+
+        hal::result<hal::lock_data> d;
+
+        hal::guard::lock lock { tex, d };
+
+        FAIL_IF(!d, "Could not lock streaming texture");
+
+        std::memset(d->pixels, 0x00, tex.size()->product() * hal::pixel::bytes_per_pixel_of(tex.pixel_format().get()));
+
+        return EXIT_SUCCESS;
+    }
+
     // Passing a zeroed-out buffer to a function expecting valid image data.
     int invalid_buffer()
     {
@@ -323,6 +359,8 @@ int main(int argc, char* argv[])
         { "--png-check", test::png_check },
         { "--references", test::references },
         { "--audio-init", test::audio_init },
+        { "--utilities", test::utilities },
+        { "--texture-manipulation", test::texture_manipulation },
         { "--invalid-buffer", test::invalid_buffer },
         { "--invalid-texture", test::invalid_texture },
         { "--invalid-event", test::invalid_event } };

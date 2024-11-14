@@ -15,13 +15,13 @@ int main(int argc, char* argv[])
 
         hal::static_texture t { rnd, rnd.size().get(), pref };
 
-        hal::surface s { t.size(), pref };
+        hal::surface s { t.size().get(), pref };
 
         s.fill(hal::palette::cyan);
         t.update(s);
 
         s.fill(hal::palette::orange);
-        t.update(s, t.size() / 2);
+        t.update(s, t.size().get() / 2);
 
         s.fill(hal::palette::green);
         t.update(s, { { 0, 0 }, s.size() / 4 });

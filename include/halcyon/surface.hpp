@@ -1,6 +1,7 @@
 #pragma once
 
 #include <halcyon/internal/drawer.hpp>
+#include <halcyon/internal/pixel_reference.hpp>
 #include <halcyon/internal/resource.hpp>
 #include <halcyon/internal/rwops.hpp>
 
@@ -21,8 +22,6 @@ struct SDL_Window;
 namespace hal
 {
     // Forward definitions for helper classes.
-    class const_pixel_reference;
-    class pixel_reference;
     class blitter;
     class window;
 
@@ -105,8 +104,8 @@ namespace hal
         // Get pixel at position.
         // It is recommended do manipulate pixels at the surface stage,
         // as textures are very slow to retrieve pixel information.
-        const_pixel_reference operator[](pixel::point pos) const;
-        pixel_reference       operator[](pixel::point pt);
+        pixel::const_reference operator[](pixel::point pos) const;
+        pixel::reference       operator[](pixel::point pt);
 
         // Get/set this surface's blend mode.
         result<blend_mode> blend() const;
@@ -119,36 +118,6 @@ namespace hal
         // Get/set this surface's alpha modifier.
         result<color::value_t> alpha_mod() const;
         outcome                alpha_mod(color::value_t val);
-    };
-
-    class const_pixel_reference
-    {
-    public:
-        const_pixel_reference(std::byte* pixels, int pitch, const SDL_PixelFormat* fmt, pixel::point pos, pass_key<surface>);
-
-        color color() const;
-
-    protected:
-        const_pixel_reference(std::byte* pixels, int pitch, const SDL_PixelFormat* fmt, pixel::point pos);
-        // Retrieve the color in a mapped format.
-        Uint32 get_mapped() const;
-
-        std::byte*             m_ptr; // A pointer to the current color.
-        const SDL_PixelFormat* m_fmt;
-    };
-
-    // A reference to a pixel in a surface for easy access and modification.
-    class pixel_reference : public const_pixel_reference
-    {
-    public:
-        pixel_reference(std::byte* pixels, int pitch, const SDL_PixelFormat* fmt, pixel::point pos, pass_key<surface>);
-
-        using const_pixel_reference::color;
-        void color(hal::color c);
-
-    private:
-        // Set the color to a mapped value.
-        void set_mapped(Uint32 mv);
     };
 
     HAL_TAG(keep_dst);

@@ -5,6 +5,7 @@
 #include <halcyon/utility/pass_key.hpp>
 
 #include <halcyon/internal/resource.hpp>
+#include <halcyon/types/result.hpp>
 
 #include <limits>
 
@@ -34,11 +35,21 @@ namespace hal::detail
         template <meta::arithmetic U>
         consteval static U unset_pos() { return std::numeric_limits<U>::max(); }
 
+        static pixel::point get_point(pixel::point pt)
+        {
+            return pt;
+        }
+
+        static pixel::point get_point(result<pixel::point> pt)
+        {
+            return pt.get_or({});
+        }
+
     public:
         [[nodiscard]] drawer(ref<Pass> ths, ref<T> src)
             : m_pass { ths }
             , m_this { src }
-            , m_dst { tag::as_size, src->size() }
+            , m_dst { tag::as_size, get_point(src->size()) }
         {
             m_src.pos.x = unset_pos<src_t>();
         }

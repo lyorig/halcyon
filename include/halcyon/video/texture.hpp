@@ -1,5 +1,6 @@
 #pragma once
 
+#include <halcyon/internal/pixel_reference.hpp>
 #include <halcyon/internal/resource.hpp>
 #include <halcyon/types/color.hpp>
 #include <halcyon/types/result.hpp>
@@ -39,7 +40,7 @@ namespace hal
         texture(lref<const renderer> rnd, pixel::format fmt, access a, pixel::point size);
 
     public:
-        pixel::point size() const;
+        result<pixel::point> size() const;
 
         result<color::value_t> alpha_mod() const;
         outcome                alpha_mod(color::value_t val);
@@ -90,6 +91,14 @@ namespace hal
         target_texture(lref<const renderer> rnd, pixel::point size, pixel::format fmt = use_renderer_native());
     };
 
+    class streaming_texture;
+
+    struct lock_data
+    {
+        std::byte* pixels;
+        int        pitch;
+    };
+
     // A texture whose pixels can be accessed.
     // Use if you want to directly manipulate pixels.
     class streaming_texture : public texture
@@ -99,18 +108,12 @@ namespace hal
 
         streaming_texture(lref<const renderer> rnd, pixel::point size, pixel::format fmt = use_renderer_native());
 
-        struct data
-        {
-            std::byte* pixels;
-            int        pitch;
-        };
-
-        result<data> lock();
-        result<data> lock(pixel::rect area);
+        result<lock_data> lock();
+        result<lock_data> lock(pixel::rect area);
 
         void unlock();
 
     private:
-        result<data> internal_lock(const SDL_Rect* area);
+        result<lock_data> internal_lock(const SDL_Rect* area);
     };
 }

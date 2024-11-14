@@ -52,6 +52,11 @@ namespace hal
                 return get() != nullptr;
             }
 
+            bool operator!() const
+            {
+                return get() == nullptr;
+            }
+
         private:
             struct deleter
             {

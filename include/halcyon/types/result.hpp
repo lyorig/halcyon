@@ -93,6 +93,11 @@ namespace hal
             return m_value;
         }
 
+        constexpr T get_or(T val)
+        {
+            return valid() ? get() : val;
+        }
+
         constexpr T& operator*()
         {
             return get();

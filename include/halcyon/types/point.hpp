@@ -209,6 +209,11 @@ namespace hal
             };
         }
 
+        constexpr auto product() const
+        {
+            return x * y;
+        }
+
         // Comparisons.
         constexpr auto operator<=>(const point& cmp) const = default;
 

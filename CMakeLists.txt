@@ -45,6 +45,7 @@ set(Halcyon_SOURCES
     events/variant.cpp
     events/keyboard.cpp
     events/mouse.cpp
+	internal/pixel_reference.cpp
     internal/rwops.cpp
     types/color.cpp
     types/string.cpp
@@ -124,6 +125,8 @@ if(Halcyon_BUILD_TESTS)
     add_test(NAME PngCheck COMMAND ${ExeName} --png-check)
     add_test(NAME References COMMAND ${ExeName} --references)
     add_test(NAME AudioInit COMMAND ${ExeName} --audio-init)
+	add_test(NAME Utilities COMMAND ${ExeName} --utilities)
+	add_test(NAME TextureManipulation COMMAND ${ExeName} --texture-manipulation)
     add_test(NAME InvalidBuffer COMMAND ${ExeName} --invalid-buffer)
     add_test(NAME InvalidTexture COMMAND ${ExeName} --invalid-texture)
     add_test(NAME InvalidEvent COMMAND ${ExeName} --invalid-event)

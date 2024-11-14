@@ -2,8 +2,6 @@
 
 #include <halcyon/utility/guard.hpp>
 
-#include "SDL_image.h"
-
 using namespace hal;
 
 namespace
@@ -112,7 +110,7 @@ bool surface::must_lock() const
     return SDL_MUSTLOCK(get());
 }
 
-const_pixel_reference surface::operator[](pixel::point pos) const
+pixel::const_reference surface::operator[](pixel::point pos) const
 {
     HAL_ASSERT(pos.x < get()->w, "Out-of-range width");
     HAL_ASSERT(pos.y < get()->h, "Out-of-range height");
@@ -120,7 +118,7 @@ const_pixel_reference surface::operator[](pixel::point pos) const
     return { static_cast<std::byte*>(get()->pixels), get()->pitch, get()->format, pos, pass_key<surface> {} };
 }
 
-pixel_reference surface::operator[](pixel::point pos)
+pixel::reference surface::operator[](pixel::point pos)
 {
     return { static_cast<std::byte*>(get()->pixels), get()->pitch, get()->format, pos, pass_key<surface> {} };
 }
@@ -159,72 +157,6 @@ result<color::value_t> surface::alpha_mod() const
 outcome surface::alpha_mod(color::value_t val)
 {
     return ::SDL_SetSurfaceAlphaMod(get(), val);
-}
-
-// Const pixel reference.
-
-const_pixel_reference::const_pixel_reference(std::byte* pixels, int pitch, const SDL_PixelFormat* fmt, pixel::point pos, pass_key<surface>)
-    : const_pixel_reference { pixels, pitch, fmt, pos }
-{
-}
-
-const_pixel_reference::const_pixel_reference(std::byte* pixels, int pitch, const SDL_PixelFormat* fmt, pixel::point pos)
-    : m_ptr { pixels + pos.y * pitch + pos.x * fmt->BytesPerPixel }
-    , m_fmt { fmt }
-{
-}
-
-color const_pixel_reference::color() const
-{
-    hal::color c;
-
-    ::SDL_GetRGBA(get_mapped(), m_fmt, &c.r, &c.g, &c.b, &c.a);
-
-    return c;
-}
-
-Uint32 const_pixel_reference::get_mapped() const
-{
-    Uint32 ret { 0 };
-
-    if constexpr (compile_settings::endianness == endian::lil)
-    {
-        std::memcpy(&ret, m_ptr, m_fmt->BytesPerPixel);
-    }
-
-    else
-    {
-        const u8 offset { static_cast<u8>(sizeof(Uint32) - m_fmt->BytesPerPixel) };
-        std::memcpy(&ret + offset, m_ptr + offset, m_fmt->BytesPerPixel);
-    }
-
-    return ret;
-}
-
-// Pixel reference.
-
-pixel_reference::pixel_reference(std::byte* pixels, int pitch, const SDL_PixelFormat* fmt, pixel::point pos, pass_key<surface>)
-    : const_pixel_reference(pixels, pitch, fmt, pos)
-{
-}
-
-void pixel_reference::color(struct color c)
-{
-    set_mapped(::SDL_MapRGBA(m_fmt, c.r, c.g, c.b, c.a));
-}
-
-void pixel_reference::set_mapped(Uint32 mapped)
-{
-    if constexpr (compile_settings::endianness == endian::lil)
-    {
-        std::memcpy(m_ptr, &mapped, m_fmt->BytesPerPixel);
-    }
-
-    else
-    {
-        const u8 offset = sizeof(Uint32) - m_fmt->BytesPerPixel;
-        std::memcpy(m_ptr + offset, &mapped + offset, m_fmt->BytesPerPixel);
-    }
 }
 
 // Blitter.

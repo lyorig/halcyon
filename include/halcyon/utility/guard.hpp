@@ -1,5 +1,6 @@
 #pragma once
 
+#include "halcyon/video/texture.hpp"
 #include <halcyon/video/renderer.hpp>
 
 // utility/guard.hpp:
@@ -12,37 +13,17 @@ namespace hal
 
     namespace guard
     {
-        template <typename T>
         class lock
         {
         public:
-            lock(T& obj)
-                : m_ref { obj }
-            {
-                m_ref->lock();
-            }
+            lock(lref<streaming_texture> tx, result<lock_data>& out_res);
 
-            lock(lref<streaming_texture> tx, streaming_texture::data& out_data)
-                requires std::is_same_v<T, streaming_texture>
-                : m_ref { tx }
-            {
-                out_data = m_ref->lock();
-            }
+            lock(lref<streaming_texture> tx, pixel::rect area, result<lock_data>& out_res);
 
-            lock(lref<streaming_texture> tx, pixel::rect area, streaming_texture::data& out_data)
-                requires std::is_same_v<T, streaming_texture>
-                : m_ref { tx }
-            {
-                out_data = m_ref->lock(area);
-            }
-
-            ~lock()
-            {
-                m_ref->unlock();
-            }
+            ~lock();
 
         private:
-            lref<T> m_ref;
+            lref<streaming_texture> m_ref;
         };
 
         template <typename T>

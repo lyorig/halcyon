@@ -17,13 +17,11 @@ texture::texture(lref<const renderer> rnd, pixel::format fmt, access a, pixel::p
 {
 }
 
-pixel::point texture::size() const
+result<pixel::point> texture::size() const
 {
     point<int> size;
 
-    this->internal_query(nullptr, nullptr, &size.x, &size.y);
-
-    return size;
+    return { internal_query(nullptr, nullptr, &size.x, &size.y), size };
 }
 
 result<color::value_t> texture::alpha_mod() const
@@ -108,21 +106,21 @@ streaming_texture::streaming_texture(lref<const renderer> rnd, pixel::point size
 {
 }
 
-result<streaming_texture::data> streaming_texture::lock()
+result<lock_data> streaming_texture::lock()
 {
     return internal_lock(nullptr);
 }
 
-result<streaming_texture::data> streaming_texture::lock(pixel::rect area)
+result<lock_data> streaming_texture::lock(pixel::rect area)
 {
     return internal_lock(area.addr());
 }
 
-result<streaming_texture::data> streaming_texture::internal_lock(const SDL_Rect* area)
+result<lock_data> streaming_texture::internal_lock(const SDL_Rect* area)
 {
-    data ret;
+    lock_data ret;
 
-    return { ::SDL_LockTexture(get(), area, reinterpret_cast<void**>(&ret.pixels), &ret.pitch), std::move(ret) };
+    return { ::SDL_LockTexture(get(), area, reinterpret_cast<void**>(&ret.pixels), &ret.pitch), ret };
 }
 
 void streaming_texture::unlock()

@@ -2,6 +2,23 @@
 
 using namespace hal;
 
+guard::lock::lock(lref<streaming_texture> tex, result<lock_data>& out_res)
+    : m_ref { tex }
+{
+    out_res = tex->lock();
+}
+
+guard::lock::lock(lref<streaming_texture> tex, pixel::rect area, result<lock_data>& out_res)
+    : m_ref { tex }
+{
+    out_res = tex->lock(area);
+}
+
+guard::lock::~lock()
+{
+    m_ref->unlock();
+}
+
 guard::color::color(lref<renderer> obj, hal::color c)
     : m_ref { obj }
     , m_old { m_ref->color().get() }

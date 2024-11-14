@@ -40,7 +40,7 @@ int main(int argc, char* argv[])
         HAL_PRINT("Must lock? ", surf.must_lock());
     }
 
-    wnd.size(tex.size() + padding);
+    wnd.size(tex.size().get() + padding);
     rnd.color(hal::palette::weezer_blue);
 
     while (true)
