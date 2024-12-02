@@ -10,16 +10,16 @@ namespace hal
 {
     namespace message_box
     {
-        using button_t = u8;
+        using button_t = std::uint8_t;
 
-        enum class type : u8
+        enum class type : std::uint8_t
         {
             info    = SDL_MESSAGEBOX_INFORMATION,
             warning = SDL_MESSAGEBOX_WARNING,
             error   = SDL_MESSAGEBOX_ERROR
         };
 
-        enum class default_key : u8
+        enum class default_key : std::uint8_t
         {
             none   = 0,
             enter  = SDL_MESSAGEBOX_BUTTON_RETURNKEY_DEFAULT,
@@ -35,7 +35,7 @@ namespace hal
             using this_ref = builder&;
 
         public:
-            constexpr static button_t invalid_button()
+            consteval static button_t invalid_button()
             {
                 return -1;
             }

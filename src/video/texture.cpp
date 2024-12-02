@@ -88,7 +88,7 @@ outcome static_texture::update(ref<const surface> surf, pixel::rect area)
 {
     HAL_ASSERT(surf->size() >= area.size, "The surface must be >= to the area");
 
-    return internal_update(area.addr(), surf.get()->pixels, surf.get()->pitch);
+    return internal_update(detail::addr(area), surf.get()->pixels, surf.get()->pitch);
 }
 
 outcome static_texture::internal_update(const SDL_Rect* area, const void* pixels, int pitch)
@@ -113,7 +113,7 @@ result<lock_data> streaming_texture::lock()
 
 result<lock_data> streaming_texture::lock(pixel::rect area)
 {
-    return internal_lock(area.addr());
+    return internal_lock(detail::addr(area));
 }
 
 result<lock_data> streaming_texture::internal_lock(const SDL_Rect* area)

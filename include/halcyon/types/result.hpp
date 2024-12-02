@@ -24,7 +24,7 @@ namespace hal
         };
 
         constexpr outcome()
-            : m_valid { false }
+            : m_valid { failure }
         {
         }
 

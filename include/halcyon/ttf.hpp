@@ -26,9 +26,9 @@ namespace hal
     class font : public detail::resource<TTF_Font, &::TTF_CloseFont>
     {
     public:
-        using pt_t = u8;
+        using pt_t = std::uint8_t;
 
-        enum class render_type : u8
+        enum class render_type : std::uint8_t
         {
             solid,
             shaded,
@@ -36,7 +36,7 @@ namespace hal
             lcd
         };
 
-        constexpr static render_type default_render_type()
+        consteval static render_type default_render_type()
         {
             return render_type::solid;
         }

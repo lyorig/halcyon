@@ -20,8 +20,8 @@ namespace hal
     class display : private SDL_DisplayMode
     {
     public:
-        using id_t = u8;
-        using hz_t = u16;
+        using id_t = std::uint8_t;
+        using hz_t = std::uint16_t;
 
         display() = default;
 

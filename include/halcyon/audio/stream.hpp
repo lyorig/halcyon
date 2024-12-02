@@ -21,16 +21,16 @@ namespace hal
     {
         struct config
         {
-            format fmt;
-            u8     channels;
-            i32    rate;
+            format       fmt;
+            std::uint8_t channels;
+            std::int32_t rate;
         };
 
         // A stream that transforms an input of a certain format to an output of another format.
         class stream : public detail::resource<SDL_AudioStream, ::SDL_FreeAudioStream>
         {
         public:
-            constexpr static i32 processing_failed()
+            consteval static std::int32_t processing_failed()
             {
                 return -1;
             }
@@ -46,10 +46,10 @@ namespace hal
 
             outcome put(std::span<const std::byte> data);
 
-            i32 available() const;
+            std::int32_t available() const;
 
             // Returns the amount of bytes written, or processing_failed on failure.
-            i32 get_processed(std::span<std::byte> buffer) const;
+            std::int32_t get_processed(std::span<std::byte> buffer) const;
         };
     }
 }

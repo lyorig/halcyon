@@ -21,7 +21,7 @@ namespace hal
         class display : private SDL_DisplayEvent
         {
         public:
-            enum class type : u8
+            enum class type : std::uint8_t
             {
                 connected    = SDL_DISPLAYEVENT_CONNECTED,
                 disconnected = SDL_DISPLAYEVENT_DISCONNECTED,
@@ -45,7 +45,7 @@ namespace hal
         class window : private SDL_WindowEvent
         {
         public:
-            enum class type : u8
+            enum class type : std::uint8_t
             {
                 shown               = SDL_WINDOWEVENT_SHOWN,
                 hidden              = SDL_WINDOWEVENT_HIDDEN,
@@ -142,8 +142,8 @@ namespace hal
             mouse::button button() const;
             mouse_button& button(mouse::button btn);
 
-            u8            click_amount() const;
-            mouse_button& click_amount(u8 amnt);
+            std::uint8_t  click_amount() const;
+            mouse_button& click_amount(std::uint8_t amnt);
 
             pixel::point  pos() const;
             mouse_button& pos(pixel::point pt);
@@ -162,11 +162,11 @@ namespace hal
             pixel::point pos() const;
             mouse_wheel& pos(pixel::point p);
 
-            point<i16>   scroll() const;
-            mouse_wheel& scroll(point<i16> s);
+            point<std::int16_t> scroll() const;
+            mouse_wheel&        scroll(point<std::int16_t> s);
 
-            point<f32>   scroll_precise() const;
-            mouse_wheel& scroll_precise(point<f32> s);
+            point<float> scroll_precise() const;
+            mouse_wheel& scroll_precise(point<float> s);
 
             bool         scroll_flipped() const;
             mouse_wheel& scroll_flipped(bool f);
@@ -178,7 +178,7 @@ namespace hal
         {
         public:
             // The maximum string length this event can handle, not including the null terminator.
-            constexpr static std::size_t max_size()
+            consteval static std::size_t max_size()
             {
                 return meta::array_size<decltype(SDL_TextInputEvent::text)> - 1;
             }
@@ -196,7 +196,7 @@ namespace hal
         static_assert(sizeof(text_input) == sizeof(SDL_TextInputEvent));
 
         // Top-level event types.
-        enum class type : u16
+        enum class type : std::uint16_t
         {
             quit_requested = SDL_QUIT,
             terminated     = SDL_APP_TERMINATING,

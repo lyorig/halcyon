@@ -28,12 +28,12 @@ namespace hal
             spec() = default;
 
             // Create your own spec.
-            spec(freq_t samples_per_second, audio::format fmt, u8 channels, u16 buffer_size_in_frames);
+            spec(freq_t samples_per_second, audio::format fmt, std::uint8_t channels, std::uint16_t buffer_size_in_frames);
 
             freq_t        hz() const;
             audio::format format() const;
-            u8            channels() const;
-            u16           buffer_size() const;
+            std::uint8_t  channels() const;
+            std::uint16_t buffer_size() const;
 
             SDL_AudioSpec* get(pass_key<builder::device>);
             SDL_AudioSpec* get(pass_key<proxy::audio>);

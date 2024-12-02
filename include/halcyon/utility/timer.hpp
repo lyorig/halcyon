@@ -1,7 +1,5 @@
 #pragma once
 
-#include <halcyon/types/numeric.hpp>
-
 #include <chrono>
 #include <iosfwd>
 
@@ -21,7 +19,7 @@ namespace hal
 
         void reset();
 
-        f64 operator()() const;
+        double operator()() const;
 
         template <typename Rep, typename Period>
         timer& operator=(std::chrono::duration<Rep, Period> dur)

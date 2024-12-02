@@ -1,7 +1,6 @@
 #pragma once
 
 #include <halcyon/types/c_string.hpp>
-#include <halcyon/types/numeric.hpp>
 
 #include "SDL_audio.h"
 
@@ -9,10 +8,10 @@ namespace hal
 {
     namespace audio
     {
-        using freq_t = u32;
+        using freq_t = std::uint32_t;
 
         // Formats in which audio data is stored.
-        enum class format : u16
+        enum class format : std::uint16_t
         {
             i8 = AUDIO_S8,
 
@@ -36,7 +35,7 @@ namespace hal
         };
 
         // Which changes to allow if the desired audio spec cannot be met.
-        enum class change : u8
+        enum class change : std::uint8_t
         {
             frequency = SDL_AUDIO_ALLOW_FREQUENCY_CHANGE,
             format    = SDL_AUDIO_ALLOW_FORMAT_CHANGE,

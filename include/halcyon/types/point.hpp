@@ -1,6 +1,5 @@
 #pragma once
 
-#include <halcyon/internal/sdl_types.hpp>
 #include <halcyon/internal/tags.hpp>
 
 #include <halcyon/utility/printing.hpp>
@@ -12,7 +11,7 @@
 
 namespace hal
 {
-    enum class anchor : u8
+    enum class anchor : std::uint8_t
     {
         center,
         top_left,
@@ -192,7 +191,7 @@ namespace hal
 
         constexpr point scale_width(T desired_width) const
         {
-            const f64 mul { desired_width / static_cast<f64>(x) };
+            const double mul { desired_width / static_cast<double>(x) };
             return {
                 static_cast<T>(x * mul),
                 static_cast<T>(y * mul),
@@ -201,7 +200,7 @@ namespace hal
 
         constexpr point scale_height(T desired_height) const
         {
-            const f64 mul { desired_height / static_cast<f64>(y) };
+            const double mul { desired_height / static_cast<double>(y) };
 
             return {
                 static_cast<T>(x * mul),
@@ -225,18 +224,6 @@ namespace hal
                 static_cast<Convert>(y) };
         }
 
-        constexpr detail::sdl_point<T>* addr()
-            requires(meta::is_present<T, pixel_t, coord_t>)
-        {
-            return reinterpret_cast<detail::sdl_point<T>*>(this);
-        }
-
-        constexpr const detail::sdl_point<T>* addr() const
-            requires(meta::is_present<T, pixel_t, coord_t>)
-        {
-            return reinterpret_cast<const detail::sdl_point<T>*>(this);
-        }
-
         friend std::ostream& operator<<(std::ostream& str, const point& pt)
         {
             return str << '[' << to_printable_int(pt.x) << ", " << to_printable_int(pt.y) << ']';
@@ -257,9 +244,9 @@ namespace hal
     extern template struct point<double>;
 
     template <meta::arithmetic T>
-    constexpr f64 distance(const point<T>& lhs, const point<T>& rhs)
+    constexpr double distance(const point<T>& lhs, const point<T>& rhs)
     {
         const point<T> dist { lhs - rhs };
-        return static_cast<f64>(std::sqrt(dist.x * dist.x + dist.y * dist.y));
+        return static_cast<double>(std::sqrt(dist.x * dist.x + dist.y * dist.y));
     }
 }

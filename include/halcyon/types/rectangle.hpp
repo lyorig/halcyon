@@ -74,18 +74,6 @@ namespace hal
             return ret;
         }
 
-        constexpr detail::sdl_rect<T>* addr()
-            requires(meta::is_present<T, pixel_t, coord_t>)
-        {
-            return reinterpret_cast<detail::sdl_rect<T>*>(this);
-        }
-
-        constexpr const detail::sdl_rect<T>* addr() const
-            requires(meta::is_present<T, pixel_t, coord_t>)
-        {
-            return reinterpret_cast<const detail::sdl_rect<T>*>(this);
-        }
-
         friend std::ostream& operator<<(std::ostream& str, const rectangle& rect)
         {
             return str << '[' << rect.pos << ' ' << rect.size << ']';

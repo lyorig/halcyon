@@ -1,7 +1,5 @@
 #pragma once
 
-#include <halcyon/types/numeric.hpp>
-
 #include "SDL_pixels.h"
 
 #include <algorithm>
@@ -17,10 +15,10 @@ namespace hal
     struct color : public SDL_Color
     {
         // A hex value in the form of 0xNNNNNN.
-        using hex_t = u32;
+        using hex_t = std::uint32_t;
 
         // A difference between two colors.
-        using diff_t = i16;
+        using diff_t = std::int16_t;
 
         // A single R, G, B or A value.
         using value_t = decltype(SDL_Color::r);
@@ -36,7 +34,7 @@ namespace hal
         {
             diff_t r, g, b, a;
 
-            constexpr friend diff operator*(diff d, f64 mul)
+            constexpr friend diff operator*(diff d, double mul)
             {
                 return {
                     static_cast<diff_t>(d.r * mul),

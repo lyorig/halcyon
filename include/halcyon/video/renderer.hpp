@@ -27,7 +27,7 @@ namespace hal
 
     class renderer_info;
 
-    enum class flip : u8
+    enum class flip : std::uint8_t
     {
         none = SDL_FLIP_NONE,
         x    = SDL_FLIP_HORIZONTAL,
@@ -42,7 +42,7 @@ namespace hal
     class renderer : public detail::resource<SDL_Renderer, &::SDL_DestroyRenderer>
     {
     public:
-        enum class flag : u8
+        enum class flag : std::uint8_t
         {
             none           = 0,
             software       = SDL_RENDERER_SOFTWARE,     // Require a software renderer.
@@ -147,6 +147,9 @@ namespace hal
         friend std::ostream& operator<<(std::ostream& str, const renderer_info& inf);
     };
 
+    // A builder-pattern class that facilitates rendering textures.
+    // Errors (most commonly an invalid texture) are communicated via the outcome
+    // returned from operator().
     class copyer : public detail::drawer<const texture, coord_t, renderer, copyer>
     {
     public:
@@ -154,7 +157,7 @@ namespace hal
 
         // Set the texture's rotation.
         // Can be called at any time.
-        [[nodiscard]] copyer& rotate(f64 angle);
+        [[nodiscard]] copyer& rotate(double angle);
 
         // Set the texture's flip.
         // Can be called at any time.
@@ -174,7 +177,7 @@ namespace hal
         outcome operator()();
 
     private:
-        f64 m_angle { 0.0 };
+        double m_angle { 0.0 };
 
         enum flip m_flip
         {

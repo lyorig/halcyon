@@ -73,7 +73,7 @@ surface image::context::load(accessor src, load_format fmt) const
 
 outcome image::context::save(ref<const surface> surf, save_format fmt, outputter dst) const
 {
-    constexpr u8 jpg_quality { 90 };
+    constexpr std::uint8_t jpg_quality { 90 };
 
     switch (fmt)
     {

@@ -9,7 +9,7 @@ using namespace hal;
 // I am very mature.
 using ass = audio::spec;
 
-ass::spec(freq_t samples_per_second, audio::format fmt, u8 channels, u16 buffer_size_in_frames)
+ass::spec(freq_t samples_per_second, audio::format fmt, std::uint8_t channels, std::uint16_t buffer_size_in_frames)
     : SDL_AudioSpec {
         .freq     = static_cast<int>(samples_per_second),
         .format   = static_cast<SDL_AudioFormat>(fmt),
@@ -34,12 +34,12 @@ audio::format ass::format() const
     return static_cast<audio::format>(SDL_AudioSpec::format);
 }
 
-u8 ass::channels() const
+std::uint8_t ass::channels() const
 {
-    return static_cast<u8>(SDL_AudioSpec::channels);
+    return static_cast<std::uint8_t>(SDL_AudioSpec::channels);
 }
 
-u16 ass::buffer_size() const
+std::uint16_t ass::buffer_size() const
 {
     return samples;
 }

@@ -16,14 +16,17 @@ namespace hal
         class lock
         {
         public:
-            lock(lref<streaming_texture> tx, result<lock_data>& out_res);
+            lock(lref<streaming_texture> tx);
 
-            lock(lref<streaming_texture> tx, pixel::rect area, result<lock_data>& out_res);
+            lock(lref<streaming_texture> tx, pixel::rect area);
 
             ~lock();
 
         private:
             lref<streaming_texture> m_ref;
+
+        public:
+            result<lock_data> result;
         };
 
         template <typename T>

@@ -64,7 +64,6 @@ int main(int, char*[])
     // - disabled copying of SDL allocated objects
     // - builder patterns for creating/doing stuff with multiple paramaters (message boxes, rendering & blitting)
     // - metaprogramming library with additional checks for possible gotchas
-    // - HAL_FAST_TYPES switch for switching all integer types to fast variants (hal::i16 -> std::int_fast16_t)
     // - compile time settings (hal::compile_settings)
 
     return EXIT_SUCCESS;

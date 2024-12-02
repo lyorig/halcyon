@@ -2,7 +2,9 @@
 
 #include "SDL.h"
 
-const char* hal::platform()
+using namespace hal;
+
+c_string hal::platform()
 {
     return ::SDL_GetPlatform();
 }

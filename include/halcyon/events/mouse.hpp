@@ -25,7 +25,7 @@ namespace hal
 
     namespace mouse
     {
-        enum class button : u8
+        enum class button : std::uint8_t
         {
             left   = SDL_BUTTON_LEFT,
             middle = SDL_BUTTON_MIDDLE,
@@ -45,12 +45,12 @@ namespace hal
             // [private] Constructor meant for events.
             state(Uint32 mask, pass_key<event::mouse_motion>);
 
-            u8 mask() const;
+            std::uint8_t mask() const;
 
             bool operator[](button btn) const;
 
         private:
-            u8 m_state;
+            std::uint8_t m_state;
         };
 
         pixel::point pos_rel();

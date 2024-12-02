@@ -2,16 +2,16 @@
 
 using namespace hal;
 
-guard::lock::lock(lref<streaming_texture> tex, result<lock_data>& out_res)
+guard::lock::lock(lref<streaming_texture> tex)
     : m_ref { tex }
+    , result { tex->lock() }
 {
-    out_res = tex->lock();
 }
 
-guard::lock::lock(lref<streaming_texture> tex, pixel::rect area, result<lock_data>& out_res)
+guard::lock::lock(lref<streaming_texture> tex, pixel::rect area)
     : m_ref { tex }
+    , result { tex->lock(area) }
 {
-    out_res = tex->lock(area);
 }
 
 guard::lock::~lock()

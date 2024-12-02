@@ -145,9 +145,9 @@ namespace hal
             return m_mask;
         }
 
-        constexpr u8 count() const
+        constexpr std::uint8_t count() const
         {
-            return static_cast<u8>(std::popcount(mask()));
+            return static_cast<std::uint8_t>(std::popcount(mask()));
         }
 
     private:

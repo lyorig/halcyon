@@ -223,12 +223,12 @@ event::mouse_button& event::mouse_button::button(mouse::button btn)
     return *this;
 }
 
-u8 event::mouse_button::click_amount() const
+std::uint8_t event::mouse_button::click_amount() const
 {
-    return static_cast<u8>(clicks);
+    return static_cast<std::uint8_t>(clicks);
 }
 
-event::mouse_button& event::mouse_button::click_amount(u8 amnt)
+event::mouse_button& event::mouse_button::click_amount(std::uint8_t amnt)
 {
     clicks = amnt;
 
@@ -275,12 +275,15 @@ event::mouse_wheel& event::mouse_wheel::pos(pixel::point p)
     return *this;
 }
 
-point<i16> event::mouse_wheel::scroll() const
+point<std::int16_t> event::mouse_wheel::scroll() const
 {
-    return { static_cast<i16>(x), static_cast<i16>(y) };
+    return {
+        static_cast<std::int16_t>(x),
+        static_cast<std::int16_t>(y)
+    };
 }
 
-event::mouse_wheel& event::mouse_wheel::scroll(point<i16> s)
+event::mouse_wheel& event::mouse_wheel::scroll(point<std::int16_t> s)
 {
     x = s.x;
     y = s.y;
@@ -288,12 +291,12 @@ event::mouse_wheel& event::mouse_wheel::scroll(point<i16> s)
     return *this;
 }
 
-point<f32> event::mouse_wheel::scroll_precise() const
+point<float> event::mouse_wheel::scroll_precise() const
 {
-    return { static_cast<f32>(preciseX), static_cast<f32>(preciseY) };
+    return { static_cast<float>(preciseX), static_cast<float>(preciseY) };
 }
 
-event::mouse_wheel& event::mouse_wheel::scroll_precise(point<f32> s)
+event::mouse_wheel& event::mouse_wheel::scroll_precise(point<float> s)
 {
     preciseX = s.x;
     preciseY = s.y;
@@ -336,7 +339,7 @@ c_string event::text_input::text() const
 
 event::text_input& event::text_input::text(c_string t)
 {
-    HAL_ASSERT(t.length() <= max_size(), "String too large at ", t.length(), " chars (max: ", max_size, " chars)");
+    HAL_ASSERT(t.length() <= max_size(), "String too large at ", t.length(), " chars (max: ", max_size(), " chars)");
 
     // We now know that it's safe to copy this string.
     std::strcpy(SDL_TextInputEvent::text, t.data());

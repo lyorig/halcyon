@@ -24,12 +24,12 @@ outcome audio::stream::put(std::span<const std::byte> data)
     return ::SDL_AudioStreamPut(get(), data.data(), static_cast<int>(data.size_bytes()));
 }
 
-i32 audio::stream::available() const
+std::int32_t audio::stream::available() const
 {
     return static_cast<bool>(::SDL_AudioStreamAvailable(get()));
 }
 
-i32 audio::stream::get_processed(std::span<std::byte> buffer) const
+std::int32_t audio::stream::get_processed(std::span<std::byte> buffer) const
 {
     return ::SDL_AudioStreamGet(get(), std::data(buffer), std::size(buffer));
 }

@@ -21,12 +21,12 @@ namespace hal
     {
     protected:
         // A special integer value that tells SDL to do the thing it's named after when creating a texture.
-        constexpr static pixel::format use_renderer_native()
+        consteval static pixel::format use_renderer_native()
         {
             return static_cast<pixel::format>(0);
         }
 
-        enum class access : u8
+        enum class access : std::uint8_t
         {
             static_   = SDL_TEXTUREACCESS_STATIC,
             target    = SDL_TEXTUREACCESS_TARGET,

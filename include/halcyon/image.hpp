@@ -14,7 +14,7 @@ namespace hal
 {
     namespace image
     {
-        enum class init_format : u8
+        enum class init_format : std::uint8_t
         {
             jpg  = IMG_INIT_JPG,
             png  = IMG_INIT_PNG,
@@ -26,13 +26,13 @@ namespace hal
 
         using init_bitmask = enum_bitmask<init_format>;
 
-        enum class save_format : u8
+        enum class save_format : std::uint8_t
         {
             png,
             jpg
         };
 
-        enum class load_format : u8
+        enum class load_format : std::uint8_t
         {
             avif,
             ico,

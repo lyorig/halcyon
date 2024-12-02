@@ -23,19 +23,19 @@ namespace hal
     class window : public detail::resource<SDL_Window, ::SDL_DestroyWindow>
     {
     public:
-        using id_t = u8;
+        using id_t = std::uint8_t;
 
-        constexpr static id_t invalid_id()
+        consteval static id_t invalid_id()
         {
             return 0;
         }
 
-        constexpr static display::id_t invalid_display_index()
+        consteval static display::id_t invalid_display_index()
         {
             return -1;
         }
 
-        enum class flag : u16
+        enum class flag : std::uint16_t
         {
             none                  = 0,
             fullscreen            = SDL_WINDOW_FULLSCREEN,

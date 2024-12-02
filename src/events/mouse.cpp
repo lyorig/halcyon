@@ -7,16 +7,16 @@
 using namespace hal;
 
 mouse::state::state(pass_key<proxy::events>)
-    : m_state { static_cast<u8>(::SDL_GetMouseState(nullptr, nullptr)) }
+    : m_state { static_cast<std::uint8_t>(::SDL_GetMouseState(nullptr, nullptr)) }
 {
 }
 
 mouse::state::state(Uint32 mask, pass_key<event::mouse_motion>)
-    : m_state { static_cast<u8>(mask) }
+    : m_state { static_cast<std::uint8_t>(mask) }
 {
 }
 
-u8 mouse::state::mask() const
+std::uint8_t mouse::state::mask() const
 {
     return m_state;
 }

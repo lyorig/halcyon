@@ -3,8 +3,6 @@
 #include <halcyon/types/c_string.hpp>
 #include <halcyon/types/result.hpp>
 
-#include <halcyon/types/numeric.hpp>
-
 // video/driver.hpp:
 // Video driver information and enumeration.
 
@@ -14,7 +12,7 @@ namespace hal
 
     namespace driver
     {
-        using index_t = u8;
+        using index_t = std::uint8_t;
 
         constexpr index_t invalid_amount { 0 };
 

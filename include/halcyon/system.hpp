@@ -1,7 +1,6 @@
 #pragma once
 
 #include <halcyon/types/exception.hpp>
-#include <halcyon/types/numeric.hpp>
 
 #include <halcyon/utility/enum_bits.hpp>
 
@@ -16,7 +15,7 @@
 
 namespace hal
 {
-    enum class system : u16
+    enum class system : std::uint16_t
     {
         video  = SDL_INIT_VIDEO,
         audio  = SDL_INIT_AUDIO,

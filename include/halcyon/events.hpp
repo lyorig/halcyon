@@ -11,6 +11,33 @@
 
 namespace hal
 {
+    namespace event
+    {
+        // A special type of outcome that accounts for pushed events being filtered.
+        class push_outcome
+        {
+        public:
+            push_outcome(int res);
+
+            // Returns true if the call didn't fail, i.e. the event was accepted or filtered.
+            bool valid() const;
+
+            // Returns true if the call was filtered. This does not mean it was ignored!
+            bool filtered() const;
+
+            // Returns whether the event wasn't filtered and was pushed into the queue.
+            bool valid_unfiltered() const;
+
+            // Returns valid().
+            operator bool() const;
+
+            friend std::ostream& operator<<(std::ostream& str, push_outcome o);
+
+        private:
+            int m_res;
+        };
+    }
+
     namespace proxy
     {
         // A system that represents the event queue.
@@ -29,7 +56,7 @@ namespace hal
             bool poll(event::variant& eh);
 
             // Push an event onto the queue.
-            outcome push(const event::variant& eh);
+            event::push_outcome push(const event::variant& eh);
 
             // Remove all events of a given type from the queue.
             void flush(event::type t);
@@ -39,6 +66,19 @@ namespace hal
 
             // Check if there are any events of a given type in the queue.
             bool has(event::type t) const;
+
+            void enabled(event::type t, bool e);
+            bool enabled(event::type t) const;
+
+            // Add a filter that checks all pushed events.
+            // If [filter] returns 1, the event is "let through".
+            // If [filter] returns 0, the event is dropped and not added to the event queue.
+            void filter_add(func_ptr<int, void*, event::variant*> filter, void* data);
+
+            // Filter all events in the queue immediately.
+            // If [filter] returns 1, the event is kept in the event queue.
+            // If [filter] returns 0, the event is dropped from the event queue.
+            void filter_run(func_ptr<int, void*, event::variant*> filter, void* data);
 
             keyboard::state_reference keyboard_state() const;
             keyboard::mod_state       keyboard_mod() const;

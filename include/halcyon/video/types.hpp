@@ -5,14 +5,44 @@
 
 #include "SDL_blendmode.h"
 #include "SDL_pixels.h"
+#include "SDL_rect.h"
 
-// types/render.hpp:
+// video/types.hpp:
 // Rendering-related types used throughout Halcyon.
-// Defining HAL_FAST_TYPES maps Halcyon's types directly to SDL's where applicable.
 
 namespace hal
 {
-    enum class blend_mode : u8
+    using pixel_t = decltype(SDL_Rect::x);
+    using coord_t = decltype(SDL_FRect::x);
+
+    // Paranoia.
+    static_assert(std::is_signed_v<pixel_t>);
+    static_assert(std::is_signed_v<coord_t>);
+
+    namespace literals
+    {
+        consteval pixel_t operator""_px(unsigned long long val)
+        {
+            return static_cast<pixel_t>(val);
+        }
+
+        consteval pixel_t operator""_px(long double val)
+        {
+            return static_cast<pixel_t>(val);
+        }
+
+        consteval coord_t operator""_crd(unsigned long long val)
+        {
+            return static_cast<coord_t>(val);
+        }
+
+        consteval coord_t operator""_crd(long double val)
+        {
+            return static_cast<coord_t>(val);
+        }
+    }
+
+    enum class blend_mode : std::uint8_t
     {
         none           = SDL_BLENDMODE_NONE,
         alpha          = SDL_BLENDMODE_BLEND,
@@ -53,7 +83,7 @@ namespace hal
         using rect  = rectangle<pixel_t>;
 
         // Formats in which pixels are stored.
-        enum class format : u32
+        enum class format : std::uint32_t
         {
             unknown = SDL_PIXELFORMAT_UNKNOWN,
 
@@ -127,7 +157,7 @@ namespace hal
         };
 
         // Ways in which pixels are stored.
-        enum class storage : u8
+        enum class storage : std::uint8_t
         {
             unknown = SDL_PIXELTYPE_UNKNOWN,
 
@@ -147,14 +177,14 @@ namespace hal
             array_f32 = SDL_PIXELTYPE_ARRAYF32
         };
 
-        enum class bitmap_order : u8
+        enum class bitmap_order : std::uint8_t
         {
             none  = SDL_BITMAPORDER_NONE,
             _4321 = SDL_BITMAPORDER_4321,
             _1234 = SDL_BITMAPORDER_1234,
         };
 
-        enum class packed_order : u8
+        enum class packed_order : std::uint8_t
         {
             none = SDL_PACKEDORDER_NONE,
             xrgb = SDL_PACKEDORDER_XRGB,
@@ -167,7 +197,7 @@ namespace hal
             bgra = SDL_PACKEDORDER_BGRA,
         };
 
-        enum class array_order : u8
+        enum class array_order : std::uint8_t
         {
             none = SDL_ARRAYORDER_NONE,
             rgb  = SDL_ARRAYORDER_RGB,
@@ -178,7 +208,7 @@ namespace hal
             abgr = SDL_ARRAYORDER_ABGR
         };
 
-        enum class packed_layout : u8
+        enum class packed_layout : std::uint8_t
         {
             none     = SDL_PACKEDLAYOUT_NONE,
             _332     = SDL_PACKEDLAYOUT_332,
@@ -560,5 +590,40 @@ namespace hal
     {
         using point = point<coord_t>;
         using rect  = rectangle<coord_t>;
+    }
+
+    namespace detail
+    {
+        template <typename T>
+            requires meta::one_of<T, pixel_t, coord_t>
+        using sdl_point = std::conditional_t<std::is_same_v<T, pixel_t>, SDL_Point, SDL_FPoint>;
+
+        template <typename T>
+        sdl_point<T>* addr(point<T>& pt)
+        {
+            return reinterpret_cast<sdl_point<T>*>(&pt);
+        }
+
+        template <typename T>
+        const sdl_point<T>* addr(const point<T>& pt)
+        {
+            return reinterpret_cast<const sdl_point<T>*>(&pt);
+        }
+
+        template <typename T>
+            requires meta::one_of<T, pixel_t, coord_t>
+        using sdl_rect = std::conditional_t<std::is_same_v<T, pixel_t>, SDL_Rect, SDL_FRect>;
+
+        template <typename T>
+        sdl_rect<T>* addr(rectangle<T>& pt)
+        {
+            return reinterpret_cast<sdl_rect<T>*>(&pt);
+        }
+
+        template <typename T>
+        const sdl_rect<T>* addr(const rectangle<T>& pt)
+        {
+            return reinterpret_cast<const sdl_rect<T>*>(&pt);
+        }
     }
 }

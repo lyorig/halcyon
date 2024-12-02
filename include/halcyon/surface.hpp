@@ -39,7 +39,7 @@ namespace hal
     class surface : public detail::resource<SDL_Surface, ::SDL_FreeSurface>
     {
     public:
-        constexpr static pixel::format default_pixel_format()
+        consteval static pixel::format default_pixel_format()
         {
             return pixel::format::rgba32;
         }

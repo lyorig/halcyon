@@ -51,7 +51,7 @@ namespace hal
         template <std::size_t I, typename What, typename... Ts>
         struct find<I, What, What, Ts...>
         {
-            constexpr static std::size_t value()
+            consteval static std::size_t value()
             {
                 return I;
             }
@@ -63,7 +63,7 @@ namespace hal
         template <typename T, std::size_t N>
         struct array_size<T[N]>
         {
-            constexpr static std::size_t value()
+            consteval static std::size_t value()
             {
                 return N;
             }
@@ -141,14 +141,14 @@ namespace hal
         template <typename... Ts>
         struct type_list
         {
-            constexpr static std::size_t size()
+            consteval static std::size_t size()
             {
                 return sizeof...(Ts);
             }
 
             // Get the index of a type.
             template <typename T>
-            constexpr static std::size_t find()
+            consteval static std::size_t find()
             {
                 return meta::find<T, Ts...>;
             }

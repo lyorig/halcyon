@@ -1,6 +1,5 @@
 #pragma once
 
-#include <halcyon/types/numeric.hpp>
 #include <halcyon/utility/metaprogramming.hpp>
 
 #include <ostream>
@@ -14,7 +13,7 @@ namespace hal
     {
         // One-byte types get interpreted as characters. This tries to prevent that.
         template <arithmetic T>
-        using make_printable_int = std::conditional_t<sizeof(T) == 1, std::conditional_t<std::is_signed_v<T>, i16, u16>, T>;
+        using make_printable_int = std::conditional_t<sizeof(T) == 1, std::conditional_t<std::is_signed_v<T>, std::int16_t, std::uint16_t>, T>;
     }
 
     // Ensure a number is printable; that is, if 'val' is of a type that

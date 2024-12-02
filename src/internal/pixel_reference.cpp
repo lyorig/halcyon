@@ -1,5 +1,7 @@
 #include <halcyon/internal/pixel_reference.hpp>
 
+#include <halcyon/misc.hpp>
+
 using namespace hal::pixel;
 
 const_reference::const_reference(std::byte* pixels, int pitch, const SDL_PixelFormat* fmt, pixel::point pos, pass_key<surface>)
@@ -33,7 +35,7 @@ Uint32 const_reference::get_mapped() const
 
     else
     {
-        const u8 offset { static_cast<u8>(sizeof(Uint32) - m_fmt->BytesPerPixel) };
+        const std::uint8_t offset { static_cast<std::uint8_t>(sizeof(Uint32) - m_fmt->BytesPerPixel) };
         std::memcpy(&ret + offset, m_ptr + offset, m_fmt->BytesPerPixel);
     }
 
@@ -59,7 +61,7 @@ void reference::set_mapped(Uint32 mapped)
 
     else
     {
-        const u8 offset = sizeof(Uint32) - m_fmt->BytesPerPixel;
+        const std::uint8_t offset = sizeof(Uint32) - m_fmt->BytesPerPixel;
         std::memcpy(m_ptr + offset, &mapped + offset, m_fmt->BytesPerPixel);
     }
 }

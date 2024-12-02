@@ -1,3 +1,4 @@
+#include <SDL_events.h>
 #include <cstdlib>
 
 #include <halcyon/audio.hpp>
@@ -9,7 +10,7 @@
 #include <halcyon/utility/guard.hpp>
 
 #include "data.hpp"
-#include "halcyon/video/types.hpp"
+#include "halcyon/events/variant.hpp"
 
 // Halcyon testing.
 // A single test-runner executable that contains all tests.
@@ -163,11 +164,16 @@ namespace test
         while (evt.poll(eh))
             ;
 
-        eh.kind(hal::event::type::text_input);
+        eh.kind(text_input);
         eh.text_input().text(text);
         evt.push(eh);
 
         FAIL_IF(eh.kind() != text_input, "Event type mismatch (desired \"text_input\", actual ", eh.kind(), ')');
+
+        evt.filter_add([](void* data, hal::event::variant* v)
+            { return 0; }, nullptr);
+
+        FAIL_IF(!evt.push(eh).filtered(), "Event should have been filtered but wasn't");
 
         return EXIT_SUCCESS;
     }
@@ -292,13 +298,11 @@ namespace test
 
         hal::streaming_texture tex { rnd, { 256, 256 } };
 
-        hal::result<hal::lock_data> d;
+        hal::guard::lock lock { tex };
 
-        hal::guard::lock lock { tex, d };
+        FAIL_IF(!lock.result, "Could not lock streaming texture");
 
-        FAIL_IF(!d, "Could not lock streaming texture");
-
-        std::memset(d->pixels, 0x00, tex.size()->product() * hal::pixel::bytes_per_pixel_of(tex.pixel_format().get()));
+        std::memset(lock.result->pixels, 0x00, tex.size()->product() * hal::pixel::bytes_per_pixel_of(tex.pixel_format().get()));
 
         return EXIT_SUCCESS;
     }

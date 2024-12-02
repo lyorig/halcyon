@@ -1,7 +1,5 @@
 #pragma once
 
-#include <halcyon/types/numeric.hpp>
-
 // internal/tags.hpp:
 // Tag macros and shared tag names.
 
