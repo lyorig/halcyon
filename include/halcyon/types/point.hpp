@@ -1,6 +1,7 @@
 #pragma once
 
 #include <halcyon/internal/tags.hpp>
+#include <halcyon/internal/video_basic_types.hpp>
 
 #include <halcyon/utility/printing.hpp>
 
@@ -11,6 +12,12 @@
 
 namespace hal
 {
+    namespace detail
+    {
+        template <pixel_or_coord T>
+        using sdl_point = std::conditional_t<std::is_same_v<T, pixel_t>, SDL_Point, SDL_FPoint>;
+    }
+
     enum class anchor : std::uint8_t
     {
         center,
@@ -211,6 +218,20 @@ namespace hal
         constexpr auto product() const
         {
             return x * y;
+        }
+
+        // Returns a SDL_(F)Point pointer to this struct.
+        constexpr auto sdl_ptr()
+            requires detail::pixel_or_coord<T>
+        {
+            return reinterpret_cast<detail::sdl_point<T>*>(this);
+        }
+
+        // Returns a const SDL_(F)Point pointer to this struct.
+        constexpr auto sdl_ptr() const
+            requires detail::pixel_or_coord<T>
+        {
+            return reinterpret_cast<const detail::sdl_point<T>*>(this);
         }
 
         // Comparisons.

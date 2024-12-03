@@ -50,7 +50,7 @@ outcome renderer::draw(coord::point from, coord::point to, struct color c)
 
 outcome renderer::draw(coord::rect area)
 {
-    return ::SDL_RenderDrawRectF(get(), detail::addr(area));
+    return ::SDL_RenderDrawRectF(get(), area.sdl_ptr());
 }
 
 outcome renderer::draw(coord::rect area, struct color c)
@@ -66,7 +66,7 @@ copyer renderer::draw(ref<const texture> tx)
 
 outcome renderer::fill(coord::rect area)
 {
-    return ::SDL_RenderFillRectF(get(), detail::addr(area));
+    return ::SDL_RenderFillRectF(get(), area.sdl_ptr());
 }
 
 outcome renderer::fill(coord::rect area, struct color c)
@@ -77,7 +77,7 @@ outcome renderer::fill(coord::rect area, struct color c)
 
 outcome renderer::fill(std::span<const coord::rect> areas)
 {
-    return ::SDL_RenderFillRectsF(get(), detail::addr(areas.front()), static_cast<int>(areas.size()));
+    return ::SDL_RenderFillRectsF(get(), reinterpret_cast<const SDL_FRect*>(areas.data()), static_cast<int>(areas.size()));
 }
 
 outcome renderer::fill(std::span<const coord::rect> areas, struct color c)
@@ -123,7 +123,7 @@ surface renderer::read_pixels(pixel::rect area) const
     pixel::format fmt { window()->pixel_format() };
     hal::surface  surf { area.size, fmt };
 
-    if (!outcome { ::SDL_RenderReadPixels(get(), detail::addr(area), static_cast<Uint32>(fmt), surf.get()->pixels, surf.get()->pitch) })
+    if (!outcome { ::SDL_RenderReadPixels(get(), area.sdl_ptr(), static_cast<Uint32>(fmt), surf.get()->pixels, surf.get()->pitch) })
         surf.reset();
 
     return surf;
@@ -250,7 +250,7 @@ copyer& copyer::outline(color c)
 outcome copyer::operator()()
 {
     return ::SDL_RenderCopyExF(m_pass.get(), m_this.get(),
-        m_src.pos.x == unset_pos<src_t>() ? nullptr : detail::addr(m_src),
-        m_dst.pos.x == unset_pos<dst_t>() ? nullptr : detail::addr(m_dst),
+        m_src.pos.x == unset_pos<src_t>() ? nullptr : m_src.sdl_ptr(),
+        m_dst.pos.x == unset_pos<dst_t>() ? nullptr : m_dst.sdl_ptr(),
         m_angle, nullptr, static_cast<SDL_RendererFlip>(m_flip));
 }

@@ -5,20 +5,12 @@
 
 #include "SDL_blendmode.h"
 #include "SDL_pixels.h"
-#include "SDL_rect.h"
 
 // video/types.hpp:
 // Rendering-related types used throughout Halcyon.
 
 namespace hal
 {
-    using pixel_t = decltype(SDL_Rect::x);
-    using coord_t = decltype(SDL_FRect::x);
-
-    // Paranoia.
-    static_assert(std::is_signed_v<pixel_t>);
-    static_assert(std::is_signed_v<coord_t>);
-
     namespace literals
     {
         consteval pixel_t operator""_px(unsigned long long val)
@@ -590,40 +582,5 @@ namespace hal
     {
         using point = point<coord_t>;
         using rect  = rectangle<coord_t>;
-    }
-
-    namespace detail
-    {
-        template <typename T>
-            requires meta::one_of<T, pixel_t, coord_t>
-        using sdl_point = std::conditional_t<std::is_same_v<T, pixel_t>, SDL_Point, SDL_FPoint>;
-
-        template <typename T>
-        sdl_point<T>* addr(point<T>& pt)
-        {
-            return reinterpret_cast<sdl_point<T>*>(&pt);
-        }
-
-        template <typename T>
-        const sdl_point<T>* addr(const point<T>& pt)
-        {
-            return reinterpret_cast<const sdl_point<T>*>(&pt);
-        }
-
-        template <typename T>
-            requires meta::one_of<T, pixel_t, coord_t>
-        using sdl_rect = std::conditional_t<std::is_same_v<T, pixel_t>, SDL_Rect, SDL_FRect>;
-
-        template <typename T>
-        sdl_rect<T>* addr(rectangle<T>& pt)
-        {
-            return reinterpret_cast<sdl_rect<T>*>(&pt);
-        }
-
-        template <typename T>
-        const sdl_rect<T>* addr(const rectangle<T>& pt)
-        {
-            return reinterpret_cast<const sdl_rect<T>*>(&pt);
-        }
     }
 }

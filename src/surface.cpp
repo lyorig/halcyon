@@ -50,7 +50,7 @@ outcome surface::fill(color clr)
 
 outcome surface::fill(pixel::rect area, color clr)
 {
-    return ::SDL_FillRect(get(), detail::addr(area), mapped(get()->format, clr));
+    return ::SDL_FillRect(get(), area.sdl_ptr(), mapped(get()->format, clr));
 }
 
 outcome surface::fill(std::span<const pixel::rect> areas, color clr)
@@ -165,9 +165,9 @@ outcome blitter::operator()()
 {
     return ::SDL_BlitScaled(
         m_this.get(),
-        m_src.pos.x == unset_pos<src_t>() ? nullptr : reinterpret_cast<const SDL_Rect*>(detail::addr(m_src)),
+        m_src.pos.x == unset_pos<src_t>() ? nullptr : m_src.sdl_ptr(),
         m_pass.get(),
-        m_dst.pos.x == unset_pos<dst_t>() ? nullptr : reinterpret_cast<SDL_Rect*>(detail::addr(m_dst)));
+        m_dst.pos.x == unset_pos<dst_t>() ? nullptr : m_dst.sdl_ptr());
 }
 
 outcome blitter::operator()(HAL_TAG_NAME(keep_dst)) const
@@ -176,7 +176,7 @@ outcome blitter::operator()(HAL_TAG_NAME(keep_dst)) const
 
     return ::SDL_BlitScaled(
         m_this.get(),
-        m_src.pos.x == unset_pos<src_t>() ? nullptr : detail::addr(m_src),
+        m_src.pos.x == unset_pos<src_t>() ? nullptr : m_src.sdl_ptr(),
         m_pass.get(),
-        m_dst.pos.x == unset_pos<dst_t>() ? nullptr : detail::addr(copy));
+        m_dst.pos.x == unset_pos<dst_t>() ? nullptr : copy.sdl_ptr());
 }

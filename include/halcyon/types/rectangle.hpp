@@ -7,6 +7,12 @@
 
 namespace hal
 {
+    namespace detail
+    {
+        template <pixel_or_coord T>
+        using sdl_rect = std::conditional_t<std::is_same_v<T, pixel_t>, SDL_Rect, SDL_FRect>;
+    }
+
     template <meta::arithmetic T>
     struct rectangle
     {
@@ -72,6 +78,20 @@ namespace hal
             }
 
             return ret;
+        }
+
+        // Returns a SDL_(F)Rect pointer to this struct.
+        constexpr auto sdl_ptr()
+            requires detail::pixel_or_coord<T>
+        {
+            return reinterpret_cast<detail::sdl_rect<T>*>(this);
+        }
+
+        // Returns a const SDL_(F)Rect pointer to this struct.
+        constexpr auto sdl_ptr() const
+            requires detail::pixel_or_coord<T>
+        {
+            return reinterpret_cast<const detail::sdl_rect<T>*>(this);
         }
 
         friend std::ostream& operator<<(std::ostream& str, const rectangle& rect)
