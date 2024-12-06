@@ -81,7 +81,7 @@ namespace hal
         outcome draw(coord::rect area);
         outcome draw(coord::rect area, color c);
 
-        // Draw a texture. Returns a builder-like class
+        // Draw a texture. Returns a builder-like class.
         [[nodiscard]] copyer draw(ref<const texture> tx);
 
         // Fill an area.

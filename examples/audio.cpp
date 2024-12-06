@@ -4,7 +4,11 @@ int main(int argc, char* argv[])
 {
     hal::cleanup_init<hal::system::audio> aud;
 
-    hal::audio::device dev { hal::audio::builder::device { aud }.changes({ hal::audio::change::any }).spec({ 44100, hal::audio::format::f32, 2, 2048 })() };
+    hal::audio::device dev {
+        hal::audio::builder::device { aud }
+            .changes({ hal::audio::change::any })
+            .spec({ 44100, hal::audio::format::f32, 2, 2048 })()
+    };
 
     {
         hal::audio::device::id_t id;

@@ -93,6 +93,24 @@ namespace hal
             return m_value;
         }
 
+        // Get this result's value, disregarding whether it's valid.
+        // Useful for when there's multiple potential points of failure and
+        // one implies that this result's value will not be used.
+        constexpr T& get_unchecked()
+            requires std::is_default_constructible_v<T>
+        {
+            return m_value;
+        }
+
+        // Get this result's value, disregarding whether it's valid.
+        // Useful for when there's multiple potential points of failure and
+        // one implies that this result's value will not be used. (const overload)
+        constexpr const T& get_unchecked() const
+            requires std::is_default_constructible_v<T>
+        {
+            return m_value;
+        }
+
         constexpr T get_or(T val)
         {
             return valid() ? get() : val;
