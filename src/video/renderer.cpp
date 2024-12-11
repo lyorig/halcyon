@@ -220,7 +220,7 @@ pixel::point renderer_info::max_texture_size() const
 std::ostream& hal::operator<<(std::ostream& str, const renderer_info& info)
 {
     str << "[name: " << info.name()
-        << ", max tex. size: " << info.max_texture_size()
+        << ", max texture size: " << info.max_texture_size()
         << ", flags: " << int_to_hex_array(info.flags().mask()).data()
         << ']';
 
