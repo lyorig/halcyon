@@ -30,4 +30,15 @@ namespace hal
             return stream.str();
         }
     }
+
+    // Return [x] as a string contained in a null-terminated std::array, prefixed with 0x.
+    template <std::integral T>
+    constexpr auto int_to_hex_array(T x)
+    {
+        // 0x + hex(x) + null terminator.
+        std::array<char, 2 + sizeof(T) * 2 + 1> ret { '0', 'x' };
+        std::to_chars(ret.data() + 2, ret.end() - 1, x, 16);
+
+        return ret;
+    }
 }

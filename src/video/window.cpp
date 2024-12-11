@@ -1,3 +1,4 @@
+#include "halcyon/utility/printing.hpp"
 #include <halcyon/video/window.hpp>
 
 #include <halcyon/video.hpp>
@@ -110,4 +111,17 @@ ref<renderer> window::renderer()
 ref<const surface> window::surface() const
 {
     return { ::SDL_GetWindowSurface(get()), pass_key<window> {} };
+}
+
+std::ostream& hal::operator<<(std::ostream& str, hal::ref<hal::window> wnd)
+{
+    str << "[id: " << to_printable_int(wnd->id())
+        << ", title: " << wnd->title()
+        << ", size: " << wnd->size()
+        << ", pos: " << wnd->pos()
+        << ", display: " << to_printable_int(wnd->display_index())
+        << ", pixel format: " << wnd->pixel_format()
+        << ']';
+
+    return str;
 }

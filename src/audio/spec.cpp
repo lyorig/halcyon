@@ -56,5 +56,11 @@ SDL_AudioSpec* ass::get(pass_key<proxy::audio>)
 
 std::ostream& audio::operator<<(std::ostream& str, const spec& s)
 {
-    return str << '[' << s.hz() << " Hz, format: " << s.format() << ", channels: " << to_printable_int(s.channels()) << ", buffer size: " << s.buffer_size() << ']';
+    return str << '[' << s.hz()
+               << " Hz, format: "
+               << s.format()
+               << ", channels: "
+               << to_printable_int(s.channels())
+               << ", buffer size: "
+               << s.buffer_size() << ']';
 }

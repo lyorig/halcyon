@@ -6,6 +6,7 @@
 #include <halcyon/video/window.hpp>
 
 #include <halcyon/utility/guard.hpp>
+#include <halcyon/utility/strutil.hpp>
 
 using namespace hal;
 
@@ -218,7 +219,12 @@ pixel::point renderer_info::max_texture_size() const
 
 std::ostream& hal::operator<<(std::ostream& str, const renderer_info& info)
 {
-    return str << '[' << info.name() << ", max tex. size " << info.max_texture_size() << ", flags " << info.flags().mask() << ']';
+    str << "[name: " << info.name()
+        << ", max tex. size: " << info.max_texture_size()
+        << ", flags: " << int_to_hex_array(info.flags().mask()).data()
+        << ']';
+
+    return str;
 }
 
 // Copyer.

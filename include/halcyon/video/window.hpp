@@ -92,5 +92,7 @@ namespace hal
         // View the surface associated with this window.
         // Only works if a software renderer is used.
         ref<const surface> surface() const;
+
+        friend std::ostream& operator<<(std::ostream& str, hal::ref<hal::window> wnd);
     };
 }
