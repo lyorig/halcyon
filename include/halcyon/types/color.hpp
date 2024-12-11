@@ -14,14 +14,14 @@ namespace hal
 {
     struct color : public SDL_Color
     {
+        // A single R, G, B or A value.
+        using value_t = decltype(SDL_Color::r);
+
         // A hex value in the form of 0xNNNNNN.
         using hex_t = std::uint32_t;
 
-        // A difference between two colors.
+        // A byte difference between two colors.
         using diff_t = std::int16_t;
-
-        // A single R, G, B or A value.
-        using value_t = decltype(SDL_Color::r);
 
         enum : value_t
         {
@@ -53,15 +53,17 @@ namespace hal
 
         // 0xRRGGBB color, 0 - 255 alpha.
         constexpr color(hex_t rgb, value_t alpha = opaque)
-            : SDL_Color { static_cast<value_t>((rgb >> 16) & 0xFF),
+            : SDL_Color {
+                static_cast<value_t>((rgb >> 16) & 0xFF),
                 static_cast<value_t>((rgb >> 8) & 0xFF),
                 static_cast<value_t>(rgb & 0xFF),
-                alpha }
+                alpha
+            }
         {
         }
 
         constexpr color(value_t red, value_t green, value_t blue,
-            value_t alpha = SDL_ALPHA_OPAQUE)
+            value_t alpha = opaque)
             : SDL_Color { red, green, blue, alpha }
         {
         }
@@ -70,17 +72,28 @@ namespace hal
         constexpr color operator-() const
         {
             constexpr value_t max { std::numeric_limits<value_t>::max() };
-            return { static_cast<value_t>(max - r), static_cast<value_t>(max - g), static_cast<value_t>(max - b), a };
+
+            return {
+                static_cast<value_t>(max - r),
+                static_cast<value_t>(max - g),
+                static_cast<value_t>(max - b),
+                a
+            };
         }
 
         constexpr friend bool operator==(color a, color b)
         {
-            return a.r == b.r && a.g == b.g && a.b == b.b && a.a == b.a;
+            return std::bit_cast<hex_t>(a) == std::bit_cast<hex_t>(b);
         }
 
         constexpr friend diff operator-(color a, color b)
         {
-            return { static_cast<diff_t>(a.r - b.r), static_cast<diff_t>(a.g - b.g), static_cast<diff_t>(a.b - b.b), static_cast<diff_t>(a.a - b.a) };
+            return {
+                static_cast<diff_t>(a.r - b.r),
+                static_cast<diff_t>(a.g - b.g),
+                static_cast<diff_t>(a.b - b.b),
+                static_cast<diff_t>(a.a - b.a)
+            };
         }
 
         constexpr friend color operator+(color a, color b)

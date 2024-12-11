@@ -2,7 +2,7 @@
 
 #include <halcyon/utility/metaprogramming.hpp>
 
-#include <ostream>
+#include <iosfwd>
 
 // utility/printing.hpp:
 // Extra utility stuff for printing.
@@ -11,7 +11,7 @@ namespace hal
 {
     namespace meta
     {
-        // One-byte types get interpreted as characters. This tries to prevent that.
+        // One-byte types get interpreted as characters. This cast prevents it.
         template <arithmetic T>
         using make_printable_int = std::conditional_t<sizeof(T) == 1, std::conditional_t<std::is_signed_v<T>, std::int16_t, std::uint16_t>, T>;
     }

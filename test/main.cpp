@@ -55,6 +55,17 @@ namespace test
         static_assert(std::is_same_v<ret_t, info::return_type> && std::is_same_v<first_t, info::args::at<0>> && std::is_same_v<second_t, info::args::at<1>>);
     }
 
+    consteval void colors()
+    {
+        constexpr hal::color
+            first { hal::palette::black, 0 },
+            second { hal::palette::transparent },
+            third { hal::palette::cyan };
+
+        static_assert(first == second);
+        static_assert(first != third);
+    }
+
     // Debug assertion testing.
     // This test should fail.
     int assert_fail()
