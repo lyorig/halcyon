@@ -20,8 +20,17 @@ namespace hal
         class resource
         {
         public:
-            using pointer       = SDL_Type*;
-            using const_pointer = const SDL_Type*;
+            using type          = SDL_Type;
+            using pointer       = type*;
+            using const_pointer = const type*;
+
+            struct deleter
+            {
+                void operator()(pointer p) const
+                {
+                    Deleter(p);
+                }
+            };
 
         protected:
             resource() = default;
@@ -31,15 +40,15 @@ namespace hal
             {
             }
 
-            pointer release()
-            {
-                return m_ptr.release();
-            }
-
         public:
             void reset()
             {
                 m_ptr.reset();
+            }
+
+            pointer release()
+            {
+                return m_ptr.release();
             }
 
             pointer get() const
@@ -58,12 +67,7 @@ namespace hal
             }
 
         private:
-            struct deleter
-            {
-                void operator()(pointer ptr) { Deleter(ptr); }
-            };
-
-            std::unique_ptr<SDL_Type, deleter> m_ptr;
+            std::unique_ptr<type, deleter> m_ptr;
         };
     };
 

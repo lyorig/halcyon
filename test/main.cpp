@@ -8,9 +8,11 @@
 #include <halcyon/ttf.hpp>
 
 #include <halcyon/utility/guard.hpp>
+#include <halcyon/utility/shared.hpp>
 
 #include "data.hpp"
-#include "halcyon/events/variant.hpp"
+#include "halcyon/system.hpp"
+#include "halcyon/video/window.hpp"
 
 // Halcyon testing.
 // A single test-runner executable that contains all tests.
@@ -255,7 +257,7 @@ namespace test
     {
         hal::cleanup_init<hal::system::video> vid;
 
-        hal::window           wnd { vid, "HalTest Views", { 128, 128 } };
+        hal::window           wnd { vid, "HalTest: References", { 128, 128 } };
         hal::ref<hal::window> r1 = wnd;
 
         FAIL_IF(wnd.get() != r1->get(), "Reference not same as object after assignment");
@@ -268,6 +270,25 @@ namespace test
 
         FAIL_IF(r1->valid(), "Moved-from reference is valid");
         FAIL_IF(r_mv->get() != wnd.get(), "Moved-to refence not same as object");
+
+        return EXIT_SUCCESS;
+    }
+
+    int shared()
+    {
+        hal::shared<hal::surface> s1 { { { 640, 480 } } }, s2 { {} };
+
+        FAIL_IF(s1.use_count() != 1, "s1's use count should be 1, actually ", s1.use_count());
+        FAIL_IF(s2.use_count() != 0, "s2's use count should be 0, actually ", s2.use_count());
+
+        s2 = s1;
+
+        FAIL_IF(s1.use_count() != 2, "s1's use count should be 2, actually ", s2.use_count());
+
+        s2.reset();
+
+        FAIL_IF(s1.use_count() != 1, "s1's use count should be 1, actually ", s1.use_count());
+        FAIL_IF(s2.use_count() != 0, "s2's use count should be 0, actually ", s2.use_count());
 
         return EXIT_SUCCESS;
     }
@@ -373,6 +394,7 @@ int main(int argc, char* argv[])
         { "--outputter", test::outputter },
         { "--png-check", test::png_check },
         { "--references", test::references },
+        { "--shared", test::shared },
         { "--audio-init", test::audio_init },
         { "--utilities", test::utilities },
         { "--texture-manipulation", test::texture_manipulation },
