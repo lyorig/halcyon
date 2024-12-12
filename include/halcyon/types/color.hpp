@@ -3,8 +3,8 @@
 #include "SDL_pixels.h"
 
 #include <algorithm>
+#include <bit>
 #include <iosfwd>
-#include <limits> // MSVC wants this.
 
 // types/color.hpp:
 // An extension of SDL_Color with custom constructors,

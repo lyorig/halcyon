@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include <sstream>
 
 // utility/strutil.hpp:
@@ -37,7 +38,7 @@ namespace hal
     {
         // 0x + hex(x) + null terminator.
         std::array<char, 2 + sizeof(T) * 2 + 1> ret { '0', 'x' };
-        std::to_chars(ret.data() + 2, ret.end() - 1, x, 16);
+        std::to_chars(ret.data() + 2, ret.data() + ret.size() - 1, x, 16);
 
         return ret;
     }
