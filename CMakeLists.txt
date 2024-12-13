@@ -57,6 +57,7 @@ set(Halcyon_SOURCES
     video/renderer.cpp
     video/texture.cpp
     video/window.cpp
+	cpu.cpp
     audio.cpp
     debug.cpp
     events.cpp

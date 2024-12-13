@@ -76,6 +76,12 @@ namespace hal
         pixel::point size() const;
         void         size(pixel::point sz);
 
+        pixel::point min_size() const;
+        void         min_size(pixel::point sz);
+
+        pixel::point max_size() const;
+        void         max_size(pixel::point sz);
+
         c_string title() const;
         void     title(const char* val);
 

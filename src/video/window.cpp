@@ -1,4 +1,5 @@
 #include "halcyon/utility/printing.hpp"
+#include <SDL_video.h>
 #include <halcyon/video/window.hpp>
 
 #include <halcyon/video.hpp>
@@ -78,6 +79,34 @@ void window::size(pixel::point sz)
     ::SDL_SetWindowSize(get(), sz.x, sz.y);
 }
 
+pixel::point window::min_size() const
+{
+    pixel::point ret;
+
+    ::SDL_GetWindowMinimumSize(get(), &ret.x, &ret.y);
+
+    return ret;
+}
+
+void window::min_size(pixel::point pt)
+{
+    ::SDL_SetWindowMinimumSize(get(), pt.x, pt.y);
+}
+
+pixel::point window::max_size() const
+{
+    pixel::point ret;
+
+    ::SDL_GetWindowMaximumSize(get(), &ret.x, &ret.y);
+
+    return ret;
+}
+
+void window::max_size(pixel::point pt)
+{
+    ::SDL_SetWindowMaximumSize(get(), pt.x, pt.y);
+}
+
 c_string window::title() const
 {
     return ::SDL_GetWindowTitle(get());
@@ -121,6 +150,7 @@ std::ostream& hal::operator<<(std::ostream& str, hal::ref<hal::window> wnd)
         << ", pos: " << wnd->pos()
         << ", display: " << to_printable_int(wnd->display_index())
         << ", pixel format: " << wnd->pixel_format()
+        << ", flags: " << int_to_hex_array(wnd->flags().mask()).data()
         << ']';
 
     return str;
