@@ -11,8 +11,6 @@
 #include <halcyon/utility/shared.hpp>
 
 #include "data.hpp"
-#include "halcyon/system.hpp"
-#include "halcyon/video/window.hpp"
 
 // Halcyon testing.
 // A single test-runner executable that contains all tests.
@@ -83,7 +81,7 @@ namespace test
     {
         constexpr hal::pixel::point new_size { 120, 120 };
 
-        hal::cleanup_init<hal::system::video> vid;
+        hal::cleanup_init<hal::subsystem::video> vid;
 
         hal::window wnd { vid, "HalTest: Window resize", { 640, 480 }, hal::window::flag::hidden };
 
@@ -105,14 +103,14 @@ namespace test
     // Basic Halcyon initialization.
     int basic_init()
     {
-        FAIL_IF(hal::initialized(hal::system::video), "Video initialized when it shouldn't be");
+        FAIL_IF(hal::initialized(hal::subsystem::video), "Video initialized when it shouldn't be");
 
-        hal::outcome                          o;
-        hal::cleanup_init<hal::system::video> vid { o };
+        hal::outcome                             o;
+        hal::cleanup_init<hal::subsystem::video> vid { o };
 
         FAIL_IF(!o, "Video initialization failed");
 
-        FAIL_IF(!hal::initialized(hal::system::video), "Video not initialized when it should be");
+        FAIL_IF(!hal::initialized(hal::subsystem::video), "Video not initialized when it should be");
 
         hal::window   wnd { vid, "HalTest: Basic init", { 640, 480 }, hal::window::flag::hidden };
         hal::renderer rnd { wnd };
@@ -130,7 +128,7 @@ namespace test
     {
         constexpr char text[] { "We can be heroes - just for one day." };
 
-        hal::cleanup_init<hal::system::video> vid;
+        hal::cleanup_init<hal::subsystem::video> vid;
 
         FAIL_IF(!vid.clipboard(text), "Could not set clipboard text");
 
@@ -155,7 +153,7 @@ namespace test
     // Sending a quit event and checking whether it gets caught.
     int events()
     {
-        hal::cleanup_init<hal::system::events> evt;
+        hal::cleanup_init<hal::subsystem::events> evt;
 
         hal::event::variant eh;
 
@@ -210,14 +208,14 @@ namespace test
         hal::outcome o;
         try
         {
-            o = hal::cleanup_init<hal::system::video> {}.clipboard("Hello from HalTest!");
+            o = hal::cleanup_init<hal::subsystem::video> {}.clipboard("Hello from HalTest!");
         }
         catch (hal::exception e)
         {
             FAIL(e.what());
         }
 
-        FAIL_IF(!o, "Could not set clipboard on rvalue system");
+        FAIL_IF(!o, "Could not set clipboard on rvalue subsystem");
 
         return EXIT_SUCCESS;
     }
@@ -255,7 +253,7 @@ namespace test
 
     int references()
     {
-        hal::cleanup_init<hal::system::video> vid;
+        hal::cleanup_init<hal::subsystem::video> vid;
 
         hal::window           wnd { vid, "HalTest: References", { 128, 128 } };
         hal::ref<hal::window> r1 = wnd;
@@ -295,7 +293,7 @@ namespace test
 
     int audio_init()
     {
-        hal::cleanup_init<hal::system::audio> a;
+        hal::cleanup_init<hal::subsystem::audio> a;
 
         hal::audio::spec   gotten;
         hal::audio::device dev = hal::audio::builder::device { a }.spec({ 44100, hal::audio::format::f32, 2, 4096 })(gotten);
@@ -322,8 +320,8 @@ namespace test
 
     int texture_manipulation()
     {
-        hal::outcome                          o;
-        hal::cleanup_init<hal::system::video> vid { o };
+        hal::outcome                             o;
+        hal::cleanup_init<hal::subsystem::video> vid { o };
 
         hal::window   wnd { vid, "HalTest: Texture manipulation", { 640, 480 }, hal::window::flag::hidden };
         hal::renderer rnd { wnd };
@@ -354,7 +352,7 @@ namespace test
     // Drawing a null texture.
     int invalid_texture()
     {
-        hal::cleanup_init<hal::system::video> vid;
+        hal::cleanup_init<hal::subsystem::video> vid;
 
         hal::window   wnd { vid, "HalTest: Invalid texture", { 640, 480 }, hal::window::flag::hidden };
         hal::renderer rnd { wnd };
@@ -368,7 +366,7 @@ namespace test
     // This test should fail.
     int invalid_event()
     {
-        hal::cleanup_init<hal::system::events> sys;
+        hal::cleanup_init<hal::subsystem::events> sys;
 
         hal::event::variant eh;
 

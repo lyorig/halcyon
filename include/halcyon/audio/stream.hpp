@@ -6,7 +6,7 @@
 
 #include <halcyon/types/result.hpp>
 
-#include <halcyon/system.hpp>
+#include <halcyon/subsystem.hpp>
 
 #include <span>
 

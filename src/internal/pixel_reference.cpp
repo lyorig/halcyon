@@ -1,6 +1,6 @@
 #include <halcyon/internal/pixel_reference.hpp>
 
-#include <halcyon/misc.hpp>
+#include <halcyon/system.hpp>
 
 using namespace hal::pixel;
 

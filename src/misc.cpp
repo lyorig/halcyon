@@ -1,15 +1,10 @@
 #include <halcyon/misc.hpp>
 
-#include "SDL.h"
+#include "SDL_misc.h"
 
 using namespace hal;
 
-c_string hal::platform()
+outcome hal::open_url(c_string uri)
 {
-    return ::SDL_GetPlatform();
-}
-
-void hal::cleanup()
-{
-    ::SDL_Quit();
+    return ::SDL_OpenURL(uri.c_str());
 }

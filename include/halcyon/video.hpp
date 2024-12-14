@@ -11,6 +11,8 @@
 
 #include <halcyon/types/string.hpp>
 
+#include <halcyon/misc.hpp>
+
 // video.hpp:
 // Master include file for Halcyon Video.
 

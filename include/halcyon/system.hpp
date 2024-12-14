@@ -1,135 +1,60 @@
 #pragma once
 
-#include <halcyon/types/exception.hpp>
+#include <halcyon/types/c_string.hpp>
 
-#include <halcyon/utility/enum_bits.hpp>
+#include "SDL_endian.h"
 
-#include <halcyon/misc.hpp>
-
-#include <halcyon/types/result.hpp>
-
-#include "SDL.h"
+#include <iosfwd>
 
 // system.hpp:
-// A representation of SDL subsystems.
+// CPU feature set detection and system info.
 
 namespace hal
 {
-    enum class system : std::uint16_t
+    enum class endian : bool
     {
-        video  = SDL_INIT_VIDEO,
-        audio  = SDL_INIT_AUDIO,
-        events = SDL_INIT_EVENTS
+        lil,
+        big
     };
 
-    using system_mask = enum_bitmask<system>;
-
-    // Check which systems have been initialized.
-    system_mask initialized();
-
-    // Check whether the specified system(s) have been initialized.
-    bool initialized(system system);
-    bool initialized(system_mask systems);
-
-    namespace proxy
+    namespace compile_settings
     {
-        class video;
-        class audio;
-        class events;
-    }
-
-    namespace detail
-    {
-        // Proxy dispatch.
-        template <system S>
-        struct system_to_proxy;
-
-        template <>
-        struct system_to_proxy<system::video>
-        {
-            using type = proxy::video;
-        };
-
-        template <>
-        struct system_to_proxy<system::audio>
-        {
-            using type = proxy::audio;
-        };
-
-        template <>
-        struct system_to_proxy<system::events>
-        {
-            using type = proxy::events;
-        };
-
-        template <system... Systems>
-        class init_base : public system_to_proxy<Systems>::type...
-        {
-        public:
-            consteval static system_mask systems()
-            {
-                return { Systems... };
-            }
-
-        private:
-            // Flag checks to ensure some unnecessary BS doesn't happen.
-            static_assert(!systems().all({ system::video, system::events }), "Incompatible event types; Events is already initialized by Video.");
-
-            static outcome sdl_init()
-            {
-                return ::SDL_InitSubSystem(systems().mask());
-            }
-
-        public:
-            // Initialize chosen subsystems.
-            // Throws in case of failure.
-            init_base()
-            {
-                if (!sdl_init())
-                    throw exception { "system initialization" };
-            }
-
-            // Initialize chosen subsystems.
-            // Writes success state to res.
-            init_base(outcome& res)
-            {
-                res = sdl_init();
-            }
-
-            init_base(const init_base&) = delete;
-            init_base(init_base&&)      = delete;
+        constexpr endian endianness {
+#ifdef SDL_LIL_ENDIAN
+            endian::lil
+#elif defined SDL_BIG_ENDIAN
+            endian::big
+#else
+    #error "No byte order specified by SDL"
+#endif
         };
     }
 
-    // Manages system (de)initialization via RAII.
-    // Upon destruction, only the chosen subsystems are de-initialized;
-    // hal::cleanup() should still be called at the end of your program.
-    // See also hal::cleanup_init, which does this for you.
-    template <system... Systems>
-    class init : public detail::init_base<Systems...>
+    // Get the name of the current platform.
+    c_string platform();
+    //
+    // How much RAM the system has, in MiB.
+    int total_ram();
+
+    // CPU features.
+    namespace cpu
     {
-    private:
-        using super = detail::init_base<Systems...>;
+        bool avx(), avx2(), avx512f();
 
-    public:
-        using super::init_base;
+        bool lsx(), mmx(), lasx();
 
-        ~init()
-        {
-            ::SDL_QuitSubSystem(super::systems().mask());
-        }
-    };
+        bool sse(), sse2(), sse3(), sse4_1(), sse4_2();
 
-    // Initializes specific systems and calls hal::cleanup() upon destruction.
-    template <system... Systems>
-    class cleanup_init : public detail::init_base<Systems...>
-    {
-    public:
-        using detail::init_base<Systems...>::init_base;
+        bool neon(), armsimd();
 
-        ~cleanup_init()
-        {
-            hal::cleanup();
-        }
-    };
+        bool _3dnow(), rdtsc(), altivec();
+
+        int logical_cores(), cache_line();
+
+        // Output all supported CPU features.
+        std::ostream& supported(std::ostream& str);
+
+        std::ostream& info(std::ostream& str);
+    }
+
 }

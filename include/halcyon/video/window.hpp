@@ -3,7 +3,7 @@
 #include <halcyon/video/display.hpp>
 #include <halcyon/video/renderer.hpp>
 
-#include <halcyon/system.hpp>
+#include <halcyon/subsystem.hpp>
 
 #include <halcyon/surface.hpp>
 

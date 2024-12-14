@@ -10,7 +10,7 @@
 #include <halcyon/types/c_string.hpp>
 #include <halcyon/types/result.hpp>
 
-#include <halcyon/system.hpp>
+#include <halcyon/subsystem.hpp>
 
 #include <span>
 
