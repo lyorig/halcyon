@@ -4,7 +4,7 @@
 
 using namespace hal;
 
-outcome hal::open_url(c_string uri)
+outcome hal::open_url(c_string url)
 {
-    return ::SDL_OpenURL(uri.c_str());
+    return ::SDL_OpenURL(url.c_str());
 }

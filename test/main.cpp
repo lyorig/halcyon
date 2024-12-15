@@ -1,6 +1,3 @@
-#include <SDL_events.h>
-#include <cstdlib>
-
 #include <halcyon/audio.hpp>
 #include <halcyon/video.hpp>
 
@@ -381,7 +378,12 @@ int main(int argc, char* argv[])
 {
     static_assert(hal::compile_settings::debug_enabled, "HalTest requires debug mode to be enabled");
 
-    constexpr std::pair<std::string_view, hal::func_ptr<int>> tests[] { { "--assert-fail", test::assert_fail },
+    struct
+    {
+        std::string_view   name;
+        hal::func_ptr<int> test;
+    } constexpr tests[] {
+        { "--assert-fail", test::assert_fail },
         { "--window-resize", test::window_resize },
         { "--basic-init", test::basic_init },
         { "--clipboard", test::clipboard },
@@ -398,14 +400,15 @@ int main(int argc, char* argv[])
         { "--texture-manipulation", test::texture_manipulation },
         { "--invalid-buffer", test::invalid_buffer },
         { "--invalid-texture", test::invalid_texture },
-        { "--invalid-event", test::invalid_event } };
+        { "--invalid-event", test::invalid_event }
+    };
 
     FAIL_IF(argc == 1, "No test name given.");
 
     const auto iter = std::find_if(std::begin(tests), std::end(tests), [&](const auto& pair)
-        { return pair.first == argv[1]; });
+        { return pair.name == argv[1]; });
 
     FAIL_IF(iter == std::end(tests), "Invalid option specified: ", argv[1]);
 
-    return iter->second();
+    return iter->test();
 }

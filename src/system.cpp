@@ -56,7 +56,7 @@ int cpu::cache_line()
 
 std::ostream& cpu::supported(std::ostream& str)
 {
-    struct pair
+    struct
     {
         std::string_view name;
         func_ptr<bool>   func;

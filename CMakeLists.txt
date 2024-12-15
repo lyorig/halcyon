@@ -48,6 +48,7 @@ set(Halcyon_SOURCES
 	internal/pixel_reference.cpp
     internal/rwops.cpp
     types/color.cpp
+	types/result.cpp
     types/string.cpp
 	utility/guard.cpp
     utility/timer.cpp

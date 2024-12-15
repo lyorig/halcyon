@@ -32,7 +32,7 @@ namespace hal
 
     // Get the name of the current platform.
     c_string platform();
-    //
+
     // How much RAM the system has, in MiB.
     int total_ram();
 
@@ -56,5 +56,4 @@ namespace hal
 
         std::ostream& info(std::ostream& str);
     }
-
 }

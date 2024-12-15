@@ -45,6 +45,8 @@ namespace hal
             return m_valid;
         }
 
+        friend std::ostream& operator<<(std::ostream& str, outcome o);
+
     private:
         bool m_valid;
     };

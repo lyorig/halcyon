@@ -43,7 +43,11 @@ surface image::context::load(accessor src, load_format fmt) const
 {
     using enum load_format;
 
-    constexpr std::pair<load_format, func_ptr<SDL_Surface*, SDL_RWops*>> dispatch[] {
+    struct
+    {
+        load_format                        format;
+        func_ptr<SDL_Surface*, SDL_RWops*> func;
+    } constexpr dispatch[] {
         { jpg, ::IMG_LoadPNG_RW },
         { png, ::IMG_LoadPNG_RW },
         { tif, ::IMG_LoadTIF_RW },
@@ -65,8 +69,8 @@ surface image::context::load(accessor src, load_format fmt) const
     };
 
     for (const auto& pair : dispatch)
-        if (pair.first == fmt)
-            return { pair.second(src.use(pass_key<context> {})), pass_key<context> {} };
+        if (pair.format == fmt)
+            return { pair.func(src.use(pass_key<context> {})), pass_key<context> {} };
 
     HAL_PANIC("Trying to load image of unknown type");
 }
@@ -92,7 +96,11 @@ image::load_format image::context::query(const accessor& src) const
 {
     using enum load_format;
 
-    constexpr std::pair<func_ptr<int, SDL_RWops*>, load_format> dispatch[] {
+    struct
+    {
+        func_ptr<int, SDL_RWops*> func;
+        load_format               format;
+    } constexpr dispatch[] {
         { ::IMG_isAVIF, avif },
         { ::IMG_isICO, ico },
         { ::IMG_isCUR, cur },
@@ -114,8 +122,8 @@ image::load_format image::context::query(const accessor& src) const
     };
 
     for (const auto& pair : dispatch)
-        if (pair.first(src.get(pass_key<context> {})) != 0)
-            return pair.second;
+        if (pair.func(src.get(pass_key<context> {})) != 0)
+            return pair.format;
 
     return unknown;
 }

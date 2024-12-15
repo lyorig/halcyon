@@ -1,8 +1,8 @@
 #pragma once
 
-#include <SDL_rect.h>
-
 #include <halcyon/utility/metaprogramming.hpp>
+
+#include "SDL_rect.h"
 
 // internal/video_basic_types.hpp:
 // This file is separate from video/types.hpp to prevent include errors.

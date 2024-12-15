@@ -1,5 +1,3 @@
-#include "halcyon/utility/printing.hpp"
-#include <SDL_video.h>
 #include <halcyon/video/window.hpp>
 
 #include <halcyon/video.hpp>
