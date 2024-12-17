@@ -6,8 +6,8 @@
 
 using namespace hal;
 
-string::string(char* ptr, pass_key<proxy::video>)
-    : resource { ptr }
+string::string(char* str)
+    : resource { str }
 {
 }
 
@@ -54,4 +54,11 @@ string::const_pointer string::c_str() const
 bool hal::operator==(string lhs, const char* rhs)
 {
     return std::strcmp(lhs.c_str(), rhs) == 0;
+}
+
+std::ostream& hal::operator<<(std::ostream& str, const string& s)
+{
+    str << s.c_str();
+
+    return str;
 }

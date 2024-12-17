@@ -71,7 +71,7 @@ namespace hal
             bool enabled(event::type t) const;
 
             // Add a filter that checks all pushed events.
-            // If [filter] returns 1, the event is "let through".
+            // If [filter] returns 1, the event is pushed to the event queue.
             // If [filter] returns 0, the event is dropped and not added to the event queue.
             void filter_add(func_ptr<int, void*, event::variant*> filter, void* data);
 

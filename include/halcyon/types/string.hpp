@@ -18,7 +18,7 @@ namespace hal
     class string : public detail::resource<char, ::SDL_free>
     {
     public:
-        string(char* ptr, pass_key<proxy::video>);
+        string(char* ptr);
 
         const_pointer begin() const;
         pointer       begin();
@@ -32,6 +32,8 @@ namespace hal
         pointer       data();
 
         const_pointer c_str() const;
+
+        friend std::ostream& operator<<(std::ostream& str, const string& s);
     };
 
     bool operator==(string lhs, const char* rhs);

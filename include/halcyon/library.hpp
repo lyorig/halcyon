@@ -5,8 +5,6 @@
 
 #include <halcyon/types/c_string.hpp>
 
-#include "SDL_loadso.h"
-
 namespace hal
 {
     class library
@@ -23,10 +21,12 @@ namespace hal
             requires std::is_function_v<T>
         T* function(c_string name)
         {
-            return reinterpret_cast<T*>(::SDL_LoadFunction(m_handle, name.c_str()));
+            return reinterpret_cast<T*>(base_function(name));
         }
 
     private:
+        void* base_function(c_string name) const;
+
         void* m_handle;
     };
 }

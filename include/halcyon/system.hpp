@@ -1,8 +1,9 @@
 #pragma once
 
-#include <halcyon/types/c_string.hpp>
+#include <halcyon/types/string.hpp>
 
 #include "SDL_endian.h"
+#include "SDL_power.h"
 
 #include <iosfwd>
 
@@ -30,8 +31,68 @@ namespace hal
         };
     }
 
+    struct power_state
+    {
+        enum class battery_state : std::uint8_t
+        {
+            unknown    = SDL_POWERSTATE_UNKNOWN,
+            on_battery = SDL_POWERSTATE_ON_BATTERY,
+            no_battery = SDL_POWERSTATE_NO_BATTERY,
+            charging   = SDL_POWERSTATE_CHARGING,
+            charged    = SDL_POWERSTATE_CHARGED
+        };
+
+        enum : int
+        {
+            unknown_seconds = -1
+        };
+
+        enum : std::uint8_t
+        {
+            unknown_percent = static_cast<std::uint8_t>(-1)
+        };
+
+        power_state();
+
+        static power_state get();
+
+        friend std::ostream& operator<<(std::ostream& str, power_state s);
+
+        int           seconds;
+        std::uint8_t  percent;
+        battery_state battery;
+    };
+
+    constexpr std::string_view to_string(power_state::battery_state bs)
+    {
+        using enum power_state::battery_state;
+
+        switch (bs)
+        {
+        case unknown:
+            return "unknown";
+
+        case on_battery:
+            return "on battery";
+
+        case no_battery:
+            return "no battery";
+
+        case charging:
+            return "charging";
+
+        case charged:
+            return "charged";
+
+        default:
+            return "[unknown]";
+        }
+    }
+
     // Get the name of the current platform.
     c_string platform();
+
+    string base_path();
 
     // How much RAM the system has, in MiB.
     int total_ram();

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <ranges>
 #include <span>
 
 namespace hal
@@ -27,7 +28,7 @@ namespace hal
             : m_arr { std::make_unique<T[]>(span.size()) }
             , m_size { span.size() }
         {
-            std::copy(span.begin(), span.end(), begin());
+            std::ranges::copy(span, begin());
         }
 
         constexpr buffer(std::initializer_list<T> il)
@@ -38,7 +39,7 @@ namespace hal
         constexpr buffer(const buffer& other)
             : buffer(other.size()) // Don't unintentionally choose the initializer_list constructor.
         {
-            std::copy(other.begin(), other.end(), begin());
+            std::ranges::copy(other, begin());
         }
 
         constexpr buffer(buffer&&) = default;

@@ -3,6 +3,7 @@
 #include <halcyon/utility/metaprogramming.hpp>
 
 #include "SDL_cpuinfo.h"
+#include "SDL_filesystem.h"
 
 #include <string_view>
 
@@ -10,9 +11,53 @@
 
 using namespace hal;
 
+power_state::power_state()
+    : seconds { unknown_seconds }
+    , percent { unknown_percent }
+    , battery { battery_state::unknown }
+{
+}
+
+power_state power_state::get()
+{
+    power_state ret;
+    int         percent_conv;
+
+    ret.battery = static_cast<battery_state>(::SDL_GetPowerInfo(&ret.seconds, &percent_conv));
+    ret.percent = static_cast<std::uint8_t>(percent_conv);
+
+    return ret;
+}
+
+std::ostream& hal::operator<<(std::ostream& str, power_state s)
+{
+    str << "[state: " << to_string(s.battery) << ", ";
+
+    if (s.percent == power_state::unknown_percent)
+        str << "percentage unknown";
+    else
+        str << to_printable_int(s.percent) << " % charge";
+
+    str << ", ";
+
+    if (s.seconds == power_state::unknown_seconds)
+        str << "seconds unknown";
+    else
+        str << to_printable_int(s.seconds) << " s left";
+
+    str << ']';
+
+    return str;
+}
+
 c_string hal::platform()
 {
     return ::SDL_GetPlatform();
+}
+
+string hal::base_path()
+{
+    return ::SDL_GetBasePath();
 }
 
 int hal::total_ram()

@@ -12,7 +12,7 @@ proxy::video::video()
 
 string proxy::video::clipboard() const
 {
-    return { ::SDL_GetClipboardText(), pass_key<video> {} };
+    return ::SDL_GetClipboardText();
 }
 
 outcome proxy::video::clipboard(const char* text)
