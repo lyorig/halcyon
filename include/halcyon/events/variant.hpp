@@ -56,10 +56,10 @@ namespace hal
                 minimized           = SDL_WINDOWEVENT_MINIMIZED,
                 maximized           = SDL_WINDOWEVENT_MAXIMIZED,
                 restored            = SDL_WINDOWEVENT_RESTORED,
-                got_mouse_focus     = SDL_WINDOWEVENT_ENTER,
-                lost_mouse_focus    = SDL_WINDOWEVENT_LEAVE,
-                got_keyboard_focus  = SDL_WINDOWEVENT_FOCUS_GAINED,
-                lost_keyboard_focus = SDL_WINDOWEVENT_FOCUS_LOST,
+                mouse_focus_got     = SDL_WINDOWEVENT_ENTER,
+                mouse_focus_lost    = SDL_WINDOWEVENT_LEAVE,
+                keyboard_focus_got  = SDL_WINDOWEVENT_FOCUS_GAINED,
+                keyboard_focus_lost = SDL_WINDOWEVENT_FOCUS_LOST,
                 closed              = SDL_WINDOWEVENT_CLOSE,
                 focus_offered       = SDL_WINDOWEVENT_TAKE_FOCUS,
                 hit_test            = SDL_WINDOWEVENT_HIT_TEST,
@@ -417,16 +417,16 @@ namespace hal
         case restored:
             return "Restored";
 
-        case got_mouse_focus:
+        case mouse_focus_got:
             return "Got mouse focus";
 
-        case lost_mouse_focus:
+        case mouse_focus_lost:
             return "Lost mouse focus";
 
-        case got_keyboard_focus:
+        case keyboard_focus_got:
             return "Got keyboard focus";
 
-        case lost_keyboard_focus:
+        case keyboard_focus_lost:
             return "Lost keyboard focus";
 
         case closed:

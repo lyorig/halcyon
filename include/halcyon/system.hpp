@@ -52,9 +52,13 @@ namespace hal
             unknown_percent = static_cast<std::uint8_t>(-1)
         };
 
+        // Returns a new, freshly updated power state.
+        static power_state get();
+
         power_state();
 
-        static power_state get();
+        // Update this structure in place.
+        power_state& update();
 
         friend std::ostream& operator<<(std::ostream& str, power_state s);
 

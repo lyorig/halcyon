@@ -11,6 +11,15 @@
 
 using namespace hal;
 
+power_state power_state::get()
+{
+    power_state ret;
+
+    ret.update();
+
+    return ret;
+}
+
 power_state::power_state()
     : seconds { unknown_seconds }
     , percent { unknown_percent }
@@ -18,15 +27,14 @@ power_state::power_state()
 {
 }
 
-power_state power_state::get()
+power_state& power_state::update()
 {
-    power_state ret;
-    int         percent_conv;
+    int percent_conv;
 
-    ret.battery = static_cast<battery_state>(::SDL_GetPowerInfo(&ret.seconds, &percent_conv));
-    ret.percent = static_cast<std::uint8_t>(percent_conv);
+    battery = static_cast<battery_state>(::SDL_GetPowerInfo(&seconds, &percent_conv));
+    percent = static_cast<std::uint8_t>(percent_conv);
 
-    return ret;
+    return *this;
 }
 
 std::ostream& hal::operator<<(std::ostream& str, power_state s)
