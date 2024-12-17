@@ -92,6 +92,8 @@ namespace hal
         // Returns whether the operation succeeded.
         outcome fullscreen(bool set);
 
+        void always_on_top(bool set);
+
         ref<const renderer> renderer() const;
         ref<class renderer> renderer();
 

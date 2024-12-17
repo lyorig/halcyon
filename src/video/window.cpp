@@ -1,3 +1,4 @@
+#include <SDL_video.h>
 #include <halcyon/video/window.hpp>
 
 #include <halcyon/video.hpp>
@@ -118,6 +119,11 @@ void window::title(const char* val)
 bool window::fullscreen() const
 {
     return flags().any({ flag::fullscreen, flag::fullscreen_borderless });
+}
+
+void window::always_on_top(bool set)
+{
+    ::SDL_SetWindowAlwaysOnTop(get(), static_cast<SDL_bool>(set));
 }
 
 outcome window::fullscreen(bool set)
