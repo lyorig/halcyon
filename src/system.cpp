@@ -162,3 +162,18 @@ std::ostream& cpu::info(std::ostream& str)
 
     return str;
 }
+
+void* simd::malloc(std::size_t len)
+{
+    return ::SDL_SIMDAlloc(len);
+}
+
+void* simd::realloc(void* mem, std::size_t len)
+{
+    return ::SDL_SIMDRealloc(mem, len);
+}
+
+void simd::free(void* mem)
+{
+    ::SDL_SIMDFree(mem);
+}

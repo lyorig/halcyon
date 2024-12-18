@@ -8,7 +8,7 @@
 #include <iosfwd>
 
 // system.hpp:
-// CPU feature set detection and system info.
+// Detection of CPU features, various system parameters and SIMD operations.
 
 namespace hal
 {
@@ -120,5 +120,32 @@ namespace hal
         std::ostream& supported(std::ostream& str);
 
         std::ostream& info(std::ostream& str);
+    }
+
+    namespace simd
+    {
+        void* malloc(std::size_t len);
+        void* realloc(void* mem, std::size_t len);
+
+        void free(void* mem);
+
+        std::size_t alignment();
+
+        template <typename T>
+        class unique_ptr : public std::unique_ptr<T, meta::struct_functor<simd::free>>
+        {
+        public:
+            unique_ptr() = default;
+
+            unique_ptr(std::nullptr_t)
+                : std::unique_ptr<T> { nullptr }
+            {
+            }
+
+            unique_ptr(std::size_t len)
+                : std::unique_ptr<T> { simd::malloc(len) }
+            {
+            }
+        };
     }
 }

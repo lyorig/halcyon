@@ -200,4 +200,25 @@ namespace hal
         template <typename T, typename... Ts>
         concept one_of = is_present<T, Ts...>;
     }
+
+    namespace detail
+    {
+        template <auto, typename>
+        struct struct_functor;
+
+        template <auto Func, typename Ret, typename... Args>
+        struct struct_functor<Func, Ret(Args...)>
+        {
+            static constexpr Ret operator()(Args... a)
+            {
+                return Func(a...);
+            }
+        };
+    }
+
+    namespace meta
+    {
+        template <auto Func>
+        using struct_functor = detail::struct_functor<Func, std::remove_pointer_t<decltype(Func)>>;
+    }
 }

@@ -115,7 +115,7 @@ namespace hal
 
             if (--(*m_count) == 0)
             {
-                typename T::deleter {}(get());
+                T::deleter::operator()(get());
             }
         }
     };

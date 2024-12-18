@@ -23,14 +23,7 @@ namespace hal
             using type          = SDL_Type;
             using pointer       = type*;
             using const_pointer = const type*;
-
-            struct deleter
-            {
-                void operator()(pointer p) const
-                {
-                    Deleter(p);
-                }
-            };
+            using deleter       = meta::struct_functor<Deleter>;
 
         protected:
             resource() = default;
