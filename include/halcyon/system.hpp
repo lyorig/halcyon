@@ -53,7 +53,7 @@ namespace hal
         };
 
         // Returns a new, freshly updated power state.
-        static power_state get();
+        static power_state current();
 
         power_state();
 

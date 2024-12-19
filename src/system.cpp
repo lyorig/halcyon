@@ -12,7 +12,7 @@
 
 using namespace hal;
 
-power_state power_state::get()
+power_state power_state::current()
 {
     power_state ret;
 
