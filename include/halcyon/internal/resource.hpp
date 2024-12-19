@@ -3,6 +3,7 @@
 #include <halcyon/debug.hpp>
 
 #include <halcyon/types/exception.hpp>
+#include <halcyon/utility/metaprogramming.hpp>
 #include <halcyon/utility/pass_key.hpp>
 
 #include <memory>

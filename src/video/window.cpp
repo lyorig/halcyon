@@ -1,7 +1,6 @@
-#include <SDL_video.h>
-#include <halcyon/video/window.hpp>
-
 #include <halcyon/video.hpp>
+
+#include <halcyon/utility/strutil.hpp>
 
 using namespace hal;
 

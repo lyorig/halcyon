@@ -1,6 +1,7 @@
 #include <halcyon/system.hpp>
 
 #include <halcyon/utility/metaprogramming.hpp>
+#include <halcyon/utility/printing.hpp>
 
 #include "SDL_cpuinfo.h"
 #include "SDL_filesystem.h"
