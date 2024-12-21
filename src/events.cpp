@@ -19,7 +19,7 @@ bool event::push_outcome::filtered() const
     return m_res == 0;
 }
 
-bool event::push_outcome::valid_unfiltered() const
+bool event::push_outcome::pushed() const
 {
     return m_res == 1;
 }

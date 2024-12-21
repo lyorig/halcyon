@@ -116,6 +116,10 @@ namespace hal
             if (--(*m_count) == 0)
             {
                 T::deleter::operator()(get());
+                delete m_count;
+
+                m_ptr   = nullptr;
+                m_count = nullptr;
             }
         }
     };

@@ -26,7 +26,7 @@ namespace hal
             bool filtered() const;
 
             // Returns whether the event wasn't filtered and was pushed into the queue.
-            bool valid_unfiltered() const;
+            bool pushed() const;
 
             // Returns valid().
             operator bool() const;
