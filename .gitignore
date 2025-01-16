@@ -1,0 +1,10 @@
+.vs/
+.cache/
+
+build/
+
+bin/*
+!bin/assets/
+
+.DS_Store
+.clangd
