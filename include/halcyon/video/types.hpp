@@ -1,5 +1,6 @@
 #pragma once
 
+#include <SDL3/SDL_surface.h>
 #include <halcyon/types/c_string.hpp>
 #include <halcyon/types/rectangle.hpp>
 
@@ -565,6 +566,25 @@ namespace hal
 
         case _1010102:
             return "1010102";
+        }
+    }
+
+    enum class scale_mode : std::uint8_t
+    {
+        nearest = SDL_SCALEMODE_NEAREST,
+        linear  = SDL_SCALEMODE_LINEAR
+    };
+
+    constexpr c_string to_string(scale_mode sm)
+    {
+        switch (sm)
+        {
+        case scale_mode::nearest:
+            return "Nearest";
+        case scale_mode::linear:
+            return "Linear";
+        default:
+            return "[unknown]";
         }
     }
 

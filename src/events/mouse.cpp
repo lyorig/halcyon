@@ -23,5 +23,5 @@ std::uint8_t mouse::state::mask() const
 
 bool mouse::state::operator[](button btn) const
 {
-    return static_cast<bool>(m_state & SDL_BUTTON(std::to_underlying(btn)));
+    return static_cast<bool>(m_state & SDL_BUTTON_MASK(std::to_underlying(btn)));
 }

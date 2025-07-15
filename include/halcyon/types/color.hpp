@@ -2,6 +2,8 @@
 
 #include "SDL3/SDL_pixels.h"
 
+#include <halcyon/internal/tags.hpp>
+
 #include <algorithm>
 #include <bit>
 #include <iosfwd>
@@ -12,6 +14,8 @@
 
 namespace hal
 {
+    HAL_TAG(as_rgba);
+
     struct color : public SDL_Color
     {
         // A single R, G, B or A value.

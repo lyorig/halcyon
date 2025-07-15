@@ -8,10 +8,10 @@ int main(int argc, char* argv[])
     hal::cleanup_init<hal::subsystem::video> v;
 
     hal::window   wnd { v, "Example", { 640, 480 } };
-    hal::renderer rnd { wnd, hal::renderer::flag::vsync };
+    hal::renderer rnd {};
 
     {
-        const hal::pixel::format pref { rnd.info()->formats().front() };
+        const auto pref { hal::pixel::format::rgba32 };
 
         hal::static_texture t { rnd, rnd.size().get(), pref };
 
@@ -26,7 +26,7 @@ int main(int argc, char* argv[])
         s.fill(hal::palette::green);
         t.update(s, { { 0, 0 }, s.size() / 4 });
 
-        rnd.draw(t)();
+        rnd.draw(t).render();
         rnd.present();
     }
 

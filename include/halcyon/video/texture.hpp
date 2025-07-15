@@ -1,6 +1,5 @@
 #pragma once
 
-#include <halcyon/internal/pixel_reference.hpp>
 #include <halcyon/internal/resource.hpp>
 #include <halcyon/types/color.hpp>
 #include <halcyon/types/result.hpp>
@@ -20,7 +19,8 @@ namespace hal
     class texture : public detail::resource<SDL_Texture, &::SDL_DestroyTexture>
     {
     protected:
-        // A special integer value that tells SDL to do the thing it's named after when creating a texture.
+        // A special integer value that tells SDL to do the thing
+        // this function is named after when creating a texture.
         consteval static pixel::format use_renderer_native()
         {
             return static_cast<pixel::format>(0);
@@ -33,9 +33,7 @@ namespace hal
             streaming = SDL_TEXTUREACCESS_STREAMING
         };
 
-        texture() = default;
-
-        texture(SDL_Texture* ptr);
+        using resource::resource;
 
         texture(lref<const renderer> rnd, pixel::format fmt, access a, pixel::point size);
 
@@ -50,9 +48,11 @@ namespace hal
 
         result<blend_mode> blend() const;
         outcome            blend(blend_mode bm);
+
+        result<pixel::format> pixel_format() const;
     };
 
-    // Forward declarations for parameters and return types.
+    // Forward declarations forparameters and return types.
     class renderer;
 
     // A texture that cannot be drawn onto or otherwise manipulated.

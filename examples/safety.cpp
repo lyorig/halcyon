@@ -3,19 +3,20 @@
 #include <halcyon/image.hpp>
 #include <halcyon/ttf.hpp>
 
+#include <SDL3_image/SDL_image.h>
+
 int main(int, char*[])
 {
     // Halcyon employs some safeguards to make sure you don't use uninitialized systems.
     // For example, here are a few mistakes you could make in SDL:
 
     SDL_Window* sdl_wnd { ::SDL_CreateWindow(nullptr, // nullptr supplied as string.
-        0, 0, 640, 480,
-        69420) }; // Random integer passed as bitmask.
+        0, 0, 640) };                                 // Random integer passed as bitmask.
 
     // Wait, did we even initialize the library?!
     // (in this case, the function checks and does this for us, but such altruism is in no way guaranteed)
 
-    SDL_Renderer* sdl_rnd { ::SDL_CreateRenderer(sdl_wnd, -1, 123456789) }; // Same bitmask issue as before.
+    SDL_Renderer* sdl_rnd { ::SDL_CreateRenderer(sdl_wnd, nullptr) }; // Same bitmask issue as before.
 
     // The file path describes what this line does pretty well.
     // The surface wasn't freed, now you suffer the consequences.
@@ -45,14 +46,11 @@ int main(int, char*[])
 
     // Image loading is only possible with an image context, however, it's only needed for
     // the loading itself, and can be discarded immediately afterwards.
-    using img = hal::image::context;
-    using enum hal::image::init_format;
+    hal::static_texture tex { rnd, hal::image::load("assets/file.png", hal::image::load_format::png) };
 
-    hal::static_texture tex { rnd, img { png }.load("assets/file.png") };
-
-    // If you're in debug mode, and your program works up until this point – congrats!
-    // Halcyon Debug checks every call that can fail, and – provided that you haven't explicitly
-    // disabled it – exit()s the program upon anything failing, along with a message stating what went wrong,
+    // If you're in debug mode, and your program works up until this point - congrats!
+    // Halcyon Debug checks every call that can fail, and, provided that you haven't explicitly
+    // disabled it, exit()-s the program upon anything failing, along with a message stating what went wrong,
     // and where. For peak performance, this functionality is completely disabled by default upon defining NDEBUG.
 
     // Deallocation + deinitialization is taken care of, so you can focus on the important part - coding!
@@ -68,21 +66,3 @@ int main(int, char*[])
 
     return EXIT_SUCCESS;
 }
-
-// All of these "initializer" types are empty.
-// Use [[no_unique_address]] (defined as HAL_NO_SIZE).
-// For example, to wrap all this initialization into a class:
-class halcyon
-{
-public:
-    halcyon(std::initializer_list<hal::image::init_format> formats)
-        : m_img { formats }
-    {
-    }
-
-private:
-    HAL_NO_SIZE hal::image::context                m_img;
-    HAL_NO_SIZE [[maybe_unused]] hal::ttf::context m_ttf;
-
-    HAL_NO_SIZE hal::cleanup_init<hal::subsystem::video> m_video;
-};

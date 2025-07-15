@@ -16,13 +16,13 @@ namespace
     }
 }
 
-outcome message_box::show(type tp, const char* title, const char* body)
+bool message_box::show(type tp, const char* title, const char* body)
 {
     return ::SDL_ShowSimpleMessageBox(std::to_underlying(tp), title, body, nullptr);
 }
 
 msbb::builder()
-    : m_btn { { .flags = 0, .buttonid = 0, .text = "Ok" } }
+    : m_btn { { .flags = 0, .buttonID = 0, .text = "Ok" } }
     , m_data {
         .flags       = SDL_MESSAGEBOX_INFORMATION,
         .window      = nullptr,
@@ -69,7 +69,7 @@ msbb& msbb::buttons(std::initializer_list<const char*> names)
         auto btn_it = m_btn.begin() + i;
         auto str_it = names.begin() + i;
 
-        btn_it->buttonid = i;
+        btn_it->buttonID = i;
         btn_it->flags    = 0;
         btn_it->text     = *str_it;
     }
@@ -119,8 +119,5 @@ message_box::button_t msbb::operator()()
 
     int ret;
 
-    if (::SDL_ShowMessageBox(&m_data, &ret) == 0)
-        return static_cast<button_t>(ret);
-    else
-        return -1;
+    return ::SDL_ShowMessageBox(&m_data, &ret) ? static_cast<button_t>(ret) : -1;
 }

@@ -1,6 +1,5 @@
 #pragma once
 
-#include <SDL3/SDL_render.h>
 #include <halcyon/video/driver.hpp>
 #include <halcyon/video/texture.hpp>
 
@@ -25,8 +24,6 @@ namespace hal
 
     class static_texture;
     class target_texture;
-
-    class renderer_info;
 
     enum class flip : std::uint8_t
     {
@@ -59,10 +56,10 @@ namespace hal
         renderer(lref<const window> wnd);
 
         // Clear (fill) the render target with the current draw color.
-        outcome clear();
+        bool clear();
 
         // Present the back-buffer and clear it.
-        outcome present();
+        bool present();
 
         // Drawing & filling:
         // Each of these functions has an additional overload since
@@ -71,46 +68,46 @@ namespace hal
         // so if you plan to do multiple draw/fill operations, prefer the color guard.
 
         // Draw a single point (pixel) with the current color.
-        outcome draw(coord::point pt);
-        outcome draw(coord::point pt, color c);
+        bool draw(coord::point pt);
+        bool draw(coord::point pt, color c);
 
-        outcome draw(std::span<const coord::point> pts);
-        outcome draw(std::span<const coord::point> pts, color c);
+        bool draw(std::span<const coord::point> pts);
+        bool draw(std::span<const coord::point> pts, color c);
 
         // Draw a line with the current color.
-        outcome draw(coord::point from, coord::point to);
-        outcome draw(coord::point from, coord::point to, color c);
+        bool draw(coord::point from, coord::point to);
+        bool draw(coord::point from, coord::point to, color c);
 
         // Draw a connected series of points with the current color.
-        outcome draw(std::span<const coord::point> pt, HAL_TAG_NAME(connect));
-        outcome draw(std::span<const coord::point> pt, color c, HAL_TAG_NAME(connect));
+        bool draw(std::span<const coord::point> pt, HAL_TAG_NAME(connect));
+        bool draw(std::span<const coord::point> pt, color c, HAL_TAG_NAME(connect));
 
         // Outline a rectangle with the current color.
-        outcome draw(coord::rect area);
-        outcome draw(coord::rect area, color c);
+        bool draw(coord::rect area);
+        bool draw(coord::rect area, color c);
 
         // Draw multiple rectangles with the current color.
-        outcome draw(std::span<const coord::rect> pt);
-        outcome draw(std::span<const coord::rect> pt, color c);
+        bool draw(std::span<const coord::rect> pt);
+        bool draw(std::span<const coord::rect> pt, color c);
 
         // Draw a texture. Returns a builder-like class.
         [[nodiscard]] copyer draw(ref<const texture> tx);
 
         // Fill an area.
-        outcome fill(coord::rect area);
-        outcome fill(coord::rect area, color c);
+        bool fill(coord::rect area);
+        bool fill(coord::rect area, color c);
 
         // Fill an array of areas.
-        outcome fill(std::span<const coord::rect> areas);
-        outcome fill(std::span<const coord::rect> areas, color c);
+        bool fill(std::span<const coord::rect> areas);
+        bool fill(std::span<const coord::rect> areas, color c);
 
         // Fill the entire rendering target.
-        outcome fill();
-        outcome fill(color c);
+        bool fill();
+        bool fill(color c);
 
         // Get/set the rendering target.
-        outcome target(ref<target_texture> tx);
-        outcome reset_target();
+        bool target(ref<target_texture> tx);
+        bool reset_target();
 
         surface read_pixels() const;
 
@@ -120,27 +117,29 @@ namespace hal
 
         // Get/set the color used for draw/fill operations.
         result<hal::color> color() const;
-        outcome            color(hal::color clr);
+        bool               color(hal::color clr);
 
         // Get/set the blend mode used foor draw/fill operations.
         result<blend_mode> blend() const;
-        outcome            blend(blend_mode bm);
+        bool               blend(blend_mode bm);
 
         result<pixel::point> size() const;
-        outcome              size(pixel::point sz, presentation p);
+        bool                 size(pixel::point sz, presentation p);
 
         ref<const window> window() const;
         ref<class window> window();
 
+        const char* name() const;
+
     private:
         // Helper for setting the render target.
-        outcome internal_target(SDL_Texture* target);
+        bool internal_target(SDL_Texture* target);
     };
 
     // A builder-pattern class that facilitates rendering textures.
-    // Errors (most commonly an invalid texture) are communicated via the outcome
+    // Errors (most commonly an invalid texture) are communicated via the bool
     // returned from operator().
-    class copyer : public detail::drawer<const texture, coord_t, coord_t, renderer, copyer>
+    class copyer : public detail::drawer<const texture, renderer, coord_t, copyer>
     {
     public:
         using drawer::drawer;
@@ -158,10 +157,10 @@ namespace hal
         [[nodiscard]] copyer& outline(color c);
 
         // Finish the operation.
-        outcome render();
-        outcome rotated(double angle, flip f);
-        outcome affine(coord::point right, coord::point down);
-        outcome tiled(float scale);
-        outcome nine_grid(float width_left, float width_right, float height_top, float height_bottom, float scale);
+        bool render();
+        bool rotated(double angle, flip f);
+        bool affine(coord::point right, coord::point down);
+        bool tiled(float scale);
+        bool nine_grid(float width_left, float width_right, float height_top, float height_bottom, float scale);
     };
 }

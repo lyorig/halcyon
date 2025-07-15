@@ -10,10 +10,7 @@ using namespace hal;
 
 driver::index_t driver::amount()
 {
-    if (const int ret { ::SDL_GetNumVideoDrivers() }; ret >= 1)
-        return static_cast<index_t>(ret);
-    else
-        return 0;
+    return ::SDL_GetNumVideoDrivers();
 }
 
 c_string driver::name()
@@ -24,9 +21,4 @@ c_string driver::name()
 c_string driver::name(index_t idx)
 {
     return ::SDL_GetVideoDriver(idx);
-}
-
-outcome driver::info(renderer_info& info, index_t idx)
-{
-    return ::SDL_GetRenderDriverInfo(idx, &info);
 }

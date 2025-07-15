@@ -7,13 +7,8 @@
 
 using namespace hal;
 
-texture::texture(SDL_Texture* ptr)
-    : resource { ptr }
-{
-}
-
 texture::texture(lref<const renderer> rnd, pixel::format fmt, access a, pixel::point size)
-    : texture { ::SDL_CreateTexture(rnd.get(), static_cast<SDL_PixelFormat>(fmt), static_cast<SDL_TextureAccess>(a), size.x, size.y) }
+    : resource { ::SDL_CreateTexture(rnd.get(), static_cast<SDL_PixelFormat>(fmt), static_cast<SDL_TextureAccess>(a), size.x, size.y) }
 {
 }
 
@@ -56,6 +51,11 @@ result<blend_mode> texture::blend() const
 outcome texture::blend(blend_mode bm)
 {
     return ::SDL_SetTextureBlendMode(get(), static_cast<SDL_BlendMode>(bm));
+}
+
+result<pixel::format> texture::pixel_format() const
+{
+    return { true, static_cast<pixel::format>(::SDL_GetNumberProperty(::SDL_GetTextureProperties(get()), "SDL_PROP_TEXTURE_FORMAT_NUMBER", 0)) };
 }
 
 static_texture::static_texture(lref<const renderer> rnd, pixel::point size, pixel::format fmt)

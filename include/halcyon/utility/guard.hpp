@@ -1,6 +1,5 @@
 #pragma once
 
-#include "halcyon/video/texture.hpp"
 #include <halcyon/video/renderer.hpp>
 
 // utility/guard.hpp:

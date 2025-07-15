@@ -14,22 +14,15 @@ namespace hal
     {
         using index_t = std::uint8_t;
 
-        constexpr index_t invalid_amount { 0 };
-
         // Get the amount of available video drivers.
-        // Returns invalid_amount in case of failure.
         index_t amount();
 
         // Get the name of the current video driver.
-        // Returns nullptr in case of failure.
+        // Returns an invalid string if none has been initialized.
         c_string name();
 
         // Get the name of the video driver at [idx].
-        // Returns nullptr in case of failure.
+        // Returns an invalid string in case of failure.
         c_string name(index_t idx);
-
-        // Get rendering info of the driver at [idx].
-        // This does not provide the maximum texture size.
-        outcome info(renderer_info& info, index_t idx);
     };
 }

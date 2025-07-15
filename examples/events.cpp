@@ -11,8 +11,7 @@ int main(int, char*[])
 
     hal::window wnd { vid, "Halcyon Structure Showcase", { 640, 480 }, hal::window::flag::resizable };
 
-    using rf = hal::renderer::flag;
-    hal::renderer rnd { wnd, { rf::accelerated, rf::vsync } };
+    hal::renderer rnd { wnd };
 
     hal::event::variant eh;
 
@@ -25,7 +24,7 @@ int main(int, char*[])
             {
                 using enum hal::event::type;
 
-            case terminated:
+            case terminating:
                 HAL_PRINT("Program has been terminated!");
                 // intentional fallthrough...
 
@@ -73,17 +72,7 @@ int main(int, char*[])
                 }
                 break;
 
-            case window_event:
-                HAL_PRINT("Window event occurred: ", eh.window().kind());
-                break;
-
-            case display_event:
-                HAL_PRINT("Display event occurred: ", eh.display().kind());
-                break;
-
             default:
-                if (auto tp = eh.kind(); tp != hal::event::type::mouse_moved)
-                    HAL_PRINT("Unhandled event occurred: ", tp);
                 break;
             }
         }

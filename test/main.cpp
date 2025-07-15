@@ -1,4 +1,3 @@
-#include <halcyon/audio.hpp>
 #include <halcyon/video.hpp>
 
 #include <halcyon/image.hpp>
@@ -301,24 +300,6 @@ namespace test
         return EXIT_SUCCESS;
     }
 
-    int audio_init()
-    {
-        hal::cleanup_init<hal::subsystem::audio> a;
-
-        hal::audio::spec   gotten;
-        hal::audio::device dev = hal::audio::builder::device { a }.spec({ 44100, hal::audio::format::f32, 2, 4096 })(gotten);
-        hal::audio::stream str { a, { hal::audio::format::i32, 2, 44100 }, { hal::audio::format::u8, 1, 48000 } };
-
-        // Also enumerate devices while we're at it.
-        for (hal::audio::device::id_t i = 0; i < a.outputs_size(); ++i)
-            HAL_PRINT("Output #", i, ": ", a.outputs_name(i));
-
-        for (hal::audio::device::id_t i = 0; i < a.inputs_size(); ++i)
-            HAL_PRINT("Input #", i, ": ", a.inputs_name(i));
-
-        return EXIT_SUCCESS;
-    }
-
     int utilities()
     {
         hal::buffer<int> b1 { 9, 0, 2, 1, 0 }, b2 = b1;
@@ -409,7 +390,6 @@ int main(int argc, char* argv[])
         { "--png-check", test::png_check },
         { "--references", test::references },
         { "--shared", test::shared },
-        { "--audio-init", test::audio_init },
         { "--utilities", test::utilities },
         { "--texture-manipulation", test::texture_manipulation },
         { "--invalid-buffer", test::invalid_buffer },

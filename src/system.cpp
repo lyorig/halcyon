@@ -1,3 +1,4 @@
+#include <SDL3/SDL_cpuinfo.h>
 #include <halcyon/system.hpp>
 
 #include <halcyon/utility/metaprogramming.hpp>
@@ -5,6 +6,7 @@
 
 #include "SDL3/SDL_cpuinfo.h"
 #include "SDL3/SDL_filesystem.h"
+#include "SDL3/SDL_platform.h"
 
 #include <string_view>
 
@@ -64,7 +66,7 @@ c_string hal::platform()
     return ::SDL_GetPlatform();
 }
 
-string hal::base_path()
+c_string hal::base_path()
 {
     return ::SDL_GetBasePath();
 }
@@ -94,13 +96,11 @@ FUNC(sse4_2, SSE42)
 FUNC(neon, NEON)
 FUNC(armsimd, ARMSIMD)
 
-FUNC(_3dnow, 3DNow)
-FUNC(rdtsc, RDTSC)
 FUNC(altivec, AltiVec)
 
 int cpu::logical_cores()
 {
-    return ::SDL_GetCPUCount();
+    return ::SDL_GetNumLogicalCPUCores();
 }
 
 int cpu::cache_line()
@@ -164,17 +164,7 @@ std::ostream& cpu::info(std::ostream& str)
     return str;
 }
 
-void* simd::malloc(std::size_t len)
+std::size_t cpu::simd_alignment()
 {
-    return ::SDL_SIMDAlloc(len);
-}
-
-void* simd::realloc(void* mem, std::size_t len)
-{
-    return ::SDL_SIMDRealloc(mem, len);
-}
-
-void simd::free(void* mem)
-{
-    ::SDL_SIMDFree(mem);
+    return ::SDL_GetSIMDAlignment();
 }

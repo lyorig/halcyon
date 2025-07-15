@@ -5,8 +5,6 @@
 #include <halcyon/internal/iostream.hpp>
 #include <halcyon/utility/enum_bits.hpp>
 
-#include "SDL3_image/SDL_image.h"
-
 // image.hpp:
 // SDL_image wrappers for image loading.
 

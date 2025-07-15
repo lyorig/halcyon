@@ -6,47 +6,25 @@ using namespace hal;
 
 namespace
 {
-    // Convert a color to a mapped value using a surface's pixel format.
-    Uint32 mapped(const SDL_PixelFormat* fmt, color c)
-    {
-        return ::SDL_MapRGBA(fmt, c.r, c.g, c.b, c.a);
-    }
-
     SDL_Surface* copy_from(ref<const surface> s)
     {
-        const SDL_Surface&     ref { *s->get() };
-        const SDL_PixelFormat& fmt { *ref.format };
-        return ::SDL_CreateRGBSurfaceWithFormatFrom(ref.pixels, ref.w, ref.h, fmt.BitsPerPixel, ref.pitch, fmt.format);
+        const SDL_Surface& ref { *s->get() };
+        return ::SDL_CreateSurfaceFrom(ref.w, ref.h, ref.format, ref.pixels, ref.pitch);
     }
 }
 
+surface::surface(pointer ptr)
+    : resource { ptr }
+{
+}
+
 surface::surface(pixel::point sz, pixel::format fmt)
-    : resource { ::SDL_CreateRGBSurfaceWithFormat(0, sz.x, sz.y, CHAR_BIT * 4, static_cast<Uint32>(fmt)) }
+    : resource { ::SDL_CreateSurface(sz.x, sz.y, static_cast<SDL_PixelFormat>(fmt)) }
 {
 }
 
 surface::surface(accessor src)
-    : resource { ::SDL_LoadBMP_RW(src.use(pass_key<surface> {}), true) }
-{
-}
-
-surface::surface(SDL_Surface* ptr, pass_key<surface>)
-    : resource { ptr }
-{
-}
-
-surface::surface(SDL_Surface* ptr, pass_key<image::context>)
-    : resource { ptr }
-{
-}
-
-surface::surface(SDL_Surface* ptr, pass_key<builder::font_text>)
-    : resource { ptr }
-{
-}
-
-surface::surface(SDL_Surface* ptr, pass_key<builder::font_glyph>)
-    : resource { ptr }
+    : resource { ::SDL_LoadBMP_IO(src.get(), false) }
 {
 }
 
@@ -64,17 +42,17 @@ surface& surface::operator=(const surface& s)
 
 outcome surface::fill(color clr)
 {
-    return ::SDL_FillRect(get(), nullptr, mapped(get()->format, clr));
+    return ::SDL_FillSurfaceRect(get(), nullptr, map_rgba(clr));
 }
 
 outcome surface::fill(pixel::rect area, color clr)
 {
-    return ::SDL_FillRect(get(), area.sdl_ptr(), mapped(get()->format, clr));
+    return ::SDL_FillSurfaceRect(get(), area.sdl_ptr(), map_rgba(clr));
 }
 
 outcome surface::fill(std::span<const pixel::rect> areas, color clr)
 {
-    return ::SDL_FillRects(get(), reinterpret_cast<const SDL_Rect*>(areas.data()), static_cast<int>(areas.size()), mapped(get()->format, clr));
+    return ::SDL_FillSurfaceRects(get(), reinterpret_cast<const SDL_Rect*>(areas.data()), static_cast<int>(areas.size()), map_rgba(clr));
 }
 
 outcome surface::lock()
@@ -89,7 +67,7 @@ void surface::unlock()
 
 outcome surface::save(outputter dst) const
 {
-    return ::SDL_SaveBMP_RW(get(), dst.use(pass_key<surface> {}), true);
+    return ::SDL_SaveBMP_IO(get(), dst.get(), false);
 }
 
 blitter surface::blit(surface& dst) const
@@ -99,7 +77,7 @@ blitter surface::blit(surface& dst) const
 
 surface surface::convert(pixel::format fmt) const
 {
-    return { ::SDL_ConvertSurfaceFormat(get(), static_cast<Uint32>(fmt), 0), pass_key<surface> {} };
+    return ::SDL_ConvertSurface(get(), static_cast<SDL_PixelFormat>(fmt));
 }
 
 pixel::point surface::size() const
@@ -112,14 +90,14 @@ pixel::point surface::size() const
 
 pixel::format surface::pixel_format() const
 {
-    return static_cast<pixel::format>(get()->format->format);
+    return static_cast<pixel::format>(get()->format);
 }
 
-surface surface::resize(pixel::point sz) const
+surface surface::resize(pixel::point sz, scale_mode sm) const
 {
     surface ret { sz };
 
-    blit(ret).to(tag::fill)();
+    blit(ret).to(tag::fill).scaled(sm);
 
     return ret;
 }
@@ -129,17 +107,15 @@ bool surface::must_lock() const
     return SDL_MUSTLOCK(get());
 }
 
-pixel::const_reference surface::operator[](pixel::point pos) const
+result<color> surface::pixel(pixel::point pos) const
 {
-    HAL_ASSERT(pos.x < get()->w, "Out-of-range width");
-    HAL_ASSERT(pos.y < get()->h, "Out-of-range height");
-
-    return { static_cast<std::byte*>(get()->pixels), get()->pitch, get()->format, pos, pass_key<surface> {} };
+    color ret;
+    return { ::SDL_ReadSurfacePixel(get(), pos.x, pos.y, &ret.r, &ret.g, &ret.b, &ret.a), ret };
 }
 
-pixel::reference surface::operator[](pixel::point pos)
+bool surface::pixel(pixel::point pos, color c)
 {
-    return { static_cast<std::byte*>(get()->pixels), get()->pitch, get()->format, pos, pass_key<surface> {} };
+    return ::SDL_WriteSurfacePixel(get(), pos.x, pos.y, c.r, c.g, c.b, c.a);
 }
 
 SDL_Surface& surface::operator*() const
@@ -188,24 +164,39 @@ outcome surface::alpha_mod(color::value_t val)
     return ::SDL_SetSurfaceAlphaMod(get(), val);
 }
 
-// Blitter.
-
-outcome blitter::operator()()
+Uint32 surface::map_rgb(color c) const
 {
-    return ::SDL_BlitScaled(
-        m_this.get(),
-        m_src.pos.x == unset_pos<src_t>() ? nullptr : m_src.sdl_ptr(),
-        m_pass.get(),
-        m_dst.pos.x == unset_pos<dst_t>() ? nullptr : m_dst.sdl_ptr());
+    return ::SDL_MapSurfaceRGB(get(), c.r, c.g, c.b);
 }
 
-outcome blitter::operator()(HAL_TAG_NAME(keep_dst)) const
+Uint32 surface::map_rgba(color c) const
 {
-    pixel::rect copy { m_dst };
+    return ::SDL_MapSurfaceRGBA(get(), c.r, c.g, c.b, c.a);
+}
 
-    return ::SDL_BlitScaled(
-        m_this.get(),
-        m_src.pos.x == unset_pos<src_t>() ? nullptr : m_src.sdl_ptr(),
-        m_pass.get(),
-        m_dst.pos.x == unset_pos<dst_t>() ? nullptr : copy.sdl_ptr());
+// Blitter.
+
+bool blitter::blit() const
+{
+    return ::SDL_BlitSurface(m_drawSrc.get(), m_posSrc.sdl_ptr(), m_drawDst.get(), m_posDst.sdl_ptr());
+}
+
+bool blitter::scaled(scale_mode sm) const
+{
+    return ::SDL_BlitSurfaceScaled(m_drawSrc.get(), m_posSrc.sdl_ptr(), m_drawDst.get(), m_posDst.sdl_ptr(), static_cast<SDL_ScaleMode>(sm));
+}
+
+bool blitter::tiled() const
+{
+    return ::SDL_BlitSurfaceTiled(m_drawSrc.get(), m_posSrc.sdl_ptr(), m_drawDst.get(), m_posDst.sdl_ptr());
+}
+
+bool blitter::tiled_scale(float scale, scale_mode sm) const
+{
+    return ::SDL_BlitSurfaceTiledWithScale(m_drawSrc.get(), m_posSrc.sdl_ptr(), scale, static_cast<SDL_ScaleMode>(sm), m_drawDst.get(), m_posDst.sdl_ptr());
+}
+
+bool blitter::nine_grid(pixel_t width_left, pixel_t width_right, pixel_t height_top, pixel_t height_bottom, float scale, scale_mode sm) const
+{
+    return ::SDL_BlitSurface9Grid(m_drawSrc.get(), m_posSrc.sdl_ptr(), width_left, width_right, height_top, height_bottom, scale, static_cast<SDL_ScaleMode>(sm), m_drawDst.get(), m_posDst.sdl_ptr());
 }

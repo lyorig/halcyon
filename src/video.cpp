@@ -22,17 +22,15 @@ outcome proxy::video::clipboard(const char* text)
 
 bool proxy::video::clipboard_has_text() const
 {
-    return ::SDL_HasClipboardText() == SDL_TRUE;
+    return ::SDL_HasClipboardText();
 }
 
-result<display> proxy::video::display_info_native(display::id_t index) const
+const display* proxy::video::display_info_native(display::id_t index) const
 {
-    display ret;
-    return { ::SDL_GetDesktopDisplayMode(index, ret.ptr(pass_key<video> {})), ret };
+    return reinterpret_cast<const display*>(::SDL_GetDesktopDisplayMode(index));
 }
 
-result<display> proxy::video::display_info_current(display::id_t index) const
+const display* proxy::video::display_info_current(display::id_t index) const
 {
-    display ret;
-    return { ::SDL_GetCurrentDisplayMode(index, ret.ptr(pass_key<video> {})), ret };
+    return reinterpret_cast<const display*>(::SDL_GetCurrentDisplayMode(index));
 }

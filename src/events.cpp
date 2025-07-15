@@ -1,4 +1,3 @@
-#include <SDL_quit.h>
 #include <halcyon/events.hpp>
 
 #include <ostream>
@@ -55,18 +54,18 @@ mouse::state proxy::events::mouse_state() const
     return { pass_key<proxy::events> {} };
 }
 
-pixel::point proxy::events::mouse_pos_abs() const
+coord::point proxy::events::mouse_pos_abs() const
 {
-    pixel::point ret;
+    coord::point ret;
 
     static_cast<void>(::SDL_GetGlobalMouseState(&ret.x, &ret.y));
 
     return ret;
 }
 
-pixel::point proxy::events::mouse_pos_rel() const
+coord::point proxy::events::mouse_pos_rel() const
 {
-    pixel::point ret;
+    coord::point ret;
 
     static_cast<void>(::SDL_GetMouseState(&ret.x, &ret.y));
 
@@ -84,58 +83,7 @@ keyboard::mod_state proxy::events::keyboard_mod() const
 }
 
 proxy::events::events(pass_key<proxy::video>)
-    : events {}
 {
-}
-
-proxy::events::events()
-{
-    // Disable unused events.
-    for (SDL_EventType type : {
-             SDL_LOCALECHANGED,
-             SDL_SYSWMEVENT,
-             SDL_KEYMAPCHANGED,
-             SDL_TEXTEDITING_EXT,
-             SDL_JOYAXISMOTION,
-             SDL_JOYBALLMOTION,
-             SDL_JOYHATMOTION,
-             SDL_JOYBUTTONDOWN,
-             SDL_JOYBUTTONUP,
-             SDL_JOYDEVICEADDED,
-             SDL_JOYDEVICEREMOVED,
-             SDL_JOYBATTERYUPDATED,
-             SDL_CONTROLLERAXISMOTION,
-             SDL_CONTROLLERBUTTONDOWN,
-             SDL_CONTROLLERBUTTONUP,
-             SDL_CONTROLLERDEVICEADDED,
-             SDL_CONTROLLERDEVICEREMOVED,
-             SDL_CONTROLLERDEVICEREMAPPED,
-             SDL_CONTROLLERTOUCHPADDOWN,
-             SDL_CONTROLLERTOUCHPADMOTION,
-             SDL_CONTROLLERTOUCHPADUP,
-             SDL_CONTROLLERSENSORUPDATE,
-             // SDL_CONTROLLERSTEAMHANDLEUPDATED, <- Unsupported on Windows, apparently
-             SDL_FINGERDOWN,
-             SDL_FINGERUP,
-             SDL_FINGERMOTION,
-             SDL_DOLLARGESTURE,
-             SDL_DOLLARRECORD,
-             SDL_MULTIGESTURE,
-             SDL_DROPFILE,
-             SDL_DROPTEXT,
-             SDL_DROPBEGIN,
-             SDL_DROPCOMPLETE,
-             SDL_AUDIODEVICEADDED,
-             SDL_AUDIODEVICEREMOVED,
-             SDL_SENSORUPDATE,
-             SDL_RENDER_TARGETS_RESET,
-             SDL_RENDER_DEVICE_RESET })
-    {
-        enabled(static_cast<event::type>(type), false);
-    }
-
-    // TODO: Remove this in SDL3, it's gonna be done automatically.
-    text_input_stop();
 }
 
 bool proxy::events::poll(event::variant& ev)
@@ -156,7 +104,7 @@ void proxy::events::pump()
 
 event::push_outcome proxy::events::push(const event::variant& eh)
 {
-    eh.get(pass_key<events> {}).common.timestamp = ::SDL_GetTicks();
+    eh.get(pass_key<events> {}).common.timestamp = ::SDL_GetTicksNS();
 
     return ::SDL_PushEvent(&eh.get(pass_key<events> {}));
 }
@@ -173,19 +121,17 @@ bool proxy::events::pending() const
 
 bool proxy::events::has(event::type t) const
 {
-    return ::SDL_HasEvent(static_cast<Uint32>(t)) == SDL_TRUE;
+    return ::SDL_HasEvent(static_cast<Uint32>(t));
 }
 
 void proxy::events::enabled(event::type t, bool e)
 {
-    static_assert(false == SDL_DISABLE && true == SDL_ENABLE);
-
-    static_cast<void>(::SDL_EventState(static_cast<Uint32>(t), e));
+    static_cast<void>(::SDL_SetEventEnabled(static_cast<Uint32>(t), e));
 }
 
 bool proxy::events::enabled(event::type t) const
 {
-    return static_cast<bool>(::SDL_GetEventState(static_cast<Uint32>(t)));
+    return ::SDL_EventEnabled(static_cast<Uint32>(t));
 }
 
 void proxy::events::filter_add(func_ptr<int, void*, event::variant*> filter, void* data)
@@ -198,12 +144,12 @@ void proxy::events::filter_run(func_ptr<int, void*, event::variant*> filter, voi
     ::SDL_FilterEvents(std::bit_cast<SDL_EventFilter>(filter), data);
 }
 
-void proxy::events::text_input_start()
+void proxy::events::text_input_start(ref<window> wnd)
 {
-    ::SDL_StartTextInput();
+    ::SDL_StartTextInput(wnd.get());
 }
 
-void proxy::events::text_input_stop()
+void proxy::events::text_input_stop(ref<window> wnd)
 {
-    ::SDL_StopTextInput();
+    ::SDL_StopTextInput(wnd.get());
 }

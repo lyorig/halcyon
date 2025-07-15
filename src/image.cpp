@@ -1,3 +1,5 @@
+#include <SDL3_image/SDL_image.h>
+
 #include <halcyon/image.hpp>
 
 #include <halcyon/types/exception.hpp>

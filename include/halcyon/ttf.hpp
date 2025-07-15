@@ -6,6 +6,7 @@
 #include <halcyon/types/c_string.hpp>
 
 #include "SDL3_ttf/SDL_ttf.h"
+#include "halcyon/internal/resource.hpp"
 
 // ttf.hpp:
 // SDL_ttf wrappers for font loading and text rendering.
@@ -22,6 +23,53 @@ namespace hal
     {
         class context;
     }
+
+    namespace detail
+    {
+        template <auto Creator, auto Deleter>
+        class engine_base : public resource<TTF_TextEngine, Deleter>
+        {
+        private:
+            using super = resource<TTF_TextEngine, Deleter>;
+
+            engine_base(TTF_TextEngine* ptr)
+                : super { ptr }
+            {
+            }
+
+        public:
+            template <typename... Args>
+            engine_base(Args&... args)
+                : super { Creator(std::forward<Args>(args)...) }
+            {
+            }
+        };
+    }
+
+    namespace text_engine
+    {
+        class gpu : public detail::engine_base<::TTF_CreateGPUTextEngine, ::TTF_DestroyGPUTextEngine>
+        {
+        };
+
+        class surface : public detail::engine_base<::TTF_CreateSurfaceTextEngine, ::TTF_DestroySurfaceTextEngine>
+        {
+        };
+
+        class renderer : public detail::engine_base<::TTF_CreateRendererTextEngine, ::TTF_DestroyRendererTextEngine>
+        {
+        };
+    }
+
+    class text : public detail::resource<TTF_Text, &::TTF_DestroyText>
+    {
+    public:
+        text() = default;
+
+        text(const font& f, std::string_view str);
+
+        result<pixel::point> size() const;
+    };
 
     class font : public detail::resource<TTF_Font, &::TTF_CloseFont>
     {
@@ -51,10 +99,6 @@ namespace hal
 
         // Render a single glyph to a surface.
         [[nodiscard]] builder::font_glyph render(char32_t glyph) const;
-
-        // When sizing text, it's important to know that the vertical size
-        // doesn't necessarily have to match that of the rendered surface.
-        pixel::point size_text(c_string text) const;
 
         pixel_t height() const;
         pixel_t skip() const;
@@ -164,7 +208,7 @@ namespace hal
         class font_text : public detail::font_builder_base<font_text>
         {
         public:
-            [[nodiscard]] font_text(ref<const font>, c_string text, pass_key<font>);
+            [[nodiscard]] font_text(ref<const font>, std::string_view text, pass_key<font>);
 
             // How many characters to wrap this text at.
             // Zero means only wrap on newlines.
@@ -178,8 +222,8 @@ namespace hal
                 return std::numeric_limits<pixel_t>::max();
             }
 
-            c_string m_text;
-            pixel_t  m_wrapLength;
+            std::string_view m_text;
+            pixel_t          m_wrapLength;
         };
 
         class font_glyph : public detail::font_builder_base<font_glyph>
@@ -193,7 +237,4 @@ namespace hal
             char32_t m_glyph;
         };
     }
-
-    // Ensure calling debug::last_error() gives accurate information.
-    static_assert(::TTF_GetError == ::SDL_GetError);
 }

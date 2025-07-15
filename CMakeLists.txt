@@ -30,16 +30,11 @@ endif()
 
 # Sources.
 set(Halcyon_SOURCES
-    audio/device.cpp
-    audio/spec.cpp
-    audio/stream.cpp
     events/variant.cpp
     events/keyboard.cpp
     events/mouse.cpp
     internal/iostream.cpp
-	internal/pixel_reference.cpp
     types/color.cpp
-	types/result.cpp
     types/string.cpp
 	utility/guard.cpp
     utility/timer.cpp
@@ -49,7 +44,6 @@ set(Halcyon_SOURCES
     video/renderer.cpp
     video/texture.cpp
     video/window.cpp
-    audio.cpp
     debug.cpp
     events.cpp
     image.cpp
@@ -119,7 +113,6 @@ if(Halcyon_BUILD_TESTS)
     add_test(NAME PngCheck COMMAND ${ExeName} --png-check)
     add_test(NAME References COMMAND ${ExeName} --references)
 	add_test(NAME Shared COMMAND ${ExeName} --shared)
-    add_test(NAME AudioInit COMMAND ${ExeName} --audio-init)
 	add_test(NAME Utilities COMMAND ${ExeName} --utilities)
 	add_test(NAME TextureManipulation COMMAND ${ExeName} --texture-manipulation)
     add_test(NAME InvalidBuffer COMMAND ${ExeName} --invalid-buffer)
@@ -135,7 +128,6 @@ if(Halcyon_BUILD_EXAMPLES)
     message("Halcyon: Enabled examples.")
 
     set(EXAMPLE_SOURCES
-        audio.cpp
         invertor.cpp
         message_box.cpp
         metaprogramming.cpp

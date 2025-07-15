@@ -2,7 +2,6 @@
 
 #include <halcyon/internal/drawer.hpp>
 #include <halcyon/internal/iostream.hpp>
-#include <halcyon/internal/pixel_reference.hpp>
 #include <halcyon/internal/resource.hpp>
 
 #include <halcyon/types/color.hpp>
@@ -17,24 +16,10 @@
 // Offers fast pixel retrieval and manipulation, which textures do not,
 // but surface-on-surface blitting is slower if GPU acceleration is availible.
 
-struct SDL_Window;
-
 namespace hal
 {
     // Forward definitions for helper classes.
     class blitter;
-    class window;
-
-    namespace image
-    {
-        class context;
-    }
-
-    namespace builder
-    {
-        class font_text;
-        class font_glyph;
-    }
 
     class surface : public detail::resource<SDL_Surface, ::SDL_DestroySurface>
     {
@@ -44,10 +29,14 @@ namespace hal
             return pixel::format::rgba32;
         }
 
+        consteval static scale_mode default_scale_mode()
+        {
+            return scale_mode::nearest;
+        }
+
         surface() = default;
 
-        surface(SDL_Surface*);
-        surface(std::nullptr_t) = delete;
+        surface(pointer ptr);
 
         // Create a sized surface with an optional pixel format.
         surface(pixel::point sz, pixel::format fmt = default_pixel_format());
@@ -93,7 +82,7 @@ namespace hal
 
         // Get a resized copy of the surface. Useful for saving
         // memory after converting to a texture.
-        surface resize(pixel::point sz) const;
+        surface resize(pixel::point sz, scale_mode sm = default_scale_mode()) const;
 
         // Whether the surface must be locked before reading/writing pixels.
         bool must_lock() const;
@@ -101,8 +90,8 @@ namespace hal
         // Get pixel at position.
         // It is recommended to manipulate pixels at the surface stage,
         // as textures are very slow to retrieve pixel information.
-        pixel::const_reference operator[](pixel::point pos) const;
-        pixel::reference       operator[](pixel::point pt);
+        result<color> pixel(pixel::point pos) const;
+        bool          pixel(pixel::point pos, color c);
 
         // SDL surfaces are not pimpl'd and can be accessed directly.
         SDL_Surface& operator*() const;
@@ -120,24 +109,24 @@ namespace hal
         // Get/set this surface's alpha modifier.
         result<color::value_t> alpha_mod() const;
         outcome                alpha_mod(color::value_t val);
+
+    private:
+        Uint32 map_rgb(color c) const;
+        Uint32 map_rgba(color c) const;
     };
 
     HAL_TAG(keep_dst);
 
     // A builder pattern drawing proxy for surfaces.
-    class blitter : public detail::drawer<const surface, pixel_t, pixel_t, surface, blitter>
+    class blitter : public detail::drawer<const surface, surface, pixel_t, blitter>
     {
     public:
         using drawer::drawer;
 
-        // Finish the operation.
-        // SDL's blitting function overwrites the destination rectangle.
-        // If you with to reuse this object, use the "keep_dst" overload.
-        outcome operator()();
-
-        // Finish the operation.
-        // SDL's blitting function overwrites the destination rectangle.
-        // This overload uses a copy to ensure it remains unchanged.
-        outcome operator()(HAL_TAG_NAME(keep_dst)) const;
+        bool blit() const;
+        bool scaled(scale_mode sm) const;
+        bool tiled() const;
+        bool tiled_scale(float scale, scale_mode sm) const;
+        bool nine_grid(pixel_t width_left, pixel_t width_right, pixel_t height_top, pixel_t height_bottom, float scale, scale_mode sm) const;
     };
 }

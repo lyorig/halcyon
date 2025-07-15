@@ -10,7 +10,7 @@ namespace
     {
         window ret;
 
-        if (const auto res = sys.display_info_native(0); res.valid())
+        if (const auto res = sys.display_info_native(0))
             ret = { sys, title, res->size(), window::flag::fullscreen };
 
         return ret;
@@ -18,7 +18,7 @@ namespace
 }
 
 window::window(proxy::video, c_string title, pixel::point size, flag_bitmask f)
-    : resource { ::SDL_CreateWindow(title.data(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, size.x, size.y, f.mask()) }
+    : resource { ::SDL_CreateWindow(title.data(), size.x, size.y, f.mask()) }
 {
 }
 
@@ -29,7 +29,7 @@ window::window(proxy::video sys, c_string title, HAL_TAG_NAME(fullscreen))
 
 display::id_t window::display_index() const
 {
-    return static_cast<display::id_t>(std::max(::SDL_GetWindowDisplayIndex(get()), -1));
+    return ::SDL_GetDisplayForWindow(get());
 }
 
 pixel::format window::pixel_format() const
@@ -117,12 +117,12 @@ void window::title(const char* val)
 
 bool window::fullscreen() const
 {
-    return flags().any({ flag::fullscreen, flag::fullscreen_borderless });
+    return flags().any(flag::fullscreen);
 }
 
 void window::always_on_top(bool set)
 {
-    ::SDL_SetWindowAlwaysOnTop(get(), static_cast<SDL_bool>(set));
+    ::SDL_SetWindowAlwaysOnTop(get(), set);
 }
 
 outcome window::fullscreen(bool set)

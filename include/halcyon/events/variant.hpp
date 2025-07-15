@@ -21,18 +21,7 @@ namespace hal
         class display : private SDL_DisplayEvent
         {
         public:
-            enum class type : std::uint8_t
-            {
-                connected    = SDL_DISPLAYEVENT_CONNECTED,
-                disconnected = SDL_DISPLAYEVENT_DISCONNECTED,
-                moved        = SDL_DISPLAYEVENT_MOVED,
-                reoriented   = SDL_DISPLAYEVENT_ORIENTATION
-            };
-
             display() = delete;
-
-            type     kind() const;
-            display& kind(type t);
 
             hal::display::id_t display_index() const;
             display&           display_index(hal::display::id_t);
@@ -45,32 +34,7 @@ namespace hal
         class window : private SDL_WindowEvent
         {
         public:
-            enum class type : std::uint8_t
-            {
-                shown               = SDL_WINDOWEVENT_SHOWN,
-                hidden              = SDL_WINDOWEVENT_HIDDEN,
-                exposed             = SDL_WINDOWEVENT_EXPOSED,
-                moved               = SDL_WINDOWEVENT_MOVED,
-                resized             = SDL_WINDOWEVENT_RESIZED,      // A window change caused by user interaction. Preceded by size_changed.
-                size_changed        = SDL_WINDOWEVENT_SIZE_CHANGED, // A window change caused by an API call.
-                minimized           = SDL_WINDOWEVENT_MINIMIZED,
-                maximized           = SDL_WINDOWEVENT_MAXIMIZED,
-                restored            = SDL_WINDOWEVENT_RESTORED,
-                mouse_focus_got     = SDL_WINDOWEVENT_ENTER,
-                mouse_focus_lost    = SDL_WINDOWEVENT_LEAVE,
-                keyboard_focus_got  = SDL_WINDOWEVENT_FOCUS_GAINED,
-                keyboard_focus_lost = SDL_WINDOWEVENT_FOCUS_LOST,
-                closed              = SDL_WINDOWEVENT_CLOSE,
-                focus_offered       = SDL_WINDOWEVENT_TAKE_FOCUS,
-                hit_test            = SDL_WINDOWEVENT_HIT_TEST,
-                icc_profile_changed = SDL_WINDOWEVENT_ICCPROF_CHANGED,
-                display_changed     = SDL_WINDOWEVENT_DISPLAY_CHANGED
-            };
-
             window() = delete;
-
-            type    kind() const;
-            window& kind(type t);
 
             hal::window::id_t window_id() const;
             window&           window_id(hal::window::id_t id);
@@ -86,7 +50,7 @@ namespace hal
 
             // The provided type must be resized, size_changed, or moved.
             // This function automatically sets the event type.
-            window& point(pixel::point pt, type t);
+            window& point(pixel::point pt);
         };
 
         static_assert(sizeof(window) == sizeof(SDL_WindowEvent));
@@ -177,20 +141,10 @@ namespace hal
         class text_input : private SDL_TextInputEvent
         {
         public:
-            // The maximum string length this event can handle, not including the null terminator.
-            consteval static std::size_t max_size()
-            {
-                return meta::array_size<decltype(SDL_TextInputEvent::text)> - 1;
-            }
-
             hal::window::id_t window_id() const;
             text_input&       window_id(hal::window::id_t id);
 
             c_string text() const;
-
-            // The string must be shorter than text_input::max_size chars.
-            // Ensuring this is your responsibility - in debug mode, it's asserted.
-            text_input& text(c_string t);
         };
 
         static_assert(sizeof(text_input) == sizeof(SDL_TextInputEvent));
@@ -198,38 +152,100 @@ namespace hal
         // Top-level event types.
         enum class type : std::uint16_t
         {
-            quit_requested = SDL_QUIT,
-            terminated     = SDL_APP_TERMINATING,
+            quit_requested = SDL_EVENT_QUIT,
+            terminating    = SDL_EVENT_TERMINATING,
 
-            low_memory = SDL_APP_LOWMEMORY,
+            low_memory = SDL_EVENT_LOW_MEMORY,
 
-            will_enter_background = SDL_APP_WILLENTERBACKGROUND,
-            entered_background    = SDL_APP_DIDENTERBACKGROUND,
+            background_will_enter = SDL_EVENT_WILL_ENTER_BACKGROUND,
+            background_entered    = SDL_EVENT_DID_ENTER_BACKGROUND,
 
-            will_enter_foreground = SDL_APP_WILLENTERFOREGROUND,
-            entered_foreground    = SDL_APP_DIDENTERFOREGROUND,
+            foreground_will_enter = SDL_EVENT_WILL_ENTER_FOREGROUND,
+            foreground_entered    = SDL_EVENT_DID_ENTER_FOREGROUND,
 
-            display_event = SDL_DISPLAYEVENT,
-            window_event  = SDL_WINDOWEVENT,
+            locale_changed = SDL_EVENT_LOCALE_CHANGED,
 
-            key_pressed  = SDL_KEYDOWN,
-            key_released = SDL_KEYUP,
+            system_theme_changed = SDL_EVENT_SYSTEM_THEME_CHANGED,
 
-            text_input = SDL_TEXTINPUT,
+            display_orientation_changed   = SDL_EVENT_DISPLAY_ORIENTATION,
+            display_added                 = SDL_EVENT_DISPLAY_ADDED,
+            display_removed               = SDL_EVENT_DISPLAY_REMOVED,
+            display_moved                 = SDL_EVENT_DISPLAY_MOVED,
+            display_desktop_mode_changed  = SDL_EVENT_DISPLAY_DESKTOP_MODE_CHANGED,
+            display_current_mode_changed  = SDL_EVENT_DISPLAY_CURRENT_MODE_CHANGED,
+            display_content_scale_changed = SDL_EVENT_DISPLAY_CONTENT_SCALE_CHANGED,
 
-            mouse_moved       = SDL_MOUSEMOTION,
-            mouse_pressed     = SDL_MOUSEBUTTONDOWN,
-            mouse_released    = SDL_MOUSEBUTTONUP,
-            mouse_wheel_moved = SDL_MOUSEWHEEL,
+            window_shown                 = SDL_EVENT_WINDOW_SHOWN,
+            window_hidden                = SDL_EVENT_WINDOW_HIDDEN,
+            window_exposed               = SDL_EVENT_WINDOW_EXPOSED,
+            window_moved                 = SDL_EVENT_WINDOW_MOVED,
+            window_resized               = SDL_EVENT_WINDOW_RESIZED,
+            window_pixel_size_changed    = SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED,
+            window_metal_view_resized    = SDL_EVENT_WINDOW_METAL_VIEW_RESIZED,
+            window_minimized             = SDL_EVENT_WINDOW_MINIMIZED,
+            window_maximized             = SDL_EVENT_WINDOW_MAXIMIZED,
+            window_restored              = SDL_EVENT_WINDOW_RESTORED,
+            window_mouse_enter           = SDL_EVENT_WINDOW_MOUSE_ENTER,
+            window_mouse_leave           = SDL_EVENT_WINDOW_MOUSE_LEAVE,
+            window_focus_gained          = SDL_EVENT_WINDOW_FOCUS_GAINED,
+            window_focus_lost            = SDL_EVENT_WINDOW_FOCUS_LOST,
+            window_close_requested       = SDL_EVENT_WINDOW_CLOSE_REQUESTED,
+            window_hit_test              = SDL_EVENT_WINDOW_HIT_TEST,
+            window_icc_profile_changed   = SDL_EVENT_WINDOW_ICCPROF_CHANGED,
+            window_display_changed       = SDL_EVENT_WINDOW_DISPLAY_CHANGED,
+            window_display_scale_changed = SDL_EVENT_WINDOW_DISPLAY_SCALE_CHANGED,
+            window_safe_area_changed     = SDL_EVENT_WINDOW_SAFE_AREA_CHANGED,
+            window_occluded              = SDL_EVENT_WINDOW_OCCLUDED,
+            window_fullscreen_entered    = SDL_EVENT_WINDOW_ENTER_FULLSCREEN,
+            window_fullscreen_left       = SDL_EVENT_WINDOW_LEAVE_FULLSCREEN,
+            window_destroyed             = SDL_EVENT_WINDOW_DESTROYED,
+            window_hdr_state_changed     = SDL_EVENT_WINDOW_HDR_STATE_CHANGED,
 
-            clipboard_updated = SDL_CLIPBOARDUPDATE
+            key_pressed  = SDL_EVENT_KEY_DOWN,
+            key_released = SDL_EVENT_KEY_UP,
+
+            text_composiion             = SDL_EVENT_TEXT_EDITING,
+            text_input                  = SDL_EVENT_TEXT_INPUT,
+            keymap_changed              = SDL_EVENT_KEYMAP_CHANGED,
+            keyboard_added              = SDL_EVENT_KEYBOARD_ADDED,
+            keyboard_removed            = SDL_EVENT_KEYBOARD_REMOVED,
+            text_composition_candidates = SDL_EVENT_TEXT_EDITING_CANDIDATES,
+
+            mouse_moved       = SDL_EVENT_MOUSE_MOTION,
+            mouse_pressed     = SDL_EVENT_MOUSE_BUTTON_DOWN,
+            mouse_released    = SDL_EVENT_MOUSE_BUTTON_UP,
+            mouse_wheel_moved = SDL_EVENT_MOUSE_WHEEL,
+            mouse_added       = SDL_EVENT_MOUSE_ADDED,
+            mouse_removed     = SDL_EVENT_MOUSE_REMOVED,
+
+            // [joystick events]
+            // [gamepad events]
+            // [touch events]
+
+            clipboard_updated = SDL_EVENT_CLIPBOARD_UPDATE,
+
+            drop_file     = SDL_EVENT_DROP_FILE,
+            drop_text     = SDL_EVENT_DROP_TEXT,
+            drop_begin    = SDL_EVENT_DROP_BEGIN,
+            drop_complete = SDL_EVENT_DROP_COMPLETE,
+            drop_position = SDL_EVENT_DROP_POSITION,
+
+            audio_device_added          = SDL_EVENT_AUDIO_DEVICE_ADDED,
+            audio_device_removed        = SDL_EVENT_AUDIO_DEVICE_REMOVED,
+            audio_device_format_changed = SDL_EVENT_AUDIO_DEVICE_FORMAT_CHANGED,
+
+            // [sensor events]
+            // [pen events]
+            // [camera events]
+
+            render_targets_reset = SDL_EVENT_RENDER_TARGETS_RESET,
+            render_device_reset  = SDL_EVENT_RENDER_DEVICE_RESET,
+            render_device_lost   = SDL_EVENT_RENDER_DEVICE_LOST
         };
 
         class variant
         {
         public:
-            // Constructor that disables unused events.
-            // This should reduce heap allocations on SDL's part.
             variant();
 
             // Get/set this event's current type.
@@ -297,156 +313,6 @@ namespace hal
 
             static_assert(sizeof(m_event) == sizeof(SDL_Event));
         };
-    }
-
-    constexpr c_string to_string(event::type evt)
-    {
-        using enum event::type;
-
-        switch (evt)
-        {
-        case quit_requested:
-            return "Quit requested";
-
-        case terminated:
-            return "Terminated";
-
-        case low_memory:
-            return "Low memory";
-
-        case will_enter_background:
-            return "Will enter background";
-
-        case entered_background:
-            return "Entered background";
-
-        case will_enter_foreground:
-            return "Will enter foreground";
-
-        case entered_foreground:
-            return "Will enter foreground";
-
-        case display_event:
-            return "Display";
-
-        case window_event:
-            return "Window";
-
-        case key_pressed:
-            return "Key pressed";
-
-        case key_released:
-            return "Key released";
-
-        case text_input:
-            return "Text input";
-
-        case mouse_moved:
-            return "Mouse moved";
-
-        case mouse_pressed:
-            return "Mouse pressed";
-
-        case mouse_released:
-            return "Mouse released";
-
-        case mouse_wheel_moved:
-            return "Mouse wheel moved";
-
-        case clipboard_updated:
-            return "Clipboard updated";
-
-        default:
-            return "[unknown]";
-        }
-    }
-
-    constexpr c_string to_string(enum event::display::type evt)
-    {
-        using enum event::display::type;
-
-        switch (evt)
-        {
-        case reoriented:
-            return "Reoriented";
-
-        case connected:
-            return "Connected";
-
-        case disconnected:
-            return "Disconnected";
-
-        case moved:
-            return "Moved";
-
-        default:
-            return "[unknown]";
-        }
-    }
-
-    constexpr c_string to_string(enum event::window::type evt)
-    {
-        using enum event::window::type;
-
-        switch (evt)
-        {
-        case shown:
-            return "Shown";
-
-        case hidden:
-            return "Hidden";
-
-        case exposed:
-            return "Exposed";
-
-        case moved:
-            return "Moved";
-
-        case resized:
-            return "Resized";
-
-        case size_changed:
-            return "Size changed";
-
-        case minimized:
-            return "Minimized";
-
-        case maximized:
-            return "Maximized";
-
-        case restored:
-            return "Restored";
-
-        case mouse_focus_got:
-            return "Got mouse focus";
-
-        case mouse_focus_lost:
-            return "Lost mouse focus";
-
-        case keyboard_focus_got:
-            return "Got keyboard focus";
-
-        case keyboard_focus_lost:
-            return "Lost keyboard focus";
-
-        case closed:
-            return "Closed";
-
-        case focus_offered:
-            return "Focus offered";
-
-        case hit_test:
-            return "Hit test";
-
-        case icc_profile_changed:
-            return "ICC profile changed";
-
-        case display_changed:
-            return "Display changed";
-
-        default:
-            return "[unknown]";
-        }
     }
 
     namespace event

@@ -91,18 +91,14 @@ namespace hal
             mouse::state mouse_state() const;
 
             // Get the current mouse state relative to the desktop.
-            pixel::point mouse_pos_abs() const;
+            coord::point mouse_pos_abs() const;
 
             // Get the current mouse state relative to the focus window.
-            pixel::point mouse_pos_rel() const;
+            coord::point mouse_pos_rel() const;
 
             // Start/stop text inputs.
-            void text_input_start();
-            void text_input_stop();
-
-        protected:
-            // [private] Delegating constructor.
-            events();
+            void text_input_start(ref<window> wnd);
+            void text_input_stop(ref<window> wnd);
         };
     }
 }

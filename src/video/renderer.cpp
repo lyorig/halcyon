@@ -14,7 +14,6 @@ using namespace hal;
 renderer::renderer(lref<const class window> wnd)
     : resource { ::SDL_CreateRenderer(wnd.get(), nullptr) }
 {
-    clear();
 }
 
 outcome renderer::clear()
@@ -197,6 +196,11 @@ ref<window> renderer::window()
     return { ::SDL_GetRenderWindow(get()), pass_key<renderer> {} };
 }
 
+const char* renderer::name() const
+{
+    return ::SDL_GetRendererName(get());
+}
+
 outcome renderer::internal_target(SDL_Texture* target)
 {
     return ::SDL_SetRenderTarget(get(), target);
@@ -206,32 +210,32 @@ outcome renderer::internal_target(SDL_Texture* target)
 
 copyer& copyer::outline()
 {
-    m_pass->draw(m_dst);
+    m_drawDst->draw(m_posDst);
     return *this;
 }
 
 copyer& copyer::outline(color c)
 {
-    guard::color _ { m_pass, c };
+    guard::color _ { m_drawDst, c };
     return outline();
 }
 
 outcome copyer::render()
 {
     return ::SDL_RenderTexture(
-        m_pass.get(),
-        m_this.get(),
-        m_src.pos.x == unset_pos<src_t>() ? nullptr : m_src.sdl_ptr(),
-        m_dst.pos.x == unset_pos<dst_t>() ? nullptr : m_dst.sdl_ptr());
+        m_drawDst.get(),
+        m_drawSrc.get(),
+        m_posSrc.pos.x == unset_pos() ? nullptr : m_posSrc.sdl_ptr(),
+        m_posDst.pos.x == unset_pos() ? nullptr : m_posDst.sdl_ptr());
 }
 
 outcome copyer::rotated(double angle, flip f)
 {
     return ::SDL_RenderTextureRotated(
-        m_pass.get(),
-        m_this.get(),
-        m_src.pos.x == unset_pos<src_t>() ? nullptr : m_src.sdl_ptr(),
-        m_dst.pos.x == unset_pos<dst_t>() ? nullptr : m_dst.sdl_ptr(),
+        m_drawDst.get(),
+        m_drawSrc.get(),
+        m_posSrc.pos.x == unset_pos() ? nullptr : m_posSrc.sdl_ptr(),
+        m_posDst.pos.x == unset_pos() ? nullptr : m_posDst.sdl_ptr(),
         angle,
         nullptr,
         static_cast<SDL_FlipMode>(f));
@@ -240,10 +244,10 @@ outcome copyer::rotated(double angle, flip f)
 outcome copyer::affine(coord::point right, coord::point down)
 {
     return ::SDL_RenderTextureAffine(
-        m_pass.get(),
-        m_this.get(),
-        m_src.pos.x == unset_pos<src_t>() ? nullptr : m_src.sdl_ptr(),
-        m_dst.pos.x == unset_pos<dst_t>() ? nullptr : m_dst.pos.sdl_ptr(),
+        m_drawDst.get(),
+        m_drawSrc.get(),
+        m_posSrc.pos.x == unset_pos() ? nullptr : m_posSrc.sdl_ptr(),
+        m_posDst.pos.x == unset_pos() ? nullptr : m_posDst.pos.sdl_ptr(),
         right.sdl_ptr(),
         down.sdl_ptr());
 }
@@ -251,9 +255,9 @@ outcome copyer::affine(coord::point right, coord::point down)
 outcome copyer::tiled(float scale)
 {
     return ::SDL_RenderTextureTiled(
-        m_pass.get(),
-        m_this.get(),
-        m_src.pos.x == unset_pos<src_t>() ? nullptr : m_src.sdl_ptr(),
+        m_drawDst.get(),
+        m_drawSrc.get(),
+        m_posSrc.pos.x == unset_pos() ? nullptr : m_posSrc.sdl_ptr(),
         scale,
-        m_dst.pos.x == unset_pos<dst_t>() ? nullptr : m_dst.sdl_ptr());
+        m_posDst.pos.x == unset_pos() ? nullptr : m_posDst.sdl_ptr());
 }

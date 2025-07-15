@@ -99,32 +99,32 @@ namespace hal
         // A representation of a locale- and layout-dependent key.
         enum class key : std::uint32_t
         {
-            A = SDLK_a,
-            B = SDLK_b,
-            C = SDLK_c,
-            D = SDLK_d,
-            E = SDLK_e,
-            F = SDLK_f,
-            G = SDLK_g,
-            H = SDLK_h,
-            I = SDLK_i,
-            J = SDLK_j,
-            K = SDLK_k,
-            L = SDLK_l,
-            M = SDLK_m,
-            N = SDLK_n,
-            O = SDLK_o,
-            P = SDLK_p,
-            Q = SDLK_q,
-            R = SDLK_r,
-            S = SDLK_s,
-            T = SDLK_t,
-            U = SDLK_u,
-            V = SDLK_v,
-            W = SDLK_w,
-            X = SDLK_x,
-            Y = SDLK_y,
-            Z = SDLK_z,
+            A = SDLK_A,
+            B = SDLK_B,
+            C = SDLK_C,
+            D = SDLK_D,
+            E = SDLK_E,
+            F = SDLK_F,
+            G = SDLK_G,
+            H = SDLK_H,
+            I = SDLK_I,
+            J = SDLK_J,
+            K = SDLK_K,
+            L = SDLK_L,
+            M = SDLK_M,
+            N = SDLK_N,
+            O = SDLK_O,
+            P = SDLK_P,
+            Q = SDLK_Q,
+            R = SDLK_R,
+            S = SDLK_S,
+            T = SDLK_T,
+            U = SDLK_U,
+            V = SDLK_V,
+            W = SDLK_W,
+            X = SDLK_X,
+            Y = SDLK_Y,
+            Z = SDLK_Z,
 
             one   = SDLK_1,
             two   = SDLK_2,
@@ -175,28 +175,28 @@ namespace hal
 
         enum class mod : std::uint16_t
         {
-            none = KMOD_NONE,
+            none = SDL_KMOD_NONE,
 
-            shift_left  = KMOD_LSHIFT,
-            shift_right = KMOD_RSHIFT,
-            shift_both  = KMOD_SHIFT,
+            shift_left  = SDL_KMOD_LSHIFT,
+            shift_right = SDL_KMOD_RSHIFT,
+            shift_both  = SDL_KMOD_SHIFT,
 
-            ctrl_left  = KMOD_LCTRL,
-            ctrl_right = KMOD_RCTRL,
-            ctrl_both  = KMOD_CTRL,
+            ctrl_left  = SDL_KMOD_LCTRL,
+            ctrl_right = SDL_KMOD_RCTRL,
+            ctrl_both  = SDL_KMOD_CTRL,
 
-            alt_left  = KMOD_LALT,
-            alt_right = KMOD_RALT,
-            alt_both  = KMOD_ALT,
+            alt_left  = SDL_KMOD_LALT,
+            alt_right = SDL_KMOD_RALT,
+            alt_both  = SDL_KMOD_ALT,
 
-            gui_left  = KMOD_LGUI,
-            gui_right = KMOD_RGUI,
-            gui_both  = KMOD_GUI,
+            gui_left  = SDL_KMOD_LGUI,
+            gui_right = SDL_KMOD_RGUI,
+            gui_both  = SDL_KMOD_GUI,
 
-            num_lock    = KMOD_NUM,
-            caps_lock   = KMOD_CAPS,
-            mode_lock   = KMOD_MODE, // What even is this?
-            scroll_lock = KMOD_SCROLL
+            num_lock    = SDL_KMOD_NUM,
+            caps_lock   = SDL_KMOD_CAPS,
+            mode_lock   = SDL_KMOD_MODE, // What even is this?
+            scroll_lock = SDL_KMOD_SCROLL
         };
 
         key    to_key(button btn);
@@ -214,7 +214,7 @@ namespace hal
             bool operator[](key k) const;
 
         private:
-            const Uint8* m_arr;
+            const bool* m_arr;
         };
 
         class mod_state : public enum_bitmask<mod, meta::underlying_type<SDL_Keymod>>

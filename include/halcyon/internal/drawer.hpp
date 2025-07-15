@@ -13,27 +13,20 @@ namespace hal::detail
 {
     // A base drawer class, implementing the builder method for drawing textures.
     // Designed to be used as an rvalue - all functions should only be called once.
-    // It's possible to store it, but this is only recommended for:
-    // a) constant textures, and
-    // b) those who know what they're doing (I'm sure you do, though.)
+    // It's possible to store it, but be careful of the possible pitfalls this enables.
     // "Now, now, if you follow standard insertion procedures, everything will be fine."
-    template <typename T, meta::one_of<pixel_t, coord_t> Src_Type, meta::one_of<pixel_t, coord_t> Dst_Type, typename Pass, typename This>
+    template <typename Src, typename Dst, meta::one_of<pixel_t, coord_t> Pos_Type, typename This>
     class drawer
     {
     protected:
-        using src_t = Src_Type;
-        using dst_t = Dst_Type;
+        using pos_t = Pos_Type;
 
-        using src_point = point<src_t>;
-        using src_rect  = rectangle<src_t>;
+        using pos_point = point<pos_t>;
+        using pos_rect  = rectangle<pos_t>;
 
-        using dst_point = point<dst_t>;
-        using dst_rect  = rectangle<dst_t>;
+        using this_ref = This&;
 
-        using this_ref = std::conditional_t<std::is_void_v<This>, drawer, This>&;
-
-        template <meta::arithmetic U>
-        consteval static U unset_pos() { return std::numeric_limits<U>::max(); }
+        consteval static pos_t unset_pos() { return std::numeric_limits<pos_t>::max(); }
 
         static pixel::point get_point(pixel::point pt)
         {
@@ -46,27 +39,27 @@ namespace hal::detail
         }
 
     public:
-        [[nodiscard]] drawer(ref<Pass> ths, ref<T> src)
-            : m_pass { ths }
-            , m_this { src }
-            , m_dst { tag::as_size, get_point(src->size()) }
+        [[nodiscard]] drawer(ref<Dst> ths, ref<Src> src)
+            : m_drawDst { ths }
+            , m_drawSrc { src }
+            , m_posDst { tag::as_size, get_point(src->size()) }
         {
-            m_src.pos.x = unset_pos<src_t>();
+            m_posSrc.pos.x = unset_pos();
         }
 
         // Set where to draw.
         // Discards any previous scaling and anchoring.
-        [[nodiscard]] this_ref to(const dst_point& pos)
+        [[nodiscard]] this_ref to(const pos_point& pos)
         {
-            m_dst.pos = pos;
+            m_posDst.pos = pos;
             return get_this();
         }
 
         // Set the destination rectangle.
         // Discards any previous scaling and anchoring.
-        [[nodiscard]] this_ref to(const dst_rect& area)
+        [[nodiscard]] this_ref to(const pos_rect& area)
         {
-            m_dst = area;
+            m_posDst = area;
             return get_this();
         }
 
@@ -74,7 +67,7 @@ namespace hal::detail
         // Do not use with scaling and anchoring.
         [[nodiscard]] this_ref to(HAL_TAG_NAME(fill))
         {
-            m_dst.pos.x = unset_pos<dst_t>();
+            m_posDst.pos.x = unset_pos();
             return get_this();
         }
 
@@ -82,17 +75,19 @@ namespace hal::detail
         // Can be called at any time.
         [[nodiscard]] this_ref from(const pixel::rect& src)
         {
-            m_src      = src;
-            m_dst.size = dst_point(src.size);
+            m_posSrc      = src;
+            m_posDst.size = pos_point(src.size);
+
             return get_this();
         }
 
         // Set the destination's scale using a callable.
         // Call after setting the destination and before anchoring.
-        template <std::invocable<dst_point> F>
+        template <std::invocable<pos_point> F>
         [[nodiscard]] this_ref scale(F&& scale_func)
         {
-            m_dst.size = scale_func(m_dst.size);
+            m_posDst.size = scale_func(m_posDst.size);
+
             return get_this();
         }
 
@@ -100,32 +95,33 @@ namespace hal::detail
         // Call after setting the destination and scaling.
         [[nodiscard]] this_ref anchor(anchor anch)
         {
-            m_dst.pos = m_dst.pos.anchor(anch, m_dst.size);
+            m_posDst.pos = m_posDst.pos.anchor(anch, m_posDst.size);
+
             return get_this();
         }
 
         // Access the source rectangle.
-        src_rect& src()
+        pos_rect& src()
         {
-            return m_src;
+            return m_posSrc;
         }
 
         // Get the source rectangle.
-        const src_rect& src() const
+        const pos_rect& src() const
         {
-            return m_src;
+            return m_posSrc;
         }
 
         // Access the destination rectangle.
-        dst_rect& dst()
+        pos_rect& dst()
         {
-            return m_dst;
+            return m_posDst;
         }
 
         // Get the destination rectangle.
-        const dst_rect& dst() const
+        const pos_rect& dst() const
         {
-            return m_dst;
+            return m_posDst;
         }
 
     protected:
@@ -134,10 +130,9 @@ namespace hal::detail
             return static_cast<this_ref>(*this);
         }
 
-        ref<Pass> m_pass;
-        ref<T>    m_this;
+        ref<Dst> m_drawDst;
+        ref<Src> m_drawSrc;
 
-        dst_rect m_dst;
-        src_rect m_src;
+        pos_rect m_posDst, m_posSrc;
     };
 }

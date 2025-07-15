@@ -96,7 +96,7 @@ namespace hal
     // Get the name of the current platform.
     c_string platform();
 
-    string base_path();
+    c_string base_path();
 
     // How much RAM the system has, in MiB.
     int total_ram();
@@ -116,36 +116,11 @@ namespace hal
 
         int logical_cores(), cache_line();
 
+        std::size_t simd_alignment();
+
         // Output all supported CPU features.
         std::ostream& supported(std::ostream& str);
 
         std::ostream& info(std::ostream& str);
-    }
-
-    namespace simd
-    {
-        void* malloc(std::size_t len);
-        void* realloc(void* mem, std::size_t len);
-
-        void free(void* mem);
-
-        std::size_t alignment();
-
-        template <typename T>
-        class unique_ptr : public std::unique_ptr<T, meta::struct_functor<simd::free>>
-        {
-        public:
-            unique_ptr() = default;
-
-            unique_ptr(std::nullptr_t)
-                : std::unique_ptr<T> { nullptr }
-            {
-            }
-
-            unique_ptr(std::size_t len)
-                : std::unique_ptr<T> { simd::malloc(len) }
-            {
-            }
-        };
     }
 }

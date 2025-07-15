@@ -19,8 +19,7 @@ int main(int argc, char* argv[])
         return EXIT_FAILURE;
     }
 
-    hal::image::context ctx { hal::image::init_format::png };
-    hal::surface        surf { ctx.load(argv[1]) };
+    hal::surface surf { hal::image::load(argv[1]) };
 
     const hal::pixel::point size { surf.size() };
 
@@ -28,12 +27,11 @@ int main(int argc, char* argv[])
     {
         for (i.x = 0; i.x < size.x; ++i.x)
         {
-            auto col { surf[i] };
-            col.color(-col.color());
+            surf.pixel(i, -surf.pixel(i).get());
         }
     }
 
-    ctx.save(surf, hal::image::save_format::png, "invert.png");
+    hal::image::save::png(surf, "invert.png");
 
     return EXIT_SUCCESS;
 }

@@ -62,7 +62,7 @@ int main(int argc, char* argv[])
         using namespace std::chrono_literals;
         std::this_thread::sleep_for(20ms);
 
-        rnd.draw(tex).to(padding / 2)();
+        rnd.draw(tex).to(padding / 2).render();
         rnd.present();
     }
 

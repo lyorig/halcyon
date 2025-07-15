@@ -4,9 +4,9 @@
 
 using namespace hal;
 
-pixel::point display::size() const
+display::id_t display::id() const
 {
-    return { w, h };
+    return displayID;
 }
 
 pixel::format display::format() const
@@ -14,9 +14,29 @@ pixel::format display::format() const
     return static_cast<pixel::format>(SDL_DisplayMode::format);
 }
 
+pixel::point display::size() const
+{
+    return { w, h };
+}
+
+float display::pixel_density() const
+{
+    return SDL_DisplayMode::pixel_density;
+}
+
 display::hz_t display::hz() const
 {
     return static_cast<hz_t>(refresh_rate);
+}
+
+int display::hz_numerator() const
+{
+    return refresh_rate_numerator;
+}
+
+int display::hz_denominator() const
+{
+    return refresh_rate_denominator;
 }
 
 SDL_DisplayMode* display::ptr(pass_key<proxy::video>)

@@ -27,7 +27,7 @@ namespace hal
         };
 
         // Show a simple message box. For more customization options, create a builder.
-        outcome show(type tp, const char* title, const char* body);
+        bool show(type tp, const char* title, const char* body);
 
         class builder
         {

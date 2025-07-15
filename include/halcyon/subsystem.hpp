@@ -16,7 +16,6 @@ namespace hal
     enum class subsystem : std::uint16_t
     {
         video  = SDL_INIT_VIDEO,
-        audio  = SDL_INIT_AUDIO,
         events = SDL_INIT_EVENTS
     };
 
@@ -36,7 +35,6 @@ namespace hal
     namespace proxy
     {
         class video;
-        class audio;
         class events;
     }
 
@@ -50,12 +48,6 @@ namespace hal
         struct sub_to_proxy<subsystem::video>
         {
             using type = proxy::video;
-        };
-
-        template <>
-        struct sub_to_proxy<subsystem::audio>
-        {
-            using type = proxy::audio;
         };
 
         template <>

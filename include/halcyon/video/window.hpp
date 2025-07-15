@@ -25,16 +25,6 @@ namespace hal
     public:
         using id_t = std::uint8_t;
 
-        consteval static id_t invalid_id()
-        {
-            return 0;
-        }
-
-        consteval static display::id_t invalid_display_index()
-        {
-            return -1;
-        }
-
         enum class flag : std::uint32_t
         {
             none                = 0,
@@ -78,7 +68,7 @@ namespace hal
         window(proxy::video sys, c_string title, HAL_TAG_NAME(fullscreen));
 
         // Get the index of the display this window is currently on.
-        // In case of failure, returns invalid_display_index.
+        // In case of failure, returns 0.
         display::id_t display_index() const;
 
         pixel::format pixel_format() const;

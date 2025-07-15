@@ -1,52 +1,24 @@
-// Due to strcpy. Don't worry, it's used "safely" here.
-#define _CRT_SECURE_NO_WARNINGS
-
-#include <cstring>
+#include <halcyon/events/variant.hpp>
 
 #include <halcyon/debug.hpp>
-#include <halcyon/events/variant.hpp>
 
 using namespace hal;
 
 // Display event.
 
-enum event::display::type event::display::kind() const
-{
-    return static_cast<type>(event);
-}
-
-event::display& event::display::kind(type t)
-{
-    event = std::to_underlying(t);
-
-    return *this;
-}
-
 display::id_t event::display::display_index() const
 {
-    return static_cast<hal::display::id_t>(SDL_DisplayEvent::display);
+    return static_cast<hal::display::id_t>(displayID);
 }
 
 event::display& event::display::display_index(hal::display::id_t disp)
 {
-    SDL_DisplayEvent::display = disp;
+    displayID = disp;
 
     return *this;
 }
 
 // Window event.
-
-enum event::window::type event::window::kind() const
-{
-    return static_cast<type>(event);
-}
-
-event::window& event::window::kind(type t)
-{
-    event = std::to_underlying(t);
-
-    return *this;
-}
 
 window::id_t event::window::window_id() const
 {
@@ -62,15 +34,11 @@ event::window& event::window::window_id(hal::window::id_t id)
 
 display::id_t event::window::display_index() const
 {
-    HAL_ASSERT(kind() == type::display_changed, "Invalid event type");
-
     return static_cast<hal::display::id_t>(data1);
 }
 
 event::window& event::window::display_index(hal::display::id_t id)
 {
-    kind(type::display_changed);
-
     data1 = id;
 
     return *this;
@@ -78,17 +46,11 @@ event::window& event::window::display_index(hal::display::id_t id)
 
 pixel::point event::window::point() const
 {
-    HAL_ASSERT(kind() == type::resized || kind() == type::size_changed || kind() == type::moved, "Invalid event type");
-
     return { static_cast<pixel_t>(data1), static_cast<pixel_t>(data2) };
 }
 
-event::window& event::window::point(pixel::point pt, type t)
+event::window& event::window::point(pixel::point pt)
 {
-    HAL_ASSERT(t == type::resized || t == type::size_changed || t == type::moved, "Invalid event setter");
-
-    kind(t);
-
     data1 = pt.x;
     data2 = pt.y;
 
@@ -111,24 +73,24 @@ event::keyboard& event::keyboard::window_id(hal::window::id_t id)
 
 keyboard::button event::keyboard::button() const
 {
-    return static_cast<hal::keyboard::button>(keysym.scancode);
+    return static_cast<hal::keyboard::button>(scancode);
 }
 
 event::keyboard& event::keyboard::button(hal::keyboard::button btn)
 {
-    keysym.scancode = static_cast<SDL_Scancode>(btn);
+    scancode = static_cast<SDL_Scancode>(btn);
 
     return *this;
 }
 
 keyboard::key event::keyboard::key() const
 {
-    return static_cast<hal::keyboard::key>(keysym.sym);
+    return static_cast<hal::keyboard::key>(SDL_KeyboardEvent::key);
 }
 
 event::keyboard& event::keyboard::key(hal::keyboard::key k)
 {
-    keysym.sym = static_cast<SDL_KeyCode>(k);
+    SDL_KeyboardEvent::key = static_cast<SDL_Keycode>(k);
 
     return *this;
 }
@@ -293,13 +255,13 @@ event::mouse_wheel& event::mouse_wheel::scroll(point<std::int16_t> s)
 
 point<float> event::mouse_wheel::scroll_precise() const
 {
-    return { static_cast<float>(preciseX), static_cast<float>(preciseY) };
+    return { x, y };
 }
 
 event::mouse_wheel& event::mouse_wheel::scroll_precise(point<float> s)
 {
-    preciseX = s.x;
-    preciseY = s.y;
+    x = s.x;
+    y = s.y;
 
     return *this;
 }
@@ -313,7 +275,7 @@ event::mouse_wheel& event::mouse_wheel::scroll_flipped(bool f)
 {
     static_assert(SDL_MOUSEWHEEL_NORMAL == false && SDL_MOUSEWHEEL_FLIPPED == true);
 
-    direction = f;
+    direction = static_cast<SDL_MouseWheelDirection>(f);
 
     return *this;
 }
@@ -337,16 +299,6 @@ c_string event::text_input::text() const
     return SDL_TextInputEvent::text;
 }
 
-event::text_input& event::text_input::text(c_string t)
-{
-    HAL_ASSERT(t.length() <= max_size(), "String too large at ", t.length(), " chars (max: ", max_size(), " chars)");
-
-    // We now know that it's safe to copy this string.
-    std::strcpy(SDL_TextInputEvent::text, t.data());
-
-    return *this;
-}
-
 // Event handler.
 
 event::variant::variant()
@@ -366,29 +318,21 @@ void event::variant::kind(event::type t)
 
 const event::display& event::variant::display() const
 {
-    HAL_ASSERT(kind() == type::display_event, "Invalid type");
-
     return m_event.data.display;
 }
 
 event::display& event::variant::display()
 {
-    HAL_ASSERT(kind() == type::display_event, "Invalid type");
-
     return m_event.data.display;
 }
 
 const event::window& event::variant::window() const
 {
-    HAL_ASSERT(kind() == type::window_event, "Invalid type");
-
     return m_event.data.window;
 }
 
 event::window& event::variant::window()
 {
-    HAL_ASSERT(kind() == type::window_event, "Invalid type");
-
     return m_event.data.window;
 }
 

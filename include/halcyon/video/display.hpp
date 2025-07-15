@@ -25,9 +25,17 @@ namespace hal
 
         display() = default;
 
-        pixel::point  size() const;
+        id_t id() const;
+
         pixel::format format() const;
-        hz_t          hz() const;
+        pixel::point  size() const;
+
+        float pixel_density() const;
+
+        hz_t hz() const;
+
+        int hz_numerator() const;
+        int hz_denominator() const;
 
         SDL_DisplayMode* ptr(pass_key<proxy::video>);
 

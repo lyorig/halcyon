@@ -4,12 +4,12 @@ using namespace hal;
 
 keyboard::key keyboard::to_key(button btn)
 {
-    return static_cast<keyboard::key>(::SDL_GetKeyFromScancode(static_cast<SDL_Scancode>(btn)));
+    return static_cast<keyboard::key>(::SDL_GetKeyFromScancode(static_cast<SDL_Scancode>(btn), SDL_KMOD_NONE, false));
 }
 
 keyboard::button keyboard::to_button(key k)
 {
-    return static_cast<keyboard::button>(::SDL_GetScancodeFromKey(static_cast<SDL_KeyCode>(k)));
+    return static_cast<keyboard::button>(::SDL_GetScancodeFromKey(static_cast<SDL_Keycode>(k), nullptr));
 }
 
 keyboard::state_reference::state_reference(pass_key<proxy::events>)
@@ -24,7 +24,7 @@ bool keyboard::state_reference::operator[](button b) const
 
 bool keyboard::state_reference::operator[](key k) const
 {
-    return static_cast<bool>(m_arr[::SDL_GetScancodeFromKey(static_cast<SDL_KeyCode>(k))]);
+    return static_cast<bool>(m_arr[std::to_underlying(to_button(k))]);
 }
 
 keyboard::mod_state::mod_state(pass_key<proxy::events>)
@@ -39,5 +39,5 @@ c_string hal::to_string(keyboard::button btn)
 
 c_string hal::to_string(keyboard::key k)
 {
-    return ::SDL_GetKeyName(static_cast<SDL_KeyCode>(k));
+    return ::SDL_GetKeyName(static_cast<SDL_Keycode>(k));
 }
