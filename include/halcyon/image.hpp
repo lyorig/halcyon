@@ -44,9 +44,9 @@ namespace hal
 
         namespace save
         {
-            outcome png(ref<const surface> surf, outputter dst);
-            outcome jpg(ref<const surface> surf, outputter dst, std::uint8_t quality = 90);
-            outcome avif(ref<const surface> surf, outputter dst, std::uint8_t quality = 90);
+            bool png(ref<const surface> surf, outputter dst);
+            bool jpg(ref<const surface> surf, outputter dst, std::uint8_t quality = 90);
+            bool avif(ref<const surface> surf, outputter dst, std::uint8_t quality = 90);
         }
 
         // Check an image's format.

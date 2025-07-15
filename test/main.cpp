@@ -88,8 +88,7 @@ namespace test
         wnd.size(new_size);
         const auto e = vid.events.poll().get();
 
-        FAIL_IF(e.kind() != hal::event::type::window_event, "Event type mismatch (desired \"window\", actual ", e.kind(), ')')
-        FAIL_IF(e.window().kind() != hal::event::window::type::size_changed, "Window event type mismatch (desired \"resized\", actual ", e.window().kind(), ')');
+        FAIL_IF(e.kind() != hal::event::type::window_resized, "Window event type mismatch (desired \"resized\", actual ", e.kind(), ')');
         FAIL_IF(e.window().point() != new_size, "Window size mismatch (desired ", new_size, ", actual ", e.window().point(), ')');
 
         return EXIT_SUCCESS;
@@ -100,10 +99,10 @@ namespace test
     {
         FAIL_IF(hal::initialized(hal::subsystem::video), "Video initialized when it shouldn't be");
 
-        hal::outcome                             o;
-        hal::cleanup_init<hal::subsystem::video> vid { o };
+        bool                                     b;
+        hal::cleanup_init<hal::subsystem::video> vid { b };
 
-        FAIL_IF(!o, "Video initialization failed");
+        FAIL_IF(!b, "Video initialization failed");
 
         FAIL_IF(!hal::initialized(hal::subsystem::video), "Video not initialized when it should be");
 
@@ -136,11 +135,9 @@ namespace test
     // Checking pixel colors in a 2x1 surface.
     int surface_color()
     {
-        hal::image::context ictx { hal::image::init_format::png };
+        hal::surface s { hal::image::load(hal::as_bytes(png_2x1)) };
 
-        hal::surface s { ictx.load(hal::as_bytes(png_2x1)) };
-
-        FAIL_IF((s[{ 0, 0 }].color() != hal::palette::red || s[{ 1, 0 }].color() != hal::palette::blue), "Surface color mismatch");
+        FAIL_IF((s.pixel({ 0, 0 }).get() != hal::palette::red || s.pixel({ 1, 0 }).get() != hal::palette::blue), "Surface color mismatch");
 
         return EXIT_SUCCESS;
     }
@@ -178,8 +175,6 @@ namespace test
 
         constexpr std::string_view text { "aaaaaaaaaabbbbbbbbbbccccccccccd" };
 
-        static_assert(text.size() <= hal::event::text_input::max_size());
-
         while (evt.poll(eh))
             ;
 
@@ -213,18 +208,18 @@ namespace test
 
     int rvalues()
     {
-        hal::outcome o;
+        bool b;
 
         try
         {
-            o = hal::cleanup_init<hal::subsystem::video> {}.clipboard("Hello from HalTest!");
+            b = hal::cleanup_init<hal::subsystem::video> {}.clipboard("Hello from HalTest!");
         }
         catch (hal::exception e)
         {
             FAIL(e.what());
         }
 
-        FAIL_IF(!o, "Could not set clipboard on rvalue subsystem");
+        FAIL_IF(!b, "Could not set clipboard on rvalue subsystem");
 
         return EXIT_SUCCESS;
     }
@@ -233,10 +228,10 @@ namespace test
     {
         hal::surface s { { 2, 2 } };
 
-        s[{ 0, 0 }].color(0xF25022);
-        s[{ 1, 0 }].color(0x7FBA00);
-        s[{ 0, 1 }].color(0x00A4EF);
-        s[{ 1, 1 }].color(0xFFB900);
+        s.pixel({ 0, 0 }, 0xF25022);
+        s.pixel({ 1, 0 }, 0x7FBA00);
+        s.pixel({ 0, 1 }, 0x00A4EF);
+        s.pixel({ 1, 1 }, 0xFFB900);
 
         FAIL_IF(!s.save("DontSueMeDaddyGates.bmp"), "Could not save 2x2 surface to file");
 
@@ -249,11 +244,9 @@ namespace test
 
     int png_check()
     {
-        hal::image::context ictx { hal::image::init_format::png };
-
         using enum hal::image::load_format;
 
-        const hal::image::load_format ret { ictx.query(hal::as_bytes(png_2x1)) };
+        const hal::image::load_format ret { hal::image::query(hal::as_bytes(png_2x1)) };
 
         FAIL_IF(ret != hal::image::load_format::png, "PNG data not recognized as PNG data");
 
@@ -311,8 +304,8 @@ namespace test
 
     int texture_manipulation()
     {
-        hal::outcome                             o;
-        hal::cleanup_init<hal::subsystem::video> vid { o };
+        bool                                     b;
+        hal::cleanup_init<hal::subsystem::video> vid { b };
 
         hal::window   wnd { vid, "HalTest: Texture manipulation", { 640, 480 }, hal::window::flag::hidden };
         hal::renderer rnd { wnd };
@@ -333,9 +326,7 @@ namespace test
     {
         constexpr std::uint8_t data[1024] {};
 
-        hal::image::context ictx { hal::image::init_format::png };
-
-        const hal::surface s { ictx.load(hal::as_bytes(data)) };
+        const hal::surface s { hal::image::load(hal::as_bytes(data)) };
 
         return s.valid() ? EXIT_FAILURE : EXIT_SUCCESS;
     }
@@ -350,7 +341,7 @@ namespace test
 
         hal::static_texture tex;
 
-        return rnd.draw(tex)() ? EXIT_FAILURE : EXIT_SUCCESS;
+        return rnd.draw(tex).render() ? EXIT_FAILURE : EXIT_SUCCESS;
     }
 
     // Accessing an invalid event.

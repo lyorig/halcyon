@@ -121,7 +121,7 @@ namespace hal
             return mask() == e.mask();
         }
 
-        // Returns true if any of the bits set in 'e' are set here.
+        // Returns true if any of the bits set in `e` are set here.
         // This is useful when working with combined enum flags, i.e.
         // to check whether either left or right shift has been pressed.
         constexpr bool any(enum_bitmask e) const

@@ -8,24 +8,20 @@
 
 namespace hal
 {
-    // An alias for a bool. That's it.
-    // I suppose it communicates whether something succeeded.
-    using outcome = bool;
-
     template <typename T>
     class result
     {
     public:
         constexpr result() = default;
 
-        constexpr result(outcome func_ret, const T& val)
+        constexpr result(bool func_ret, const T& val)
             requires std::is_trivially_copyable_v<T>
             : m_valid { func_ret }
             , m_value { val }
         {
         }
 
-        constexpr result(outcome func_ret, T&& val)
+        constexpr result(bool func_ret, T&& val)
             requires(!std::is_trivially_move_constructible_v<T>)
             : m_valid { func_ret }
             , m_value { std::move(val) }
@@ -110,7 +106,7 @@ namespace hal
         }
 
     private:
-        outcome m_valid;
-        T       m_value;
+        bool m_valid;
+        T    m_value;
     };
 }

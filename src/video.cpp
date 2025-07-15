@@ -6,7 +6,7 @@
 using namespace hal;
 
 proxy::video::video()
-    : events { pass_key<proxy::video> {} }
+    : events {}
 {
 }
 
@@ -15,7 +15,7 @@ string proxy::video::clipboard() const
     return ::SDL_GetClipboardText();
 }
 
-outcome proxy::video::clipboard(const char* text)
+bool proxy::video::clipboard(const char* text)
 {
     return ::SDL_SetClipboardText(text);
 }

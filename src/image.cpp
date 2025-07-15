@@ -47,17 +47,17 @@ surface image::load(accessor src, load_format fmt)
     HAL_PANIC("Trying to load image of unknown type");
 }
 
-outcome image::save::png(ref<const surface> surf, outputter dst)
+bool image::save::png(ref<const surface> surf, outputter dst)
 {
     return ::IMG_SavePNG_IO(surf.get(), dst.get(), false);
 }
 
-outcome image::save::jpg(ref<const surface> surf, outputter dst, std::uint8_t quality)
+bool image::save::jpg(ref<const surface> surf, outputter dst, std::uint8_t quality)
 {
     return ::IMG_SaveJPG_IO(surf.get(), dst.get(), false, quality);
 }
 
-outcome image::save::avif(ref<const surface> surf, outputter dst, std::uint8_t quality)
+bool image::save::avif(ref<const surface> surf, outputter dst, std::uint8_t quality)
 {
     return ::IMG_SaveAVIF_IO(surf.get(), dst.get(), false, quality);
 }

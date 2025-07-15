@@ -1,4 +1,3 @@
-#include <SDL3/SDL_render.h>
 #include <halcyon/video/renderer.hpp>
 
 #include <halcyon/surface.hpp>
@@ -11,83 +10,103 @@
 
 using namespace hal;
 
+// ----- PROPERTIES -----
+
+using rp = renderer::properties;
+
+rp::properties(SDL_PropertiesID id, pass_key<renderer>)
+    : hal::properties { id }
+{
+}
+
+c_string rp::name()
+{
+    return string_get("SDL_PROP_RENDERER_NAME_STRING", {});
+}
+
+ref<const window> rp::window() const
+{
+}
+
+// ----- RENDERER -----
+
 renderer::renderer(lref<const class window> wnd)
     : resource { ::SDL_CreateRenderer(wnd.get(), nullptr) }
 {
 }
 
-outcome renderer::clear()
+bool renderer::clear()
 {
     return ::SDL_RenderClear(get());
 }
 
-outcome renderer::present()
+bool renderer::present()
 {
     ::SDL_RenderPresent(get());
     return this->clear();
 }
 
-outcome renderer::draw(coord::point pt)
+bool renderer::draw(coord::point pt)
 {
     return ::SDL_RenderPoint(get(), pt.x, pt.y);
 }
 
-outcome renderer::draw(coord::point pt, struct color c)
+bool renderer::draw(coord::point pt, struct color c)
 {
     guard::color _ { *this, c };
     return draw(pt);
 }
 
-outcome renderer::draw(std::span<const coord::point> pts)
+bool renderer::draw(std::span<const coord::point> pts)
 {
     return ::SDL_RenderPoints(get(), reinterpret_cast<const SDL_FPoint*>(pts.data()), static_cast<int>(pts.size()));
 }
 
-outcome renderer::draw(std::span<const coord::point> areas, struct color c)
+bool renderer::draw(std::span<const coord::point> areas, struct color c)
 {
     guard::color _ { *this, c };
     return draw(areas);
 }
 
-outcome renderer::draw(coord::point from, coord::point to)
+bool renderer::draw(coord::point from, coord::point to)
 {
     return ::SDL_RenderLine(get(), from.x, from.y, to.x, to.y);
 }
 
-outcome renderer::draw(coord::point from, coord::point to, struct color c)
+bool renderer::draw(coord::point from, coord::point to, struct color c)
 {
     guard::color _ { *this, c };
     return draw(from, to);
 }
 
-outcome renderer::draw(std::span<const coord::point> pts, HAL_TAG_NAME(connect))
+bool renderer::draw(std::span<const coord::point> pts, HAL_TAG_NAME(connect))
 {
     return ::SDL_RenderLines(get(), reinterpret_cast<const SDL_FPoint*>(pts.data()), static_cast<int>(pts.size()));
 }
 
-outcome renderer::draw(std::span<const coord::point> areas, struct color c, HAL_TAG_NAME(connect) tag)
+bool renderer::draw(std::span<const coord::point> areas, struct color c, HAL_TAG_NAME(connect) tag)
 {
     guard::color _ { *this, c };
     return draw(areas, tag);
 }
 
-outcome renderer::draw(coord::rect area)
+bool renderer::draw(coord::rect area)
 {
     return ::SDL_RenderRect(get(), area.sdl_ptr());
 }
 
-outcome renderer::draw(coord::rect area, struct color c)
+bool renderer::draw(coord::rect area, struct color c)
 {
     guard::color _ { *this, c };
     return draw(area);
 }
 
-outcome renderer::draw(std::span<const coord::rect> pts)
+bool renderer::draw(std::span<const coord::rect> pts)
 {
     return ::SDL_RenderRects(get(), reinterpret_cast<const SDL_FRect*>(pts.data()), static_cast<int>(pts.size()));
 }
 
-outcome renderer::draw(std::span<const coord::rect> areas, struct color c)
+bool renderer::draw(std::span<const coord::rect> areas, struct color c)
 {
     guard::color _ { *this, c };
     return draw(areas);
@@ -98,45 +117,45 @@ copyer renderer::draw(ref<const texture> tx)
     return { *this, tx };
 }
 
-outcome renderer::fill(coord::rect area)
+bool renderer::fill(coord::rect area)
 {
     return ::SDL_RenderFillRect(get(), area.sdl_ptr());
 }
 
-outcome renderer::fill(coord::rect area, struct color c)
+bool renderer::fill(coord::rect area, struct color c)
 {
     guard::color _ { *this, c };
     return fill(area);
 }
 
-outcome renderer::fill(std::span<const coord::rect> areas)
+bool renderer::fill(std::span<const coord::rect> areas)
 {
     return ::SDL_RenderFillRects(get(), reinterpret_cast<const SDL_FRect*>(areas.data()), static_cast<int>(areas.size()));
 }
 
-outcome renderer::fill(std::span<const coord::rect> areas, struct color c)
+bool renderer::fill(std::span<const coord::rect> areas, struct color c)
 {
     guard::color _ { *this, c };
     return fill(areas);
 }
 
-outcome renderer::fill()
+bool renderer::fill()
 {
     return ::SDL_RenderFillRect(get(), nullptr);
 }
 
-outcome renderer::fill(struct color c)
+bool renderer::fill(struct color c)
 {
     guard::color _ { *this, c };
     return fill();
 }
 
-outcome renderer::target(ref<target_texture> tx)
+bool renderer::target(ref<target_texture> tx)
 {
     return internal_target(tx.get());
 }
 
-outcome renderer::reset_target()
+bool renderer::reset_target()
 {
     return this->internal_target(nullptr);
 }
@@ -158,7 +177,7 @@ result<color> renderer::color() const
     return { ::SDL_GetRenderDrawColor(get(), &ret.r, &ret.g, &ret.b, &ret.a), ret };
 }
 
-outcome renderer::color(hal::color clr)
+bool renderer::color(hal::color clr)
 {
     return ::SDL_SetRenderDrawColor(get(), clr.r, clr.g, clr.b, clr.a);
 }
@@ -170,7 +189,7 @@ result<blend_mode> renderer::blend() const
     return { ::SDL_GetRenderDrawBlendMode(get(), &bm), static_cast<blend_mode>(bm) };
 }
 
-outcome renderer::blend(blend_mode bm)
+bool renderer::blend(blend_mode bm)
 {
     return ::SDL_SetRenderDrawBlendMode(get(), SDL_BlendMode(bm));
 }
@@ -181,7 +200,7 @@ result<pixel::point> renderer::size() const
     return { ::SDL_GetCurrentRenderOutputSize(get(), &ret.x, &ret.y), ret };
 }
 
-outcome renderer::size(pixel::point sz, presentation p)
+bool renderer::size(pixel::point sz, presentation p)
 {
     return ::SDL_SetRenderLogicalPresentation(get(), sz.x, sz.y, static_cast<SDL_RendererLogicalPresentation>(p));
 }
@@ -201,7 +220,17 @@ const char* renderer::name() const
     return ::SDL_GetRendererName(get());
 }
 
-outcome renderer::internal_target(SDL_Texture* target)
+rp renderer::props()
+{
+    return { ::SDL_GetRendererProperties(get()), pass_key<renderer> {} };
+}
+
+const rp renderer::props() const
+{
+    return { ::SDL_GetRendererProperties(get()), pass_key<renderer> {} };
+}
+
+bool renderer::internal_target(SDL_Texture* target)
 {
     return ::SDL_SetRenderTarget(get(), target);
 }
@@ -220,7 +249,7 @@ copyer& copyer::outline(color c)
     return outline();
 }
 
-outcome copyer::render()
+bool copyer::render()
 {
     return ::SDL_RenderTexture(
         m_drawDst.get(),
@@ -229,7 +258,7 @@ outcome copyer::render()
         m_posDst.pos.x == unset_pos() ? nullptr : m_posDst.sdl_ptr());
 }
 
-outcome copyer::rotated(double angle, flip f)
+bool copyer::rotated(double angle, flip f)
 {
     return ::SDL_RenderTextureRotated(
         m_drawDst.get(),
@@ -241,7 +270,7 @@ outcome copyer::rotated(double angle, flip f)
         static_cast<SDL_FlipMode>(f));
 }
 
-outcome copyer::affine(coord::point right, coord::point down)
+bool copyer::affine(coord::point right, coord::point down)
 {
     return ::SDL_RenderTextureAffine(
         m_drawDst.get(),
@@ -252,7 +281,7 @@ outcome copyer::affine(coord::point right, coord::point down)
         down.sdl_ptr());
 }
 
-outcome copyer::tiled(float scale)
+bool copyer::tiled(float scale)
 {
     return ::SDL_RenderTextureTiled(
         m_drawDst.get(),

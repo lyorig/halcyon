@@ -6,7 +6,7 @@
 
 #include <halcyon/types/result.hpp>
 
-#include "SDL3/SDL.h"
+#include "SDL3/SDL_init.h"
 
 // subsystem.hpp:
 // A representation of SDL subsystems.
@@ -48,12 +48,16 @@ namespace hal
         struct sub_to_proxy<subsystem::video>
         {
             using type = proxy::video;
+
+            sub_to_proxy() = default;
         };
 
         template <>
         struct sub_to_proxy<subsystem::events>
         {
             using type = proxy::events;
+
+            sub_to_proxy() = default;
         };
 
         template <subsystem... Subs>
@@ -69,7 +73,7 @@ namespace hal
             // Flag checks to ensure some unnecessary BS doesn't happen.
             static_assert(!subsystems().all({ subsystem::video, subsystem::events }), "Incompatible event types; Events is already initialized by Video.");
 
-            static outcome sdl_init()
+            static bool sdl_init()
             {
                 return ::SDL_InitSubSystem(subsystems().mask());
             }
@@ -85,7 +89,7 @@ namespace hal
 
             // Initialize chosen subsystems.
             // Writes success state to res.
-            init_base(outcome& res)
+            init_base(bool& res)
             {
                 res = sdl_init();
             }

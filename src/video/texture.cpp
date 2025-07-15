@@ -25,7 +25,7 @@ result<color::value_t> texture::alpha_mod() const
     return { ::SDL_GetTextureAlphaMod(get(), &ret), ret };
 }
 
-outcome texture::alpha_mod(color::value_t val)
+bool texture::alpha_mod(color::value_t val)
 {
     return ::SDL_SetTextureAlphaMod(get(), val);
 }
@@ -37,7 +37,7 @@ result<color> texture::color_mod() const
     return { ::SDL_GetTextureColorMod(get(), &c.r, &c.g, &c.b), c };
 }
 
-outcome texture::color_mod(color clr)
+bool texture::color_mod(color clr)
 {
     return ::SDL_SetTextureColorMod(get(), clr.r, clr.g, clr.b);
 }
@@ -48,7 +48,7 @@ result<blend_mode> texture::blend() const
     return { ::SDL_GetTextureBlendMode(get(), &bm), static_cast<blend_mode>(bm) };
 }
 
-outcome texture::blend(blend_mode bm)
+bool texture::blend(blend_mode bm)
 {
     return ::SDL_SetTextureBlendMode(get(), static_cast<SDL_BlendMode>(bm));
 }
@@ -68,19 +68,19 @@ static_texture::static_texture(lref<const renderer> rnd, ref<const surface> surf
 {
 }
 
-outcome static_texture::update(ref<const surface> surf, pixel::point pos)
+bool static_texture::update(ref<const surface> surf, pixel::point pos)
 {
     return update(surf, { pos, surf->size() });
 }
 
-outcome static_texture::update(ref<const surface> surf, pixel::rect area)
+bool static_texture::update(ref<const surface> surf, pixel::rect area)
 {
     HAL_ASSERT(surf->size() >= area.size, "The surface must be >= to the area");
 
     return internal_update(area.sdl_ptr(), surf.get()->pixels, surf.get()->pitch);
 }
 
-outcome static_texture::internal_update(const SDL_Rect* area, const void* pixels, int pitch)
+bool static_texture::internal_update(const SDL_Rect* area, const void* pixels, int pitch)
 {
     return ::SDL_UpdateTexture(get(), area, pixels, pitch);
 }

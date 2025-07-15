@@ -14,5 +14,5 @@
 
 namespace hal
 {
-    outcome open_url(c_string url);
+    bool open_url(c_string url);
 }

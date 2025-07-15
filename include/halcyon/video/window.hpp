@@ -99,7 +99,7 @@ namespace hal
 
         // Set whether the window is in fullscreen.
         // Returns whether the operation succeeded.
-        outcome fullscreen(bool set);
+        bool fullscreen(bool set);
 
         void always_on_top(bool set);
 

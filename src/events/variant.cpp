@@ -299,6 +299,13 @@ c_string event::text_input::text() const
     return SDL_TextInputEvent::text;
 }
 
+event::text_input& event::text_input::text(c_string t)
+{
+    SDL_TextInputEvent::text = t.c_str();
+
+    return *this;
+}
+
 // Event handler.
 
 event::variant::variant()

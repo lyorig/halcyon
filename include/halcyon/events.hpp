@@ -44,8 +44,8 @@ namespace hal
         class events
         {
         public:
-            // [private] The video subsystem implicitly initializes events.
-            events(pass_key<video>);
+            // The video subsystem implicitly initializes events.
+            events();
 
             // Collect pending events.
             // This is usually not necessary - poll() calls it in an event loop.

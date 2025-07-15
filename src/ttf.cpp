@@ -1,12 +1,19 @@
 #include <halcyon/ttf.hpp>
 
 #include <halcyon/types/exception.hpp>
+#include <halcyon/video/renderer.hpp>
+
 #include <string_view>
 
 using namespace hal;
 
-text::text(const font& f, std::string_view str)
-    : resource { ::TTF_CreateText(nullptr, f.get(), str.data(), str.length()) }
+text::text(hal::ref<const font> f, std::string_view str)
+    : text { nullptr, f, str }
+{
+}
+
+text::text(TTF_TextEngine* eng, hal::ref<const font> f, std::string_view str)
+    : resource { ::TTF_CreateText(eng, f.get(), str.data(), str.length()) }
 {
 }
 
@@ -66,7 +73,7 @@ ttf::context::context()
         throw exception { "TTF library initialization" };
 }
 
-ttf::context::context(outcome& res)
+ttf::context::context(bool& res)
 {
     HAL_WARN_IF(initialized(), "TTF context already exists");
 
@@ -177,4 +184,16 @@ surface bfg::operator()(font::render_type rt)
     }
 
     return {};
+}
+
+// ----- Text engines -----
+
+text_engine::surface::surface()
+    : engine_base { ::TTF_CreateSurfaceTextEngine() }
+{
+}
+
+text_engine::renderer::renderer(ref<hal::renderer> rnd)
+    : engine_base { ::TTF_CreateRendererTextEngine(rnd.get()) }
+{
 }

@@ -10,6 +10,8 @@
 
 #include <halcyon/types/c_string.hpp>
 
+#include <halcyon/properties.hpp>
+
 // video/renderer.hpp:
 // A proxy for creating and rendering textures etc. - more info below.
 
@@ -39,9 +41,29 @@ namespace hal
     // is attached to a window. Multiple renderers can exist for a single window, i.e. a hardware-
     // accelerated one, plus a software fallback in case the former isn't available.
     // By default, renderers use hardware acceleration. You can override this via renderer flags.
-    class renderer : public detail::resource<SDL_Renderer, &::SDL_DestroyRenderer>
+    class renderer : public detail::resource<SDL_Renderer, ::SDL_DestroyRenderer>
     {
+    private:
     public:
+        class properties : private hal::properties
+        {
+        public:
+            properties(SDL_PropertiesID id, pass_key<renderer>);
+
+            c_string name();
+
+            ref<class window>       window();
+            ref<const class window> window() const;
+
+            ref<class surface>       surface();
+            ref<const class surface> surface() const;
+
+            std::int64_t vsync() const;
+            std::int64_t max_texture_size() const;
+
+            const hal::pixel::format* formats() const;
+        };
+
         enum class presentation : std::uint8_t
         {
             disabled      = SDL_LOGICAL_PRESENTATION_DISABLED,
@@ -130,6 +152,9 @@ namespace hal
         ref<class window> window();
 
         const char* name() const;
+
+        properties       props();
+        const properties props() const;
 
     private:
         // Helper for setting the render target.

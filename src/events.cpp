@@ -2,6 +2,8 @@
 
 #include <ostream>
 
+#include <SDL3/SDL_timer.h>
+
 using namespace hal;
 
 event::push_outcome::push_outcome(int res)
@@ -82,7 +84,7 @@ keyboard::mod_state proxy::events::keyboard_mod() const
     return pass_key<proxy::events> {};
 }
 
-proxy::events::events(pass_key<proxy::video>)
+proxy::events::events()
 {
 }
 
@@ -104,7 +106,7 @@ void proxy::events::pump()
 
 event::push_outcome proxy::events::push(const event::variant& eh)
 {
-    eh.get(pass_key<events> {}).common.timestamp = ::SDL_GetTicksNS();
+    eh.get(pass_key<events> {}).common.timestamp = SDL_GetTicksNS();
 
     return ::SDL_PushEvent(&eh.get(pass_key<events> {}));
 }

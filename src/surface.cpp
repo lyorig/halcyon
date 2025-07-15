@@ -40,22 +40,22 @@ surface& surface::operator=(const surface& s)
     return *this;
 }
 
-outcome surface::fill(color clr)
+bool surface::fill(color clr)
 {
     return ::SDL_FillSurfaceRect(get(), nullptr, map_rgba(clr));
 }
 
-outcome surface::fill(pixel::rect area, color clr)
+bool surface::fill(pixel::rect area, color clr)
 {
     return ::SDL_FillSurfaceRect(get(), area.sdl_ptr(), map_rgba(clr));
 }
 
-outcome surface::fill(std::span<const pixel::rect> areas, color clr)
+bool surface::fill(std::span<const pixel::rect> areas, color clr)
 {
     return ::SDL_FillSurfaceRects(get(), reinterpret_cast<const SDL_Rect*>(areas.data()), static_cast<int>(areas.size()), map_rgba(clr));
 }
 
-outcome surface::lock()
+bool surface::lock()
 {
     return ::SDL_LockSurface(get());
 }
@@ -65,7 +65,7 @@ void surface::unlock()
     ::SDL_UnlockSurface(get());
 }
 
-outcome surface::save(outputter dst) const
+bool surface::save(outputter dst) const
 {
     return ::SDL_SaveBMP_IO(get(), dst.get(), false);
 }
@@ -135,7 +135,7 @@ result<blend_mode> surface::blend() const
     return { ::SDL_GetSurfaceBlendMode(get(), &bm), static_cast<blend_mode>(bm) };
 }
 
-outcome surface::blend(blend_mode bm)
+bool surface::blend(blend_mode bm)
 {
     return ::SDL_SetSurfaceBlendMode(get(), SDL_BlendMode(bm));
 }
@@ -147,7 +147,7 @@ result<color> surface::color_mod() const
     return { ::SDL_GetSurfaceColorMod(get(), &ret.r, &ret.g, &ret.b), ret };
 }
 
-outcome surface::color_mod(color col)
+bool surface::color_mod(color col)
 {
     return ::SDL_SetSurfaceColorMod(get(), col.r, col.g, col.b);
 }
@@ -159,7 +159,7 @@ result<color::value_t> surface::alpha_mod() const
     return { ::SDL_GetSurfaceAlphaMod(get(), &ret), ret };
 }
 
-outcome surface::alpha_mod(color::value_t val)
+bool surface::alpha_mod(color::value_t val)
 {
     return ::SDL_SetSurfaceAlphaMod(get(), val);
 }

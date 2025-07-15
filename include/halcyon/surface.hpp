@@ -51,20 +51,20 @@ namespace hal
         surface& operator=(surface&&) = default;
 
         // Fill the entire surface with a color.
-        outcome fill(color clr);
+        bool fill(color clr);
 
         // Fill a rectangle with a color.
-        outcome fill(pixel::rect area, color clr);
+        bool fill(pixel::rect area, color clr);
 
         // Fill an array of rectangles with a color.
-        outcome fill(std::span<const pixel::rect> areas, color clr);
+        bool fill(std::span<const pixel::rect> areas, color clr);
 
-        outcome lock();
-        void    unlock();
+        bool lock();
+        void unlock();
 
         // Save this surface in a BMP format.
         // More formats are made available by the image context.
-        outcome save(outputter dst) const;
+        bool save(outputter dst) const;
 
         // Create a blitter.
         // Not all pixel formats can be blitted,
@@ -100,15 +100,15 @@ namespace hal
 
         // Get/set this surface's blend mode.
         result<blend_mode> blend() const;
-        outcome            blend(blend_mode bm);
+        bool               blend(blend_mode bm);
 
         // Get/set this surface's color modifiers.
         result<color> color_mod() const;
-        outcome       color_mod(color col);
+        bool          color_mod(color col);
 
         // Get/set this surface's alpha modifier.
         result<color::value_t> alpha_mod() const;
-        outcome                alpha_mod(color::value_t val);
+        bool                   alpha_mod(color::value_t val);
 
     private:
         Uint32 map_rgb(color c) const;

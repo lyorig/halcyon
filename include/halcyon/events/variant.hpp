@@ -144,7 +144,8 @@ namespace hal
             hal::window::id_t window_id() const;
             text_input&       window_id(hal::window::id_t id);
 
-            c_string text() const;
+            c_string    text() const;
+            text_input& text(c_string t);
         };
 
         static_assert(sizeof(text_input) == sizeof(SDL_TextInputEvent));
@@ -313,6 +314,11 @@ namespace hal
 
             static_assert(sizeof(m_event) == sizeof(SDL_Event));
         };
+    }
+
+    constexpr std::string_view to_string(event::type t)
+    {
+        return "[TODO]";
     }
 
     namespace event

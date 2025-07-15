@@ -41,13 +41,13 @@ namespace hal
         result<pixel::point> size() const;
 
         result<color::value_t> alpha_mod() const;
-        outcome                alpha_mod(color::value_t val);
+        bool                   alpha_mod(color::value_t val);
 
         result<color> color_mod() const;
-        outcome       color_mod(color mod);
+        bool          color_mod(color mod);
 
         result<blend_mode> blend() const;
-        outcome            blend(blend_mode bm);
+        bool               blend(blend_mode bm);
 
         result<pixel::format> pixel_format() const;
     };
@@ -66,14 +66,14 @@ namespace hal
         static_texture(lref<const renderer> rnd, ref<const surface> surf);
 
         // Update the texture with pixels of a surface. The surface's pixel format must match the texture's.
-        outcome update(ref<const surface> surf, pixel::point pos = { 0, 0 });
+        bool update(ref<const surface> surf, pixel::point pos = { 0, 0 });
 
         // Update the texture with pixels of a surface and stretch them to a certain area.
         // The surface's pixel format must match the texture's, and its size must be >= the area's.
-        outcome update(ref<const surface> surf, pixel::rect area);
+        bool update(ref<const surface> surf, pixel::rect area);
 
     private:
-        outcome internal_update(const SDL_Rect* area, const void* pixels, int pitch);
+        bool internal_update(const SDL_Rect* area, const void* pixels, int pitch);
     };
 
     // A texture that can be drawn onto.

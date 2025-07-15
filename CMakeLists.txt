@@ -5,7 +5,7 @@ cmake_minimum_required(VERSION 3.20.0)
 project(Halcyon VERSION 1.0 LANGUAGES CXX)
 
 # Make sure SDL is present on the system.
-find_package(SDL3 CONFIG COMPONENTS SDL3)
+find_package(SDL3 CONFIG REQUIRED COMPONENTS SDL3)
 find_package(SDL3_image CONFIG REQUIRED)
 find_package(SDL3_ttf CONFIG REQUIRED)
 
@@ -49,6 +49,7 @@ set(Halcyon_SOURCES
     image.cpp
 	library.cpp
 	misc.cpp
+	properties.cpp
 	subsystem.cpp
     surface.cpp
 	system.cpp

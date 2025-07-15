@@ -6,7 +6,6 @@
 #include <halcyon/types/c_string.hpp>
 
 #include "SDL3_ttf/SDL_ttf.h"
-#include "halcyon/internal/resource.hpp"
 
 // ttf.hpp:
 // SDL_ttf wrappers for font loading and text rendering.
@@ -23,53 +22,6 @@ namespace hal
     {
         class context;
     }
-
-    namespace detail
-    {
-        template <auto Creator, auto Deleter>
-        class engine_base : public resource<TTF_TextEngine, Deleter>
-        {
-        private:
-            using super = resource<TTF_TextEngine, Deleter>;
-
-            engine_base(TTF_TextEngine* ptr)
-                : super { ptr }
-            {
-            }
-
-        public:
-            template <typename... Args>
-            engine_base(Args&... args)
-                : super { Creator(std::forward<Args>(args)...) }
-            {
-            }
-        };
-    }
-
-    namespace text_engine
-    {
-        class gpu : public detail::engine_base<::TTF_CreateGPUTextEngine, ::TTF_DestroyGPUTextEngine>
-        {
-        };
-
-        class surface : public detail::engine_base<::TTF_CreateSurfaceTextEngine, ::TTF_DestroySurfaceTextEngine>
-        {
-        };
-
-        class renderer : public detail::engine_base<::TTF_CreateRendererTextEngine, ::TTF_DestroyRendererTextEngine>
-        {
-        };
-    }
-
-    class text : public detail::resource<TTF_Text, &::TTF_DestroyText>
-    {
-    public:
-        text() = default;
-
-        text(const font& f, std::string_view str);
-
-        result<pixel::point> size() const;
-    };
 
     class font : public detail::resource<TTF_Font, &::TTF_CloseFont>
     {
@@ -145,7 +97,7 @@ namespace hal
 
             // Initialize the TTF context.
             // Writes success state to res.
-            context(outcome& res);
+            context(bool& res);
 
             context(const context&) = delete;
             context(context&&)      = delete;
@@ -237,4 +189,66 @@ namespace hal
             char32_t m_glyph;
         };
     }
+
+    class text;
+
+    namespace detail
+    {
+        template <auto Creator, auto Deleter>
+        class engine_base : public resource<TTF_TextEngine, Deleter>
+        {
+        private:
+            using super = resource<TTF_TextEngine, Deleter>;
+
+        protected:
+            engine_base() = default;
+            engine_base(TTF_TextEngine* ptr)
+                : super { ptr }
+            {
+            }
+
+        public:
+            text make_text(ref<const font> f, std::string_view text) const;
+        };
+    }
+
+    namespace text_engine
+    {
+        // TODO
+        class gpu : public detail::engine_base<::TTF_CreateGPUTextEngine, ::TTF_DestroyGPUTextEngine>
+        {
+        };
+
+        class surface : public detail::engine_base<::TTF_CreateSurfaceTextEngine, ::TTF_DestroySurfaceTextEngine>
+        {
+        public:
+            surface();
+        };
+
+        class renderer : public detail::engine_base<::TTF_CreateRendererTextEngine, ::TTF_DestroyRendererTextEngine>
+        {
+        public:
+            renderer() = default;
+            renderer(ref<hal::renderer> rnd);
+        };
+    }
+
+    class text : public detail::resource<TTF_Text, ::TTF_DestroyText>
+    {
+    public:
+        text() = default;
+
+        text(hal::ref<const font> f, std::string_view str);
+
+        template <auto Creator, auto Deleter>
+        text(hal::ref<const detail::engine_base<Creator, Deleter>> gex, hal::ref<const font> f, std::string_view str)
+            : text { gex.get(), f, str }
+        {
+        }
+
+        result<pixel::point> size() const;
+
+    private:
+        text(TTF_TextEngine* eng, hal::ref<const font> f, std::string_view str);
+    };
 }

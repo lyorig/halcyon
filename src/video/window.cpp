@@ -125,7 +125,7 @@ void window::always_on_top(bool set)
     ::SDL_SetWindowAlwaysOnTop(get(), set);
 }
 
-outcome window::fullscreen(bool set)
+bool window::fullscreen(bool set)
 {
     return ::SDL_SetWindowFullscreen(get(), set * std::to_underlying(window::flag::fullscreen));
 }

@@ -25,9 +25,9 @@ namespace hal
         public:
             HAL_NO_SIZE proxy::events events;
 
-            string  clipboard() const;
-            outcome clipboard(const char* text);
-            bool    clipboard_has_text() const;
+            string clipboard() const;
+            bool   clipboard(const char* text);
+            bool   clipboard_has_text() const;
 
             const display* display_info_native(display::id_t index) const;
             const display* display_info_current(display::id_t index) const;
