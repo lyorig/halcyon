@@ -5,6 +5,7 @@
 
 #include <halcyon/utility/printing.hpp>
 
+#include <cmath>
 #include <compare>
 #include <ostream>
 

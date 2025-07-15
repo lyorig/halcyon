@@ -1,3 +1,4 @@
+#include <SDL3/SDL_render.h>
 #include <halcyon/video/renderer.hpp>
 
 #include <halcyon/surface.hpp>
@@ -10,28 +11,88 @@
 
 using namespace hal;
 
+// ----- CREATE PROPERTIES -----
+
+// FBI, OPEN UP!
+using cp = renderer::create_properties;
+
+cp& cp::name(c_string val)
+{
+    string_set(SDL_PROP_RENDERER_CREATE_NAME_STRING, val.c_str());
+    return *this;
+}
+
+cp& cp::window(ref<hal::window> val)
+{
+    ptr_set(SDL_PROP_RENDERER_CREATE_WINDOW_POINTER, val.get());
+    return *this;
+}
+
+cp& cp::surface(ref<hal::surface> val)
+{
+    ptr_set(SDL_PROP_RENDERER_CREATE_SURFACE_POINTER, val.get());
+    return *this;
+}
+
+cp& cp::vsync(bool val)
+{
+    number_set(SDL_PROP_RENDERER_CREATE_PRESENT_VSYNC_NUMBER, val);
+    return *this;
+}
+
 // ----- PROPERTIES -----
 
 using rp = renderer::properties;
 
 rp::properties(SDL_PropertiesID id, pass_key<renderer>)
-    : hal::properties { id }
+    : properties_ref { id }
 {
 }
 
-c_string rp::name()
+c_string rp::name() const
 {
-    return string_get("SDL_PROP_RENDERER_NAME_STRING", {});
+    return string_get(SDL_PROP_RENDERER_NAME_STRING, {});
+}
+
+ref<window> rp::window()
+{
+    return ref<hal::window>::from_ptr(
+        reinterpret_cast<SDL_Window*>(
+            ptr_get(SDL_PROP_RENDERER_WINDOW_POINTER, nullptr)));
 }
 
 ref<const window> rp::window() const
 {
+    return ref<const hal::window>::from_ptr(
+        reinterpret_cast<SDL_Window*>(
+            ptr_get(SDL_PROP_RENDERER_WINDOW_POINTER, nullptr)));
+}
+
+bool rp::vsync() const
+{
+    return static_cast<bool>(number_get(SDL_PROP_RENDERER_VSYNC_NUMBER, 0));
+}
+
+std::int64_t rp::max_texture_size() const
+{
+    return number_get(SDL_PROP_RENDERER_MAX_TEXTURE_SIZE_NUMBER, 0);
+}
+
+const pixel::format* rp::formats() const
+{
+    return reinterpret_cast<const pixel::format*>(
+        ptr_get(SDL_PROP_RENDERER_TEXTURE_FORMATS_POINTER, nullptr));
 }
 
 // ----- RENDERER -----
 
-renderer::renderer(lref<const class window> wnd)
+renderer::renderer(lref<const hal::window> wnd)
     : resource { ::SDL_CreateRenderer(wnd.get(), nullptr) }
+{
+}
+
+renderer::renderer(const create_properties& props)
+    : resource { ::SDL_CreateRendererWithProperties(props.id()) }
 {
 }
 
@@ -207,12 +268,14 @@ bool renderer::size(pixel::point sz, presentation p)
 
 ref<const window> renderer::window() const
 {
-    return { ::SDL_GetRenderWindow(get()), pass_key<renderer> {} };
+    return ref<const hal::window>::from_ptr(
+        ::SDL_GetRenderWindow(get()));
 }
 
 ref<window> renderer::window()
 {
-    return { ::SDL_GetRenderWindow(get()), pass_key<renderer> {} };
+    return ref<hal::window>::from_ptr(
+        ::SDL_GetRenderWindow(get()));
 }
 
 const char* renderer::name() const
@@ -220,12 +283,7 @@ const char* renderer::name() const
     return ::SDL_GetRendererName(get());
 }
 
-rp renderer::props()
-{
-    return { ::SDL_GetRendererProperties(get()), pass_key<renderer> {} };
-}
-
-const rp renderer::props() const
+rp renderer::props() const
 {
     return { ::SDL_GetRendererProperties(get()), pass_key<renderer> {} };
 }

@@ -1,8 +1,14 @@
+#include <SDL3/SDL_video.h>
 #include <halcyon/video/display.hpp>
 
 #include <halcyon/video.hpp>
 
 using namespace hal;
+
+display::id_t display::primary()
+{
+    return ::SDL_GetPrimaryDisplay();
+}
 
 display::id_t display::id() const
 {

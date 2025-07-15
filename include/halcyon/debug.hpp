@@ -99,13 +99,13 @@ namespace hal
         }
 
         // Show a message box with an error message.
-        // Do not rely on this function exiting the program, as this behavior can be overriden with HAL_NO_EXIT_ON_PANIC.
+        // Afterwards, exit.
         template <meta::printable... Args>
         [[noreturn]] static void panic(const char* function, const char* file, std::uint32_t line, Args&&... extra_info)
         {
             debug::print_severity(severity::error, string_from_pack(std::forward<Args>(extra_info)...), " [", function, ", ", file, ':', line, "]");
 
-            std::exit(EXIT_FAILURE);
+            std::abort();
         }
 
         template <meta::printable... Args>

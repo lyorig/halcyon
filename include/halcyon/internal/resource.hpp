@@ -76,6 +76,14 @@ namespace hal
     class ref
     {
     public:
+        // This is a separate function so as to not complicate
+        // constructors. It's also kinda unsafe and not meant to
+        // be used by the library consumer, so, uhh, yeah.
+        static ref from_ptr(T::pointer ptr)
+        {
+            return ptr;
+        }
+
         ref(T& obj)
             : m_ptr { obj.get() }
         {
@@ -92,29 +100,6 @@ namespace hal
             requires(std::is_base_of_v<T, OtherT> && std::is_const_v<T> >= std::is_const_v<OtherT>)
         ref(ref<OtherT> r)
             : m_ptr { r.get() }
-        {
-        }
-
-        // Specialized constructors:
-
-        // [private] Access a window's surface via window::surface().
-        ref(T::pointer ptr, pass_key<window>)
-            requires std::is_same_v<std::remove_const_t<T>, surface>
-            : ref { ptr }
-        {
-        }
-
-        // [private] Access a renderer's window via renderer::window().
-        ref(T::pointer ptr, pass_key<renderer>)
-            requires std::is_same_v<std::remove_const_t<T>, window>
-            : ref { ptr }
-        {
-        }
-
-        // [private] Access a window's renderer via window::renderer().
-        ref(T::pointer ptr, pass_key<window>)
-            requires std::is_same_v<std::remove_const_t<T>, renderer>
-            : ref { ptr }
         {
         }
 

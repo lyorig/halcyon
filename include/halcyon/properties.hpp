@@ -9,11 +9,14 @@
 
 namespace hal
 {
-    class properties
+    class properties_ref
     {
     public:
-        properties(SDL_PropertiesID id);
-        ~properties();
+        using id_t = SDL_PropertiesID;
+
+    protected:
+        properties_ref();
+        properties_ref(id_t id);
 
         bool         number_set(c_string key, std::int64_t val);
         std::int64_t number_get(c_string key, std::int64_t default_value) const;
@@ -31,7 +34,17 @@ namespace hal
         bool bool_set(c_string key, bool val);
         bool bool_get(c_string key, bool default_value) const;
 
-    private:
-        SDL_PropertiesID m_id;
+    public:
+        id_t id() const;
+
+    protected:
+        id_t m_id;
+    };
+
+    class properties : public properties_ref
+    {
+    public:
+        properties();
+        ~properties();
     };
 }

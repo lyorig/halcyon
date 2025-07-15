@@ -10,7 +10,7 @@ namespace
     {
         window ret;
 
-        if (const auto res = sys.display_info_native(0))
+        if (const auto res = sys.display_info_native(display::primary()))
             ret = { sys, title, res->size(), window::flag::fullscreen };
 
         return ret;
@@ -132,17 +132,17 @@ bool window::fullscreen(bool set)
 
 ref<const renderer> window::renderer() const
 {
-    return { ::SDL_GetRenderer(get()), pass_key<window> {} };
+    return ref<const hal::renderer>::from_ptr(::SDL_GetRenderer(get()));
 }
 
 ref<renderer> window::renderer()
 {
-    return { ::SDL_GetRenderer(get()), pass_key<window> {} };
+    return ref<hal::renderer>::from_ptr(::SDL_GetRenderer(get()));
 }
 
 ref<const surface> window::surface() const
 {
-    return { ::SDL_GetWindowSurface(get()), pass_key<window> {} };
+    return ref<const hal::surface>::from_ptr(::SDL_GetWindowSurface(get()));
 }
 
 std::ostream& hal::operator<<(std::ostream& str, hal::ref<hal::window> wnd)

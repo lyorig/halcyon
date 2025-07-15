@@ -23,6 +23,8 @@ namespace hal
         using id_t = std::uint8_t;
         using hz_t = std::uint16_t;
 
+        static id_t primary();
+
         display() = default;
 
         id_t id() const;

@@ -3,6 +3,7 @@
 #include <halcyon/utility/metaprogramming.hpp>
 
 #include <bit>
+#include <cstdint>
 #include <initializer_list>
 
 // utility/enum_bits.hpp:

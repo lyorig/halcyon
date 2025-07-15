@@ -6,7 +6,9 @@
 
 #include <algorithm>
 #include <bit>
+#include <cstdint>
 #include <iosfwd>
+#include <limits>
 
 // types/color.hpp:
 // An extension of SDL_Color with custom constructors,

@@ -43,25 +43,38 @@ namespace hal
     // By default, renderers use hardware acceleration. You can override this via renderer flags.
     class renderer : public detail::resource<SDL_Renderer, ::SDL_DestroyRenderer>
     {
-    private:
     public:
-        class properties : private hal::properties
+        class create_properties : public hal::properties
+        {
+        public:
+            create_properties() = default;
+
+            create_properties& name(c_string val);
+            create_properties& window(ref<window> val);
+            create_properties& surface(ref<surface> val);
+            create_properties& vsync(bool val);
+        };
+
+        // Everything in here is read-only for now.
+        class properties : public hal::properties_ref
         {
         public:
             properties(SDL_PropertiesID id, pass_key<renderer>);
 
-            c_string name();
+            c_string name() const;
 
-            ref<class window>       window();
-            ref<const class window> window() const;
+            ref<hal::window>       window();
+            ref<const hal::window> window() const;
 
-            ref<class surface>       surface();
-            ref<const class surface> surface() const;
+            ref<hal::surface>       surface();
+            ref<const hal::surface> surface() const;
 
-            std::int64_t vsync() const;
+            bool vsync() const;
+
             std::int64_t max_texture_size() const;
 
-            const hal::pixel::format* formats() const;
+            // Terminated with hal::pixel::format::unknown.
+            const pixel::format* formats() const;
         };
 
         enum class presentation : std::uint8_t
@@ -76,6 +89,7 @@ namespace hal
         renderer() = default;
 
         renderer(lref<const window> wnd);
+        renderer(const create_properties& props);
 
         // Clear (fill) the render target with the current draw color.
         bool clear();
@@ -149,12 +163,11 @@ namespace hal
         bool                 size(pixel::point sz, presentation p);
 
         ref<const window> window() const;
-        ref<class window> window();
+        ref<hal::window>  window();
 
         const char* name() const;
 
-        properties       props();
-        const properties props() const;
+        properties props() const;
 
     private:
         // Helper for setting the render target.

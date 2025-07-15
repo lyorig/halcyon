@@ -2,6 +2,7 @@
 
 #include <halcyon/utility/metaprogramming.hpp>
 
+#include <cstdint>
 #include <iosfwd>
 
 // utility/printing.hpp:
