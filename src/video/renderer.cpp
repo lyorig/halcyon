@@ -54,18 +54,18 @@ c_string rp::name() const
     return string_get(SDL_PROP_RENDERER_NAME_STRING, {});
 }
 
-ref<window> rp::window()
+ref<window> rp::window() const
 {
     return ref<hal::window>::from_ptr(
         reinterpret_cast<SDL_Window*>(
             ptr_get(SDL_PROP_RENDERER_WINDOW_POINTER, nullptr)));
 }
 
-ref<const window> rp::window() const
+ref<surface> rp::surface() const
 {
-    return ref<const hal::window>::from_ptr(
-        reinterpret_cast<SDL_Window*>(
-            ptr_get(SDL_PROP_RENDERER_WINDOW_POINTER, nullptr)));
+    return ref<hal::surface>::from_ptr(
+        reinterpret_cast<SDL_Surface*>(
+            ptr_get(SDL_PROP_RENDERER_SURFACE_POINTER, nullptr)));
 }
 
 bool rp::vsync() const

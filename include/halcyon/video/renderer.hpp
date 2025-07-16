@@ -63,11 +63,8 @@ namespace hal
 
             c_string name() const;
 
-            ref<hal::window>       window();
-            ref<const hal::window> window() const;
-
-            ref<hal::surface>       surface();
-            ref<const hal::surface> surface() const;
+            ref<hal::window>  window() const;
+            ref<hal::surface> surface() const;
 
             bool vsync() const;
 
