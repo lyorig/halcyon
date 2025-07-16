@@ -4,6 +4,100 @@
 
 using namespace hal;
 
+// ---- WINDOW CREATE PROPERTIES ----
+
+// FBI, OPEN UP!
+using cp = window::create_properties;
+
+#define PROP_BFUNC(func_name, prop_name)                             \
+    cp& cp::func_name(bool val)                                      \
+    {                                                                \
+        bool_set(SDL_PROP_WINDOW_CREATE_##prop_name##_BOOLEAN, val); \
+        return *this;                                                \
+    }
+
+PROP_BFUNC(always_on_top, ALWAYS_ON_TOP);
+PROP_BFUNC(external_graphics_context, EXTERNAL_GRAPHICS_CONTEXT);
+PROP_BFUNC(focusable, FOCUSABLE);
+PROP_BFUNC(resizable, RESIZABLE);
+PROP_BFUNC(hidden, HIDDEN);
+PROP_BFUNC(high_pixel_density, HIGH_PIXEL_DENSITY);
+PROP_BFUNC(maximized, MAXIMIZED);
+PROP_BFUNC(minimized, MINIMIZED);
+PROP_BFUNC(fullscreen, FULLSCREEN);
+PROP_BFUNC(borderless, BORDERLESS);
+PROP_BFUNC(transparent, TRANSPARENT);
+PROP_BFUNC(menu, MENU);
+PROP_BFUNC(modal, MODAL);
+PROP_BFUNC(tooltip, TOOLTIP);
+PROP_BFUNC(utility, UTILITY);
+PROP_BFUNC(constrain_popup, CONSTRAIN_POPUP);
+PROP_BFUNC(mouse_grabbed, MOUSE_GRABBED);
+PROP_BFUNC(metal, METAL);
+PROP_BFUNC(opengl, OPENGL);
+PROP_BFUNC(vulkan, VULKAN);
+
+cp& cp::parent(ref<window> val)
+{
+    ptr_set(SDL_PROP_WINDOW_CREATE_PARENT_POINTER, val.get());
+    return *this;
+}
+
+cp& cp::title(c_string val)
+{
+    string_set(SDL_PROP_WINDOW_CREATE_TITLE_STRING, val.c_str());
+    return *this;
+}
+
+cp& cp::size(pixel::point val)
+{
+    number_set(SDL_PROP_WINDOW_CREATE_WIDTH_NUMBER, val.x);
+    number_set(SDL_PROP_WINDOW_CREATE_HEIGHT_NUMBER, val.y);
+
+    return *this;
+}
+
+cp& cp::pos(pixel::point val)
+{
+    number_set(SDL_PROP_WINDOW_CREATE_X_NUMBER, val.x);
+    number_set(SDL_PROP_WINDOW_CREATE_Y_NUMBER, val.y);
+
+    return *this;
+}
+
+// ---- WINDOW PROPERTIES ----
+
+using wp = window::properties;
+
+wp::properties(id_t id, pass_key<window>)
+    : properties_ref { id }
+{
+}
+
+ref<surface> wp::shape() const
+{
+    return ref<hal::surface>::from_ptr(
+        reinterpret_cast<SDL_Surface*>(
+            ptr_get(SDL_PROP_WINDOW_SHAPE_POINTER, nullptr)));
+}
+
+bool wp::hdr() const
+{
+    return bool_get(SDL_PROP_WINDOW_HDR_ENABLED_BOOLEAN, false);
+}
+
+float wp::hdr_headroom() const
+{
+    return float_get(SDL_PROP_WINDOW_HDR_HEADROOM_FLOAT, 0.f);
+}
+
+float wp::sdr_white_level() const
+{
+    return float_get(SDL_PROP_WINDOW_SDR_WHITE_LEVEL_FLOAT, 0.f);
+}
+
+// ---- WINDOW ----
+
 namespace
 {
     window make_fullscreen(proxy::video sys, c_string title)
@@ -19,6 +113,11 @@ namespace
 
 window::window(proxy::video, c_string title, pixel::point size, flag_bitmask f)
     : resource { ::SDL_CreateWindow(title.data(), size.x, size.y, f.mask()) }
+{
+}
+
+window::window(proxy::video, const create_properties& props)
+    : resource { ::SDL_CreateWindowWithProperties(props.id()) }
 {
 }
 
@@ -143,6 +242,11 @@ ref<renderer> window::renderer()
 ref<const surface> window::surface() const
 {
     return ref<const hal::surface>::from_ptr(::SDL_GetWindowSurface(get()));
+}
+
+window::properties window::props() const
+{
+    return { ::SDL_GetWindowProperties(get()), pass_key<window> {} };
 }
 
 std::ostream& hal::operator<<(std::ostream& str, hal::ref<hal::window> wnd)

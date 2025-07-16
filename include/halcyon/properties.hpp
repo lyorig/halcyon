@@ -9,6 +9,7 @@
 
 namespace hal
 {
+    // A reference to SDL-owned properties.
     class properties_ref
     {
     public:
@@ -41,10 +42,16 @@ namespace hal
         id_t m_id;
     };
 
+    // Owned properties.
     class properties : public properties_ref
     {
     public:
         properties();
         ~properties();
+
+        properties(const properties&)            = delete;
+        properties(properties&&)                 = delete;
+        properties& operator=(const properties&) = delete;
+        properties& operator=(properties&&)      = delete;
     };
 }

@@ -25,6 +25,58 @@ namespace hal
     public:
         using id_t = std::uint8_t;
 
+        class create_properties : public properties
+        {
+        public:
+            create_properties& always_on_top(bool val);
+            create_properties& external_graphics_context(bool val);
+
+            create_properties& focusable(bool val);
+            create_properties& resizable(bool val);
+
+            create_properties& hidden(bool val);
+            create_properties& high_pixel_density(bool val);
+
+            create_properties& maximized(bool val);
+            create_properties& minimized(bool val);
+            create_properties& fullscreen(bool val);
+            create_properties& borderless(bool val);
+            create_properties& transparent(bool val);
+
+            create_properties& menu(bool val);
+            create_properties& modal(bool val);
+            create_properties& tooltip(bool val);
+            create_properties& utility(bool val);
+            create_properties& constrain_popup(bool val);
+
+            create_properties& mouse_grabbed(bool val);
+
+            create_properties& metal(bool val);
+            create_properties& opengl(bool val);
+            create_properties& vulkan(bool val);
+
+            create_properties& parent(ref<window> val);
+
+            create_properties& title(c_string val);
+
+            create_properties& size(pixel::point val);
+            create_properties& pos(pixel::point val);
+        };
+
+        class properties : public properties_ref
+        {
+        public:
+            properties(id_t id, pass_key<window>);
+
+            // The shape associated with a shaped window.
+            ref<surface> shape() const;
+
+            bool  hdr() const;
+            float hdr_headroom() const;
+
+            float sdr_white_level() const;
+        };
+
         enum class flag : std::uint32_t
         {
             none                = 0,
@@ -63,6 +115,9 @@ namespace hal
         // If you want fullscreen, a tagged constructor exists for that purpose
         // and using it is recommended.
         window(proxy::video sys, c_string title, pixel::point size, flag_bitmask f = {});
+
+        // Create a window with a set of properties.
+        window(proxy::video sys, const create_properties& props);
 
         // Create a window in fullscreen mode.
         window(proxy::video sys, c_string title, HAL_TAG_NAME(fullscreen));
@@ -109,6 +164,8 @@ namespace hal
         // View the surface associated with this window.
         // Only works if a software renderer is used.
         ref<const surface> surface() const;
+
+        properties props() const;
 
         friend std::ostream& operator<<(std::ostream& str, hal::ref<hal::window> wnd);
     };
