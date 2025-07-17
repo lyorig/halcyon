@@ -27,7 +27,6 @@ result<pixel::point> text::size() const
 font::font(accessor src, pt_t size, pass_key<ttf::context>)
     : resource { ::TTF_OpenFontIO(src.release(), true, size) }
 {
-    HAL_WARN_IF(height() != skip(), '\"', family(), ' ', style(), "\" has different height (", height(), "px) & skip (", skip(), "px). size_text() might not return accurate vertical results.");
 }
 
 builder::font_text font::render(c_string text) const

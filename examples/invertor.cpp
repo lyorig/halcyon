@@ -1,12 +1,10 @@
 #include <iostream>
 
+#include <halcyon/filesystem.hpp>
 #include <halcyon/image.hpp>
-
-#include <halcyon/video/message_box.hpp>
-
-#include <halcyon/utility/strutil.hpp>
-
 #include <halcyon/main.hpp>
+#include <halcyon/utility/strutil.hpp>
+#include <halcyon/video/message_box.hpp>
 
 // invertor.cpp:
 // Inverts a given image.
@@ -31,7 +29,7 @@ int main(int argc, char* argv[])
         }
     }
 
-    hal::image::save::png(surf, "invert.png");
+    hal::image::save::png(surf, hal::resource_loader {}.output("invert.png"));
 
     return EXIT_SUCCESS;
 }

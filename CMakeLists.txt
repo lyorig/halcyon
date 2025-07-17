@@ -46,6 +46,7 @@ set(Halcyon_SOURCES
     video/window.cpp
     debug.cpp
     events.cpp
+	filesystem.cpp
     image.cpp
 	library.cpp
 	misc.cpp

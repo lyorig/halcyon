@@ -1,6 +1,7 @@
 #include <iostream>
 #include <thread>
 
+#include <halcyon/filesystem.hpp>
 #include <halcyon/video.hpp>
 
 #include <halcyon/ttf.hpp>
@@ -29,9 +30,12 @@ int main(int argc, char* argv[])
 
     // Deallocate as much as we can before the main loop.
     {
-        hal::ttf::context tctx;
+        hal::ttf::context    tctx;
+        hal::resource_loader ldr;
 
-        const hal::font    fnt { tctx.load("assets/m5x7.ttf", font_size) };
+        std::cerr << ldr.base() << '\n';
+
+        const hal::font    fnt { tctx.load(ldr.access("assets/m5x7.ttf"), font_size) };
         const hal::surface surf { fnt.render(argv[1]).fg(hal::palette::black)() };
 
         tex = { rnd, surf };
