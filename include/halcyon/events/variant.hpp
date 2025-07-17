@@ -316,7 +316,7 @@ namespace hal
         };
     }
 
-    constexpr std::string_view to_string(event::type t)
+    constexpr std::string_view to_string(event::type)
     {
         return "[TODO]";
     }

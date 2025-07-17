@@ -29,7 +29,7 @@ int main(int argc, char* argv[])
         }
     }
 
-    hal::image::save::png(surf, hal::resource_loader {}.output("invert.png"));
+    hal::image::save::png(surf, hal::fs::resource_loader {}.output("invert.png"));
 
     return EXIT_SUCCESS;
 }

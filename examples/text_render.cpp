@@ -30,8 +30,8 @@ int main(int argc, char* argv[])
 
     // Deallocate as much as we can before the main loop.
     {
-        hal::ttf::context    tctx;
-        hal::resource_loader ldr;
+        hal::ttf::context        tctx;
+        hal::fs::resource_loader ldr;
 
         std::cerr << ldr.base() << '\n';
 

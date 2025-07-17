@@ -15,7 +15,6 @@ namespace hal
     class surface;
 
     // Base texture class. Do not create directly.
-    //
     class texture : public detail::resource<SDL_Texture, &::SDL_DestroyTexture>
     {
     protected:

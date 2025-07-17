@@ -98,19 +98,6 @@ float wp::sdr_white_level() const
 
 // ---- WINDOW ----
 
-namespace
-{
-    window make_fullscreen(proxy::video sys, c_string title)
-    {
-        window ret;
-
-        if (const auto res = sys.display_info_native(display::primary()))
-            ret = { sys, title, res->size(), window::flag::fullscreen };
-
-        return ret;
-    }
-}
-
 window::window(proxy::video, c_string title, pixel::point size, flag_bitmask f)
     : resource { ::SDL_CreateWindow(title.data(), size.x, size.y, f.mask()) }
 {
@@ -118,11 +105,6 @@ window::window(proxy::video, c_string title, pixel::point size, flag_bitmask f)
 
 window::window(proxy::video, const create_properties& props)
     : resource { ::SDL_CreateWindowWithProperties(props.id()) }
-{
-}
-
-window::window(proxy::video sys, c_string title, HAL_TAG_NAME(fullscreen))
-    : window { make_fullscreen(sys, title) }
 {
 }
 

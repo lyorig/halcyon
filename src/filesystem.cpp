@@ -4,19 +4,19 @@
 
 using namespace hal;
 
-c_string hal::base_path()
+c_string fs::base_path()
 {
     return ::SDL_GetBasePath();
 }
 
 // SDL caches this string so it's okay
 // to use it with a std::string_view.
-resource_loader::resource_loader()
+fs::resource_loader::resource_loader()
     : m_base { base_path() }
 {
 }
 
-std::string resource_loader::resolve(std::string_view path) const
+std::string fs::resource_loader::resolve(std::string_view path) const
 {
     std::string       ret;
     const std::size_t new_size { m_base.size() + path.size() };
@@ -33,17 +33,17 @@ std::string resource_loader::resolve(std::string_view path) const
     return ret;
 }
 
-accessor resource_loader::access(std::string_view path) const
+accessor fs::resource_loader::access(std::string_view path) const
 {
     return resolve(path);
 }
 
-outputter resource_loader::output(std::string_view path) const
+outputter fs::resource_loader::output(std::string_view path) const
 {
     return resolve(path);
 }
 
-std::string_view resource_loader::base() const
+std::string_view fs::resource_loader::base() const
 {
     return m_base;
 }

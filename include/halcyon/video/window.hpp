@@ -12,8 +12,6 @@
 
 namespace hal
 {
-    HAL_TAG(fullscreen);
-
     namespace proxy
     {
         class video;
@@ -112,15 +110,11 @@ namespace hal
         window() = default;
 
         // Create a window with specific flags.
-        // If you want fullscreen, a tagged constructor exists for that purpose
-        // and using it is recommended.
+        // If `fullscreen` is included in the flags, the size is ignored.
         window(proxy::video sys, c_string title, pixel::point size, flag_bitmask f = {});
 
         // Create a window with a set of properties.
         window(proxy::video sys, const create_properties& props);
-
-        // Create a window in fullscreen mode.
-        window(proxy::video sys, c_string title, HAL_TAG_NAME(fullscreen));
 
         // Get the index of the display this window is currently on.
         // In case of failure, returns 0.
