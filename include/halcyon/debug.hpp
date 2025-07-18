@@ -105,7 +105,7 @@ namespace hal
         {
             debug::print_severity(severity::error, string_from_pack(std::forward<Args>(extra_info)...), " [", function, ", ", file, ':', line, "]");
 
-            std::abort();
+            std::exit(EXIT_FAILURE);
         }
 
         template <meta::printable... Args>

@@ -7,6 +7,7 @@
 #include <halcyon/utility/shared.hpp>
 
 #include "data.hpp"
+#include "halcyon/filesystem.hpp"
 #include "halcyon/subsystem.hpp"
 
 // Halcyon testing.
@@ -357,6 +358,19 @@ namespace test
 
         return EXIT_SUCCESS;
     }
+
+    int text_engines()
+    {
+        hal::text_engine::surface s;
+        hal::ttf::context         ctx;
+        hal::fs::resource_loader  rl;
+        hal::font                 f { ctx.load(rl.access("assets/m5x7.ttf"), 42) };
+
+        hal::text t { f, "ligma" };
+        t.size().get();
+
+        return EXIT_SUCCESS;
+    }
 }
 
 int main(int argc, char* argv[])
@@ -390,7 +404,7 @@ int main(int argc, char* argv[])
 
     FAIL_IF(argc == 1, "No test name given.");
 
-    const auto iter = std::find_if(std::begin(tests), std::end(tests), [&](const auto& pair)
+    const auto iter = std::ranges::find_if(tests, [&](const auto& pair)
         { return pair.name == argv[1]; });
 
     FAIL_IF(iter == std::end(tests), "Invalid option specified: ", argv[1]);
