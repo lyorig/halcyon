@@ -10,12 +10,15 @@ namespace hal::fs
     // using accessors/outputters, as using relative paths will
     // resolve them with respect to the cwd.
     //
-    // Might be slow to call the first time, but SDL internally caches
+    // Will be slower to call the first time, but SDL internally caches
     // the result for quick calls afterward. However, if you're a proper
     // speed junkie, use `hal::fs::resource_loader`, which internally uses
     // a `std::string_view`, skipping any traversal and/or size calculations
     // required for constructing file paths.
     c_string base_path();
+
+    // See the SDL docs for more info.
+    c_string pref_path(c_string org_name, c_string app_name);
 
     // A utility class which caches the base path for fast resolving
     // of relative paths.
@@ -41,7 +44,9 @@ namespace hal::fs
         std::string_view base() const;
 
     private:
-        // The reason we can store
+        // The reason we can store this in a `std::string_view` is that the string is
+        // owned by SDL for the entire lifetime of the program, so we just grab that
+        // and calculate the size up front.
         std::string_view m_base;
     };
 }

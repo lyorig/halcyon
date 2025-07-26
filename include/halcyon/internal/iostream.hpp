@@ -116,7 +116,7 @@ namespace hal
         concept buffer = requires(const T& x) { std::begin(x); std::end(x); std::size(x); std::data(x); };
     }
 
-    // Shorthand for creating a writeable byte span from a compatible array-like object.
+    // Shorthand for creating a writable byte span from a compatible array-like object.
     template <meta::buffer T>
     auto as_bytes(T& buffer)
     {

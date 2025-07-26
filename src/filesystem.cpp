@@ -9,6 +9,11 @@ c_string fs::base_path()
     return ::SDL_GetBasePath();
 }
 
+c_string fs::pref_path(c_string org_name, c_string app_name)
+{
+    return ::SDL_GetPrefPath(org_name.c_str(), app_name.c_str());
+}
+
 // SDL caches this string so it's okay
 // to use it with a std::string_view.
 fs::resource_loader::resource_loader()
