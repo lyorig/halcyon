@@ -93,7 +93,7 @@ font ttf::context::load(accessor data, font::pt_t size) &
 
 bool ttf::initialized()
 {
-    return ::TTF_WasInit() > 0;
+    return ::TTF_WasInit() != 0;
 }
 
 using bft = builder::font_text;

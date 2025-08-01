@@ -238,10 +238,10 @@ namespace hal
     public:
         text() = default;
 
-        text(hal::ref<const font> f, std::string_view str);
+        text(ref<const font> f, std::string_view str);
 
         template <auto Creator, auto Deleter>
-        text(hal::ref<const detail::engine_base<Creator, Deleter>> gex, hal::ref<const font> f, std::string_view str)
+        text(ref<const detail::engine_base<Creator, Deleter>> gex, ref<const font> f, std::string_view str)
             : text { gex.get(), f, str }
         {
         }
