@@ -31,7 +31,7 @@ event::push_outcome::operator bool() const
     return valid();
 }
 
-std::ostream& event::operator<<(std::ostream& str, push_outcome o)
+std::ostream& hal::event::operator<<(std::ostream& str, push_outcome o)
 {
     switch (o.m_res)
     {

@@ -4,13 +4,13 @@ using namespace hal;
 
 guard::lock::lock(lref<streaming_texture> tex)
     : m_ref { tex }
-    , result { tex->lock() }
+    , res { tex->lock() }
 {
 }
 
 guard::lock::lock(lref<streaming_texture> tex, pixel::rect area)
     : m_ref { tex }
-    , result { tex->lock(area) }
+    , res { tex->lock(area) }
 {
 }
 

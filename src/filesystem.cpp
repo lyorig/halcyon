@@ -9,9 +9,9 @@ c_string fs::base_path()
     return ::SDL_GetBasePath();
 }
 
-c_string fs::pref_path(c_string org_name, c_string app_name)
+c_string fs::pref_path(c_string org, c_string app)
 {
-    return ::SDL_GetPrefPath(org_name.c_str(), app_name.c_str());
+    return ::SDL_GetPrefPath(org.c_str(), app.c_str());
 }
 
 // SDL caches this string so it's okay

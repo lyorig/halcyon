@@ -231,7 +231,7 @@ window::properties window::props() const
     return { ::SDL_GetWindowProperties(get()), pass_key<window> {} };
 }
 
-std::ostream& hal::operator<<(std::ostream& str, hal::ref<hal::window> wnd)
+std::ostream& operator<<(std::ostream& str, hal::ref<hal::window> wnd)
 {
     if (!wnd->valid())
     {

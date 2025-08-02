@@ -17,8 +17,8 @@ namespace hal::fs
     // required for constructing file paths.
     c_string base_path();
 
-    // See the SDL docs for more info.
-    c_string pref_path(c_string org_name, c_string app_name);
+    // See the SDL docs for `SDL_GetPrefPath()`.
+    c_string pref_path(c_string org, c_string app);
 
     // A utility class which caches the base path for fast resolving
     // of relative paths.

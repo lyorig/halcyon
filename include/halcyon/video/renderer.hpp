@@ -85,7 +85,7 @@ namespace hal
 
         renderer() = default;
 
-        renderer(lref<const window> wnd);
+        renderer(lref<const hal::window> wnd);
         renderer(const create_properties& props);
 
         // Clear (fill) the render target with the current draw color.
@@ -159,8 +159,8 @@ namespace hal
         result<pixel::point> size() const;
         bool                 size(pixel::point sz, presentation p);
 
-        ref<const window> window() const;
-        ref<hal::window>  window();
+        ref<const hal::window> window() const;
+        ref<hal::window>       window();
 
         const char* name() const;
 
