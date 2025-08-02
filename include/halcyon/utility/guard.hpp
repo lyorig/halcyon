@@ -25,7 +25,7 @@ namespace hal
             lref<streaming_texture> m_ref;
 
         public:
-            result<lock_data> result;
+            result<lock_data> res;
         };
 
         template <typename T>

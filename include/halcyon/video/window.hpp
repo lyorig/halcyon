@@ -67,7 +67,7 @@ namespace hal
             properties(id_t id, pass_key<window>);
 
             // The shape associated with a shaped window.
-            ref<surface> shape() const;
+            ref<hal::surface> shape() const;
 
             bool  hdr() const;
             float hdr_headroom() const;
@@ -152,12 +152,12 @@ namespace hal
 
         void always_on_top(bool set);
 
-        ref<const renderer> renderer() const;
-        ref<class renderer> renderer();
+        ref<const hal::renderer> renderer() const;
+        ref<class hal::renderer> renderer();
 
         // View the surface associated with this window.
         // Only works if a software renderer is used.
-        ref<const surface> surface() const;
+        ref<const hal::surface> surface() const;
 
         properties props() const;
 

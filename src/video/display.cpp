@@ -50,7 +50,7 @@ SDL_DisplayMode* display::ptr(pass_key<proxy::video>)
     return this;
 }
 
-std::ostream& hal::operator<<(std::ostream& str, const display& disp)
+std::ostream& operator<<(std::ostream& str, const display& disp)
 {
     return str << "[size: " << disp.size()
                << ", refresh rate:" << disp.hz()
