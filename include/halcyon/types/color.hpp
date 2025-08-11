@@ -147,8 +147,8 @@ namespace hal
                                yellow      = 0xFFFF00,
                                orange      = 0xFFA500,
                                cyan        = 0x00FFFF,
-                               weezer_blue = 0x0099D3,
-                               white       = 0xFFFFFF;
+                               weezer_blue = 0x0099D3, // WEE OO
+            white                          = 0xFFFFFF;
 
         constexpr color transparent { black, 0 };
     }

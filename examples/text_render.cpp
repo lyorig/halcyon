@@ -35,8 +35,8 @@ int main(int argc, char* argv[])
 
         std::cerr << ldr.base() << '\n';
 
-        const hal::font    fnt { tctx.load(ldr.access("assets/m5x7.ttf"), font_size) };
-        const hal::surface surf { fnt.render(argv[1]).fg(hal::palette::black)() };
+        const hal::font    fnt { tctx.make_font(ldr.access("assets/m5x7.ttf"), font_size) };
+        const hal::surface surf { fnt.render_solid(argv[1], hal::palette::black) };
 
         tex = { rnd, surf };
 

@@ -28,29 +28,31 @@ namespace hal
     public:
         using pt_t = std::uint8_t;
 
-        enum class render_type : std::uint8_t
-        {
-            solid,
-            shaded,
-            blended,
-            lcd
-        };
-
-        consteval static render_type default_render_type()
-        {
-            return render_type::solid;
-        }
-
         font() = default;
 
         // [private] Fonts are loaded with ttf::context::load().
         font(accessor src, pt_t size, pass_key<ttf::context>);
 
-        // Render text to a surface.
-        [[nodiscard]] builder::font_text render(c_string text) const;
+        // Rendering functions: text.
 
-        // Render a single glyph to a surface.
-        [[nodiscard]] builder::font_glyph render(char32_t glyph) const;
+        [[nodiscard]] surface render_solid(std::string_view text, color fg) const;
+        [[nodiscard]] surface render_solid(std::string_view text, color fg, int wrap_length) const;
+
+        [[nodiscard]] surface render_shaded(std::string_view text, color fg, color bg) const;
+        [[nodiscard]] surface render_shaded(std::string_view text, color fg, color bg, int wrap_length) const;
+
+        [[nodiscard]] surface render_blended(std::string_view text, color fg) const;
+        [[nodiscard]] surface render_blended(std::string_view text, color fg, int wrap_length) const;
+
+        [[nodiscard]] surface render_lcd(std::string_view text, color fg, color bg) const;
+        [[nodiscard]] surface render_lcd(std::string_view text, color fg, color bg, int wrap_length) const;
+
+        // Rendering functions: glyphs.
+
+        [[nodiscard]] surface render_solid(char32_t glyph, color fg) const;
+        [[nodiscard]] surface render_shaded(char32_t glyph, color fg, color bg) const;
+        [[nodiscard]] surface render_blended(char32_t glyph, color fg) const;
+        [[nodiscard]] surface render_lcd(char32_t glyph, color fg, color bg) const;
 
         pixel_t height() const;
         pixel_t skip() const;
@@ -60,26 +62,6 @@ namespace hal
 
         bool mono() const;
     };
-
-    constexpr c_string to_string(font::render_type rt)
-    {
-        switch (rt)
-        {
-            using enum font::render_type;
-
-        case solid:
-            return "Solid";
-
-        case shaded:
-            return "Shaded";
-
-        case blended:
-            return "Blended";
-
-        case lcd:
-            return "LCD";
-        }
-    }
 
     namespace ttf
     {
@@ -105,89 +87,12 @@ namespace hal
             ~context();
 
             // Font loading function.
-            [[nodiscard]] font load(accessor data, font::pt_t size) &;
+            [[nodiscard]] font make_font(accessor data, font::pt_t size) const;
         };
 
         static_assert(std::is_empty_v<context>);
 
         bool initialized();
-    }
-
-    namespace detail
-    {
-        template <typename Derived>
-        class font_builder_base
-        {
-        public:
-            [[nodiscard]] font_builder_base(ref<const font> fnt, pass_key<font>)
-                : m_font { fnt }
-                , m_fg { hal::palette::white }
-                , m_bg { hal::palette::transparent }
-            {
-            }
-
-            // Set the foreground (text) color.
-            [[nodiscard]] Derived& fg(color c)
-            {
-                m_fg = c;
-
-                return get_this();
-            }
-
-            // Set the background color.
-            // Does not have an effect on all render types.
-            [[nodiscard]] Derived& bg(color c)
-            {
-                m_bg = c;
-
-                return get_this();
-            }
-
-        protected:
-            Derived& get_this()
-            {
-                return static_cast<Derived&>(*this);
-            }
-
-            ref<const font> m_font;
-
-            color m_fg, m_bg;
-        };
-    };
-
-    namespace builder
-    {
-        class font_text : public detail::font_builder_base<font_text>
-        {
-        public:
-            [[nodiscard]] font_text(ref<const font>, std::string_view text, pass_key<font>);
-
-            // How many characters to wrap this text at.
-            // Zero means only wrap on newlines.
-            [[nodiscard]] font_text& wrap(pixel_t wl);
-
-            [[nodiscard]] surface operator()(font::render_type rt = font::default_render_type());
-
-        private:
-            consteval static pixel_t invalid()
-            {
-                return std::numeric_limits<pixel_t>::max();
-            }
-
-            std::string_view m_text;
-            pixel_t          m_wrapLength;
-        };
-
-        class font_glyph : public detail::font_builder_base<font_glyph>
-        {
-        public:
-            [[nodiscard]] font_glyph(ref<const font>, char32_t glyph, pass_key<font>);
-
-            [[nodiscard]] surface operator()(font::render_type rt = font::default_render_type());
-
-        private:
-            char32_t m_glyph;
-        };
     }
 
     class text;
@@ -249,6 +154,6 @@ namespace hal
         result<pixel::point> size() const;
 
     private:
-        text(TTF_TextEngine* eng, hal::ref<const font> f, std::string_view str);
+        text(TTF_TextEngine* eng, ref<const font> f, std::string_view str);
     };
 }
