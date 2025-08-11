@@ -9,7 +9,7 @@
 int main(int, char*[])
 {
     using enum hal::message_box::type;
-    using namespace hal::palette;
+    using namespace hal::colors;
 
     // Creation via builder.
     auto msgb = hal::message_box::builder()

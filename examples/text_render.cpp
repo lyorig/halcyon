@@ -36,7 +36,7 @@ int main(int argc, char* argv[])
         std::cerr << ldr.base() << '\n';
 
         const hal::font    fnt { tctx.make_font(ldr.access("assets/m5x7.ttf"), font_size) };
-        const hal::surface surf { fnt.render_solid(argv[1], hal::palette::black) };
+        const hal::surface surf { fnt.render_solid(argv[1], hal::colors::black) };
 
         tex = { rnd, surf };
 
@@ -45,7 +45,7 @@ int main(int argc, char* argv[])
     }
 
     wnd.size(tex.size().get() + padding);
-    rnd.color(hal::palette::weezer_blue);
+    rnd.color(hal::colors::weezer_blue);
 
     while (true)
     {

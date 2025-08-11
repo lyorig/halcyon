@@ -56,9 +56,9 @@ namespace test
     consteval void colors()
     {
         constexpr hal::color
-            first { hal::palette::black, 0 },
-            second { hal::palette::transparent },
-            third { hal::palette::cyan };
+            first { hal::colors::black, 0 },
+            second { hal::colors::transparent },
+            third { hal::colors::cyan };
 
         static_assert(first == second);
         static_assert(first != third);
@@ -138,7 +138,7 @@ namespace test
     {
         hal::surface s { hal::image::load(hal::as_bytes(png_2x1)) };
 
-        FAIL_IF((s.pixel({ 0, 0 }).get() != hal::palette::red || s.pixel({ 1, 0 }).get() != hal::palette::blue), "Surface color mismatch");
+        FAIL_IF((s.pixel({ 0, 0 }).get() != hal::colors::red || s.pixel({ 1, 0 }).get() != hal::colors::blue), "Surface color mismatch");
 
         return EXIT_SUCCESS;
     }
@@ -146,7 +146,7 @@ namespace test
     int surface_copy()
     {
         hal::surface s1 { { 640, 480 } }, s2;
-        s1.fill(hal::palette::cyan);
+        s1.fill(hal::colors::cyan);
 
         s2 = s1;
         const SDL_Surface &sr1 { *s1 }, sr2 { *s2 };
@@ -315,9 +315,9 @@ namespace test
 
         hal::guard::lock lock { tex };
 
-        FAIL_IF(!lock.result, "Could not lock streaming texture");
+        FAIL_IF(!lock.res, "Could not lock streaming texture");
 
-        std::memset(lock.result->pixels, 0x00, tex.size()->product() * hal::pixel::bytes_per_pixel_of(tex.pixel_format().get()));
+        std::memset(lock.res->pixels, 0x00, tex.size()->product() * hal::pixel::bytes_per_pixel_of(tex.pixel_format().get()));
 
         return EXIT_SUCCESS;
     }
@@ -364,7 +364,7 @@ namespace test
         hal::text_engine::surface s;
         hal::ttf::context         ctx;
         hal::fs::resource_loader  rl;
-        hal::font                 f { ctx.load(rl.access("assets/m5x7.ttf"), 42) };
+        hal::font                 f { ctx.make_font(rl.access("assets/m5x7.ttf"), 42) };
 
         hal::text t { f, "ligma" };
         t.size().get();

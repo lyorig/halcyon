@@ -50,7 +50,7 @@ int main(int, char*[])
                     break;
 
                 case C: // Paint the background blue.
-                    rnd.color(hal::palette::weezer_blue);
+                    rnd.color(hal::colors::weezer_blue);
                     break;
 
                 default:
@@ -64,7 +64,7 @@ int main(int, char*[])
                     using enum hal::keyboard::key;
 
                 case C:
-                    rnd.color(hal::palette::black);
+                    rnd.color(hal::colors::black);
                     break;
 
                 default:

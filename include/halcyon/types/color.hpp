@@ -137,8 +137,8 @@ namespace hal
 
     std::ostream& operator<<(std::ostream& str, color c);
 
-    // Predefined colors in RGB form.
-    namespace palette
+    // Predefined colors.
+    namespace colors
     {
         constexpr color::hex_t black       = 0x000000,
                                red         = 0xFF0000,
@@ -147,7 +147,7 @@ namespace hal
                                yellow      = 0xFFFF00,
                                orange      = 0xFFA500,
                                cyan        = 0x00FFFF,
-                               weezer_blue = 0x0099D3, // WEE OO
+                               weezer_blue = 0x0099D3, // WEE OOO
             white                          = 0xFFFFFF;
 
         constexpr color transparent { black, 0 };

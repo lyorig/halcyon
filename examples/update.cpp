@@ -17,13 +17,13 @@ int main(int argc, char* argv[])
 
         hal::surface s { t.size().get(), pref };
 
-        s.fill(hal::palette::cyan);
+        s.fill(hal::colors::cyan);
         t.update(s);
 
-        s.fill(hal::palette::orange);
+        s.fill(hal::colors::orange);
         t.update(s, t.size().get() / 2);
 
-        s.fill(hal::palette::green);
+        s.fill(hal::colors::green);
         t.update(s, { { 0, 0 }, s.size() / 4 });
 
         rnd.draw(t).render();
