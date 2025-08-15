@@ -1,6 +1,14 @@
 #pragma once
 
+#include "SDL3/SDL_main.h"
+
 #include <type_traits>
+
+// main.hpp:
+// SDL's macro trickery attempts to circumvent various custom
+// main functions used by different systems (e.g. Windows).
+// Include this in your main.cpp file and nowhere else, or you
+// risk various compiler/linker errors.
 
 namespace hal
 {
