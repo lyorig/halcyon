@@ -60,7 +60,7 @@ namespace hal
         public:
             color_mod(T& obj, color c)
                 : m_ref { obj }
-                , m_old { m_ref->color_mod() }
+                , m_old { m_ref->color_mod().get() }
             {
                 set(c);
             }

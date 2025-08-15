@@ -12,8 +12,12 @@
     #define HAL_DEBUG_ENABLED
 #endif
 
+#if (defined(HAL_DEBUG_ADVANCED) || defined(HAL_DEBUG_ENABLED) && !defined(_WIN32))
+    #define HAL_DEBUG_MAKES_SENSE
+#endif
+
 // Necessary include files.
-#ifdef HAL_DEBUG_ENABLED
+#ifdef HAL_DEBUG_MAKES_SENSE
 
     #include <halcyon/utility/printing.hpp>
     #include <halcyon/utility/strutil.hpp>
@@ -37,14 +41,20 @@
 
 // More necessary include files.
 // Separated to have all Halcyon includes before the STL.
-#include <utility>
-
 #include <halcyon/types/c_string.hpp>
+
+#include <utility>
 
 namespace hal
 {
     namespace compile_settings
     {
+        // `true` if `HAL_DEBUG_ENABLED` is defined.
+        // WARNING: This doesn't guarantee debugging is actually gonna work.
+        // On Windows, debugging is disabled unless `HAL_DEBUG_ADVANCED` is
+        // defined, as the GUI subsystem disables any console logging.
+        // To check whether you're actually gonna get any output to a
+        // console or file, use `HAL_DEBUG_MAKES_SENSE` or `hal::compile_settings::debug_makes_sense`.
         constexpr bool debug_enabled {
 #ifdef HAL_DEBUG_ENABLED
             true
@@ -53,8 +63,20 @@ namespace hal
 #endif
         };
 
+        // `true` if `HAL_DEBUG_ADVANCED` is defined.
         constexpr bool debug_advanced {
 #ifdef HAL_DEBUG_ADVANCED
+            true
+#else
+            false
+#endif
+        };
+
+        // `true` if you'll actually get any visible debug output.
+        // See documentation for `hal::compile_settings::debug_enabled`
+        // to find out why this is a thing.
+        constexpr bool debug_makes_sense {
+#ifdef HAL_DEBUG_MAKES_SENSE
             true
 #else
             false
@@ -82,7 +104,7 @@ namespace hal
         debug(const debug&) = delete;
         debug(debug&&)      = delete;
 
-#ifdef HAL_DEBUG_ENABLED
+#ifdef HAL_DEBUG_MAKES_SENSE
         // Output any amount of arguments to stdout/stderr and an output file.
         template <meta::printable... Args>
         static void print(Args&&... extra_info)
@@ -132,14 +154,15 @@ namespace hal
 
     private:
         template <meta::printable... Args>
-        static void print_severity(severity type, Args&&... extra_info)
+        static void print_severity([[maybe_unused]] severity type, [[maybe_unused]] Args&&... extra_info)
         {
+    #ifdef HAL_DEBUG_MAKES_SENSE
             std::stringstream fwd;
 
-    #ifdef HAL_DEBUG_ADVANCED
+        #ifdef HAL_DEBUG_ADVANCED
             fwd << std::fixed << std::setprecision(3) << '[' << m_timer()
                 << "s] ";
-    #endif
+        #endif
 
             using enum severity;
 
@@ -172,11 +195,14 @@ namespace hal
 
             const std::string with_info { fwd.str() + string_from_pack(std::forward<Args>(extra_info)...) };
 
-    #ifdef HAL_DEBUG_ADVANCED
+        #ifdef HAL_DEBUG_ADVANCED
             m_output << with_info << std::endl;
-    #endif
+        #endif
 
+        #ifndef _WIN32 // The Windows subsystem disables printing to console.
             (type == error ? std::cerr : std::cout) << with_info << std::endl;
+        #endif
+    #endif
         }
 
     #ifdef HAL_DEBUG_ADVANCED
@@ -187,7 +213,7 @@ namespace hal
     };
 }
 
-#ifdef HAL_DEBUG_ENABLED
+#ifdef HAL_DEBUG_MAKES_SENSE
 
     #define HAL_PRINT      ::hal::debug::print
     #define HAL_PANIC(...) ::hal::debug::panic(__PRETTY_FUNCTION__, __FILE_NAME__, __LINE__, __VA_ARGS__)
