@@ -1,3 +1,4 @@
+#include <halcyon/main.hpp>
 #include <halcyon/video.hpp>
 
 // events.cpp:

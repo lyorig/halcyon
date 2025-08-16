@@ -1,6 +1,7 @@
 #include <halcyon/video.hpp>
 
 #include <halcyon/image.hpp>
+#include <halcyon/main.hpp>
 #include <halcyon/ttf.hpp>
 
 #include <SDL3_image/SDL_image.h>

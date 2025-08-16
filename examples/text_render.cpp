@@ -2,6 +2,7 @@
 #include <thread>
 
 #include <halcyon/filesystem.hpp>
+#include <halcyon/main.hpp>
 #include <halcyon/video.hpp>
 
 #include <halcyon/ttf.hpp>

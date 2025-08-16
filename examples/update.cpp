@@ -1,6 +1,7 @@
 #include <cstdlib>
 #include <thread>
 
+#include <halcyon/main.hpp>
 #include <halcyon/video.hpp>
 
 int main(int argc, char* argv[])
