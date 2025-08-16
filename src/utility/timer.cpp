@@ -16,10 +16,15 @@ void timer::reset()
 
 double timer::operator()() const
 {
-    return std::chrono::duration<double> { clock::now() - m_epoch }.count();
+    return std::chrono::duration<double> { elapsed() }.count();
 }
 
-timer::clock::time_point timer::time_point() const
+timer::clock::duration timer::elapsed() const
+{
+    return clock::now() - m_epoch;
+}
+
+timer::clock::time_point timer::epoch() const
 {
     return m_epoch;
 }

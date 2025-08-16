@@ -43,7 +43,13 @@ namespace hal
             return *this;
         }
 
-        clock::time_point time_point() const;
+        // Get the `timer::clock::duration` that's elapsed since the timer's epoch.
+        // For a convenience function that returns the time in seconds as a `double`,
+        // see `timer::operator()()`.
+        clock::duration elapsed() const;
+
+        // Get the `timer::clock::time point` at which the timer started.
+        clock::time_point epoch() const;
 
     private:
         clock::time_point m_epoch;
