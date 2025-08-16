@@ -8,11 +8,11 @@
 //  - HAL_DEBUG_ADVANCED additionally provides timestamps and logs to an output file.
 //  - if NDEBUG is defined, HAL_DEBUG_ENABLED gets implicitly enabled as well.
 
-#ifndef NDEBUG
+#if !defined NDEBUG || defined HAL_DEBUG_ADVANCED
     #define HAL_DEBUG_ENABLED
 #endif
 
-#if (defined(HAL_DEBUG_ADVANCED) || defined(HAL_DEBUG_ENABLED) && !defined(_WIN32))
+#if defined HAL_DEBUG_ADVANCED || defined HAL_DEBUG_ENABLED && !defined _WIN32
     #define HAL_DEBUG_MAKES_SENSE
 #endif
 
@@ -28,6 +28,7 @@
     #endif
 
     #include <iostream>
+    #include <utility>
 
     // For compatibility with MSVC.
     #ifdef _MSC_VER
@@ -42,8 +43,6 @@
 // More necessary include files.
 // Separated to have all Halcyon includes before the STL.
 #include <halcyon/types/c_string.hpp>
-
-#include <utility>
 
 namespace hal
 {

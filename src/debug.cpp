@@ -4,13 +4,9 @@
 
 using namespace hal;
 
-#ifdef HAL_DEBUG_ENABLED
-
-    #ifdef HAL_DEBUG_ADVANCED
+#ifdef HAL_DEBUG_ADVANCED
 std::ofstream debug::m_output { "Halcyon Debug Output.txt" };
 const timer   debug::m_timer {};
-    #endif
-
 #endif
 
 c_string debug::last_error()
