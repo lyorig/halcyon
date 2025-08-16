@@ -31,62 +31,62 @@ font::font(accessor src, pt_t size, pass_key<ttf::context>)
 
 surface font::render_solid(std::string_view text, color fg) const
 {
-    return ::TTF_RenderText_Solid(get(), text.data(), text.length(), static_cast<SDL_Color>(fg));
+    return ::TTF_RenderText_Solid(get(), text.data(), text.length(), fg);
 }
 
 surface font::render_solid(std::string_view text, color fg, int wrap_length) const
 {
-    return ::TTF_RenderText_Solid_Wrapped(get(), text.data(), text.length(), static_cast<SDL_Color>(fg), wrap_length);
+    return ::TTF_RenderText_Solid_Wrapped(get(), text.data(), text.length(), fg, wrap_length);
 }
 
 surface font::render_shaded(std::string_view text, color fg, color bg) const
 {
-    return ::TTF_RenderText_Shaded(get(), text.data(), text.length(), static_cast<SDL_Color>(fg), static_cast<SDL_Color>(bg));
+    return ::TTF_RenderText_Shaded(get(), text.data(), text.length(), fg, bg);
 }
 
 surface font::render_shaded(std::string_view text, color fg, color bg, int wrap_length) const
 {
-    return ::TTF_RenderText_Shaded_Wrapped(get(), text.data(), text.length(), static_cast<SDL_Color>(fg), static_cast<SDL_Color>(bg), wrap_length);
+    return ::TTF_RenderText_Shaded_Wrapped(get(), text.data(), text.length(), fg, bg, wrap_length);
 }
 
 surface font::render_blended(std::string_view text, color fg) const
 {
-    return ::TTF_RenderText_Blended(get(), text.data(), text.length(), static_cast<SDL_Color>(fg));
+    return ::TTF_RenderText_Blended(get(), text.data(), text.length(), fg);
 }
 
 surface font::render_blended(std::string_view text, color fg, int wrap_length) const
 {
-    return ::TTF_RenderText_Blended_Wrapped(get(), text.data(), text.length(), static_cast<SDL_Color>(fg), wrap_length);
+    return ::TTF_RenderText_Blended_Wrapped(get(), text.data(), text.length(), fg, wrap_length);
 }
 
 surface font::render_lcd(std::string_view text, color fg, color bg) const
 {
-    return ::TTF_RenderText_LCD(get(), text.data(), text.length(), static_cast<SDL_Color>(fg), static_cast<SDL_Color>(bg));
+    return ::TTF_RenderText_LCD(get(), text.data(), text.length(), fg, bg);
 }
 
 surface font::render_lcd(std::string_view text, color fg, color bg, int wrap_length) const
 {
-    return ::TTF_RenderText_LCD_Wrapped(get(), text.data(), text.length(), static_cast<SDL_Color>(fg), static_cast<SDL_Color>(bg), wrap_length);
+    return ::TTF_RenderText_LCD_Wrapped(get(), text.data(), text.length(), fg, bg, wrap_length);
 }
 
 surface font::render_solid(char32_t glyph, color fg) const
 {
-    return ::TTF_RenderGlyph_Solid(get(), glyph, static_cast<SDL_Color>(fg));
+    return ::TTF_RenderGlyph_Solid(get(), glyph, fg);
 }
 
 surface font::render_shaded(char32_t glyph, color fg, color bg) const
 {
-    return ::TTF_RenderGlyph_Shaded(get(), glyph, static_cast<SDL_Color>(fg), static_cast<SDL_Color>(bg));
+    return ::TTF_RenderGlyph_Shaded(get(), glyph, fg, bg);
 }
 
 surface font::render_blended(char32_t glyph, color fg) const
 {
-    return ::TTF_RenderGlyph_Blended(get(), glyph, static_cast<SDL_Color>(fg));
+    return ::TTF_RenderGlyph_Blended(get(), glyph, fg);
 }
 
 surface font::render_lcd(char32_t glyph, color fg, color bg) const
 {
-    return ::TTF_RenderGlyph_LCD(get(), glyph, static_cast<SDL_Color>(fg), static_cast<SDL_Color>(bg));
+    return ::TTF_RenderGlyph_LCD(get(), glyph, fg, bg);
 }
 
 pixel_t font::height() const
