@@ -130,7 +130,7 @@ namespace hal
             argb2101010 = SDL_PIXELFORMAT_ARGB2101010,
 
             // Endianness-dependent aliases.
-            // As such, hal::to_string'ing them will return the actual format it's referencing.
+            // As such, `hal::to_string` will return the actual format it's referencing.
             rgba32 = SDL_PIXELFORMAT_RGBA32,
             argb32 = SDL_PIXELFORMAT_ARGB32,
             bgra32 = SDL_PIXELFORMAT_BGRA32,

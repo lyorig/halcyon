@@ -140,15 +140,18 @@ namespace hal
     // Predefined colors.
     namespace colors
     {
-        constexpr color::hex_t black       = 0x000000,
-                               red         = 0xFF0000,
-                               green       = 0x00FF00,
-                               blue        = 0x0000FF,
-                               yellow      = 0xFFFF00,
-                               orange      = 0xFFA500,
-                               cyan        = 0x00FFFF,
-                               weezer_blue = 0x0099D3, // WEE OOO
-            white                          = 0xFFFFFF;
+        // clang-format off
+        constexpr color::hex_t
+            black       = 0x000000,
+            red         = 0xFF0000,
+            green       = 0x00FF00,
+            blue        = 0x0000FF,
+            yellow      = 0xFFFF00,
+            orange      = 0xFFA500,
+            cyan        = 0x00FFFF,
+            weezer_blue = 0x0099D3, // WEE OOO
+            white       = 0xFFFFFF;
+        // clang-format on
 
         constexpr color transparent { black, 0 };
     }
