@@ -50,6 +50,8 @@ int main(int argc, char* argv[])
 
     while (true)
     {
+        rnd.clear();
+
         while (vid.events.poll(evt))
         {
             switch (evt.kind())

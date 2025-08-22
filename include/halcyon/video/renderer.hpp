@@ -91,8 +91,13 @@ namespace hal
         // Clear (fill) the render target with the current draw color.
         bool clear();
 
-        // Present the back-buffer and clear it.
+        // Present the back-buffer.
+        // This function doesn't clear afterwards; use `renderer::present_and_clear()` for that.
         bool present();
+
+        // Present and clear the back-buffer.
+        // This function returns `false` if either operation fails.
+        bool present_and_clear();
 
         bool flush();
 

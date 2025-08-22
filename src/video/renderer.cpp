@@ -103,8 +103,12 @@ bool renderer::clear()
 
 bool renderer::present()
 {
-    ::SDL_RenderPresent(get());
-    return clear();
+    return ::SDL_RenderPresent(get());
+}
+
+bool renderer::present_and_clear()
+{
+    return present() && clear();
 }
 
 bool renderer::flush()

@@ -19,6 +19,8 @@ int main(int, char*[])
     // The application's main loop starts here.
     while (true) // As long as the program is running...
     {
+        rnd.clear();
+
         while (vid.events.poll(eh)) // As long as there are events to process...
         {
             switch (eh.kind())

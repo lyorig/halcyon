@@ -9,7 +9,8 @@ int main(int argc, char* argv[])
     hal::cleanup_init<hal::subsystem::video> v;
 
     hal::window   wnd { v, "Example", { 640, 480 } };
-    hal::renderer rnd {};
+    hal::renderer rnd { wnd };
+    rnd.clear();
 
     {
         const auto pref { hal::pixel::format::rgba32 };
