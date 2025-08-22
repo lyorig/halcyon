@@ -87,6 +87,12 @@ const pixel::format* rp::formats() const
 // ----- RENDERER -----
 
 renderer::renderer(lref<const hal::window> wnd)
+    : renderer { wnd, tag::no_clear }
+{
+    clear();
+}
+
+renderer::renderer(lref<const hal::window> wnd, HAL_TAG_NAME(no_clear))
     : resource { ::SDL_CreateRenderer(wnd.get(), nullptr) }
 {
 }
@@ -149,15 +155,15 @@ bool renderer::draw(coord::point from, coord::point to, struct color c)
     return draw(from, to);
 }
 
-bool renderer::draw(std::span<const coord::point> pts, HAL_TAG_NAME(connect))
+bool renderer::draw_connected(std::span<const coord::point> pts)
 {
     return ::SDL_RenderLines(get(), reinterpret_cast<const SDL_FPoint*>(pts.data()), static_cast<int>(pts.size()));
 }
 
-bool renderer::draw(std::span<const coord::point> areas, struct color c, HAL_TAG_NAME(connect) tag)
+bool renderer::draw_connected(std::span<const coord::point> areas, struct color c)
 {
     guard::color _ { *this, c };
-    return draw(areas, tag);
+    return draw_connected(areas);
 }
 
 bool renderer::draw(coord::rect area)

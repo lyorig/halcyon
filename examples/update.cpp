@@ -10,7 +10,6 @@ int main(int argc, char* argv[])
 
     hal::window   wnd { v, "Example", { 640, 480 } };
     hal::renderer rnd { wnd };
-    rnd.clear();
 
     {
         const auto pref { hal::pixel::format::rgba32 };

@@ -26,11 +26,13 @@ int main(int argc, char* argv[])
     hal::window         wnd { vid, "Text renderer", { 100, 100 } };
     hal::event::variant evt;
 
-    hal::renderer       rnd { wnd };
-    hal::static_texture tex;
+    // No need to clear now as we fill the whole render target later.
+    hal::renderer rnd { wnd, hal::tag::no_clear };
 
     // Deallocate as much as we can before the main loop.
     {
+        hal::static_texture tex;
+
         hal::ttf::context        tctx;
         hal::fs::resource_loader ldr;
 
@@ -43,15 +45,16 @@ int main(int argc, char* argv[])
 
         HAL_PRINT("Pixel format: ", tex.pixel_format().get(), ", type: ", hal::pixel::storage_of(tex.pixel_format().get()));
         HAL_PRINT("Must lock? ", surf.must_lock());
-    }
 
-    wnd.size(tex.size().get() + padding);
-    rnd.color(hal::colors::weezer_blue);
+        wnd.size(tex.size().get() + padding);
+
+        rnd.fill(hal::colors::weezer_blue);
+        rnd.draw(tex).to(padding / 2).render();
+        rnd.present();
+    }
 
     while (true)
     {
-        rnd.clear();
-
         while (vid.events.poll(evt))
         {
             switch (evt.kind())
@@ -68,9 +71,6 @@ int main(int argc, char* argv[])
 
         using namespace std::chrono_literals;
         std::this_thread::sleep_for(20ms);
-
-        rnd.draw(tex).to(padding / 2).render();
-        rnd.present();
     }
 
     return EXIT_SUCCESS;

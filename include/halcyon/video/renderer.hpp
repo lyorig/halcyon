@@ -35,7 +35,7 @@ namespace hal
         both = SDL_FLIP_HORIZONTAL | SDL_FLIP_VERTICAL
     };
 
-    HAL_TAG(connect);
+    HAL_TAG(no_clear);
 
     // A wrapper of SDL_Renderer. Essentially, this is the thing that does the rendering, and
     // is attached to a window. Multiple renderers can exist for a single window, i.e. a hardware-
@@ -85,7 +85,20 @@ namespace hal
 
         renderer() = default;
 
+        // Create a renderer for a window.
+        // This constructor clears the back-buffer automatically, which prevents
+        // a glitched first frame on some systems (i.e. macOS). If you don't want
+        // this, add the `no_clear` tag as a second argument.
         renderer(lref<const hal::window> wnd);
+
+        // Create a renderer for a window.
+        // This constructor doesn't automatically clear the back-buffer.
+        // Ensure that `renderer::clear()` is called at some point before
+        // `renderer::present()`, in your loop, or the first frame of your
+        // application might contain garbage data on some platforms.
+        renderer(lref<const hal::window> wnd, HAL_TAG_NAME(no_clear));
+
+        // Create a renderer with properties.
         renderer(const create_properties& props);
 
         // Clear (fill) the render target with the current draw color.
@@ -99,6 +112,7 @@ namespace hal
         // This function returns `false` if either operation fails.
         bool present_and_clear();
 
+        // See documentation for `SDL_FlushRenderer()`.
         bool flush();
 
         // Drawing & filling:
@@ -119,8 +133,8 @@ namespace hal
         bool draw(coord::point from, coord::point to, color c);
 
         // Draw a connected series of points with the current color.
-        bool draw(std::span<const coord::point> pt, HAL_TAG_NAME(connect));
-        bool draw(std::span<const coord::point> pt, color c, HAL_TAG_NAME(connect));
+        bool draw_connected(std::span<const coord::point> pt);
+        bool draw_connected(std::span<const coord::point> pt, color c);
 
         // Outline a rectangle with the current color.
         bool draw(coord::rect area);
