@@ -107,6 +107,11 @@ bool renderer::present()
     return this->clear();
 }
 
+bool renderer::flush()
+{
+    return ::SDL_FlushRenderer(get());
+}
+
 bool renderer::draw(coord::point pt)
 {
     return ::SDL_RenderPoint(get(), pt.x, pt.y);

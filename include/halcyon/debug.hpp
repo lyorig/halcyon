@@ -159,7 +159,7 @@ namespace hal
             std::stringstream fwd;
 
         #ifdef HAL_DEBUG_ADVANCED
-            fwd << std::fixed << std::setprecision(3) << '[' << m_timer()
+            fwd << std::fixed << std::setprecision(3) << '[' << m_timer.get()
                 << "s] ";
         #endif
 

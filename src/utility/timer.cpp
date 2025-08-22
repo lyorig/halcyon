@@ -14,7 +14,14 @@ void timer::reset()
     m_epoch = clock::now();
 }
 
-double timer::operator()() const
+double timer::get_reset()
+{
+    const double ret { get() };
+    reset();
+    return ret;
+}
+
+double timer::get() const
 {
     return std::chrono::duration<double> { elapsed() }.count();
 }
@@ -31,5 +38,5 @@ timer::clock::time_point timer::epoch() const
 
 std::ostream& hal::operator<<(std::ostream& str, timer t)
 {
-    return str << t() << 's';
+    return str << t.get() << 's';
 }

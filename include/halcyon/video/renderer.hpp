@@ -94,6 +94,8 @@ namespace hal
         // Present the back-buffer and clear it.
         bool present();
 
+        bool flush();
+
         // Drawing & filling:
         // Each of these functions has an additional overload since
         // creating a color guard is annoying for one-off calls.

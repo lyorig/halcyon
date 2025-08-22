@@ -47,6 +47,7 @@ set(Halcyon_SOURCES
     debug.cpp
     events.cpp
 	filesystem.cpp
+    hint.cpp
     image.cpp
 	library.cpp
 	misc.cpp

@@ -17,9 +17,9 @@ namespace hal
         // Create a timer that begins at the time of construction.
         timer();
 
-        void reset();
-
-        double operator()() const;
+        double get() const;
+        void   reset();
+        double get_reset();
 
         template <typename Rep, typename Period>
         timer& operator=(std::chrono::duration<Rep, Period> dur)
