@@ -87,12 +87,6 @@ const pixel::format* rp::formats() const
 // ----- RENDERER -----
 
 renderer::renderer(lref<const hal::window> wnd)
-    : renderer { wnd, tag::no_clear }
-{
-    clear();
-}
-
-renderer::renderer(lref<const hal::window> wnd, HAL_TAG_NAME(no_clear))
     : resource { ::SDL_CreateRenderer(wnd.get(), nullptr) }
 {
 }

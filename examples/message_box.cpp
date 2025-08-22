@@ -22,7 +22,7 @@ int main(int, char*[])
 
     for (auto type : { info, warning, error })
     {
-        const auto ret = msgb.type(type)();
+        [[maybe_unused]] const auto ret = msgb.type(type)();
 
         HAL_PRINT("User pressed button ", hal::to_printable_int(ret));
     }

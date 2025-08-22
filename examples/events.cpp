@@ -11,7 +11,7 @@ int main(int, char*[])
     hal::cleanup_init<hal::subsystem::video> vid;
 
     hal::window         wnd { vid, "Halcyon Structure Showcase", { 640, 480 }, hal::window::flag::resizable };
-    hal::renderer       rnd { wnd, hal::tag::no_clear };
+    hal::renderer       rnd { wnd };
     hal::event::variant eh;
 
     // The application's main loop starts here.

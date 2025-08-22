@@ -35,8 +35,6 @@ namespace hal
         both = SDL_FLIP_HORIZONTAL | SDL_FLIP_VERTICAL
     };
 
-    HAL_TAG(no_clear);
-
     // A wrapper of SDL_Renderer. Essentially, this is the thing that does the rendering, and
     // is attached to a window. Multiple renderers can exist for a single window, i.e. a hardware-
     // accelerated one, plus a software fallback in case the former isn't available.
@@ -86,17 +84,10 @@ namespace hal
         renderer() = default;
 
         // Create a renderer for a window.
-        // This constructor clears the back-buffer automatically, which prevents
-        // a glitched first frame on some systems (i.e. macOS). If you don't want
-        // this, add the `no_clear` tag as a second argument.
+        // Its buffer might initially contain garbage data on some platforms (i.e. macOS).
+        // Position a `renderer::clear()` call at the beginning of your application's
+        // main loop to prevent a glitched first frame.
         renderer(lref<const hal::window> wnd);
-
-        // Create a renderer for a window.
-        // This constructor doesn't automatically clear the back-buffer.
-        // Ensure that `renderer::clear()` is called at some point before
-        // `renderer::present()`, in your loop, or the first frame of your
-        // application might contain garbage data on some platforms.
-        renderer(lref<const hal::window> wnd, HAL_TAG_NAME(no_clear));
 
         // Create a renderer with properties.
         renderer(const create_properties& props);
@@ -184,7 +175,7 @@ namespace hal
         ref<hal::window>       window();
 
         // Get/set vertical sync.
-        // Also see `SDL_RENDER_VSYNC_{DISABLED, ADAPTIVE}`.
+        // Can be used with `SDL_RENDERER_VSYNC_{DISABLED, ADAPTIVE}`.
         result<int> vsync() const;
         bool        vsync(int v);
 

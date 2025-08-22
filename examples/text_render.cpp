@@ -27,7 +27,7 @@ int main(int argc, char* argv[])
     hal::event::variant evt;
 
     // No need to clear now as we fill the whole render target later.
-    hal::renderer rnd { wnd, hal::tag::no_clear };
+    hal::renderer rnd { wnd };
 
     // Deallocate as much as we can before the main loop.
     {
