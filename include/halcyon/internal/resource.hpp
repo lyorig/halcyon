@@ -90,13 +90,6 @@ namespace hal
         {
         }
 
-        // // GCC trips balls with this c-tor.
-        // ref(ref<std::remove_const_t<T>> r)
-        //     requires std::is_const_v<T>
-        //     : m_ptr { r.get() }
-        // {
-        // }
-
         template <typename OtherT>
             requires(std::is_base_of_v<T, OtherT> && std::is_const_v<T> >= std::is_const_v<OtherT>)
         ref(ref<OtherT> r)

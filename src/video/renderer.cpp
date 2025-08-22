@@ -104,7 +104,7 @@ bool renderer::clear()
 bool renderer::present()
 {
     ::SDL_RenderPresent(get());
-    return this->clear();
+    return clear();
 }
 
 bool renderer::flush()
@@ -223,7 +223,7 @@ bool renderer::target(ref<target_texture> tx)
 
 bool renderer::reset_target()
 {
-    return this->internal_target(nullptr);
+    return internal_target(nullptr);
 }
 
 surface renderer::read_pixels() const
@@ -281,6 +281,17 @@ ref<window> renderer::window()
 {
     return ref<hal::window>::from_ptr(
         ::SDL_GetRenderWindow(get()));
+}
+
+result<int> renderer::vsync() const
+{
+    int ret;
+    return { ::SDL_GetRenderVSync(get(), &ret), ret };
+}
+
+bool renderer::vsync(int v)
+{
+    return ::SDL_SetRenderVSync(get(), v);
 }
 
 const char* renderer::name() const

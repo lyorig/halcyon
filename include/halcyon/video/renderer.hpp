@@ -164,6 +164,11 @@ namespace hal
         ref<const hal::window> window() const;
         ref<hal::window>       window();
 
+        // Get/set vertical sync.
+        // Also see `SDL_RENDER_VSYNC_{DISABLED, ADAPTIVE}`.
+        result<int> vsync() const;
+        bool        vsync(int v);
+
         const char* name() const;
 
         properties props() const;
