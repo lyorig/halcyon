@@ -65,7 +65,5 @@ If NDEBUG is not defined, debugging is implicitly enabled.
 
 # Wishlist
 Some things I'd like to eventually implement. 
-- Re-enabling console output on Windows
 - Audio subsystem
 - GPU subsystem
-- Overload accessing/outputting for lvalues and rvalues
