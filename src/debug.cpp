@@ -4,11 +4,14 @@
 
 // https://stackoverflow.com/a/55875595
 #if defined HAL_DEBUG_ENABLED && defined _WIN32
-
     #define WIN32_LEAN_AND_MEAN
     #define NOMINMAX
     #include <windows.h>
+#endif
 
+using namespace hal;
+
+#if defined HAL_DEBUG_ENABLED && defined _WIN32
 namespace
 {
     bool redirect_console_io()
@@ -135,12 +138,12 @@ namespace
     }
 }
 
-hal::debug::stream_opener::stream_opener(std::int16_t stream_size)
+debug::stream_opener::stream_opener(std::int16_t stream_size)
     : opened { create_new_console(stream_size) }
 {
 }
 
-hal::debug::stream_opener::~stream_opener()
+debug::stream_opener::~stream_opener()
 {
     if (opened)
         release_console();
@@ -149,10 +152,8 @@ hal::debug::stream_opener::~stream_opener()
     // destructor won't run before the program ends.
 }
 
-const hal::debug::stream_opener hal::debug::m_streamGuard { 1024 };
+const debug::stream_opener debug::m_streamGuard { 1024 };
 #endif
-
-using namespace hal;
 
 #ifdef HAL_DEBUG_ADVANCED
 std::ofstream debug::m_output { "halcyon_debug_output.txt" };
