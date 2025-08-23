@@ -61,14 +61,9 @@ std::ostream& hal::operator<<(std::ostream& str, power_state s)
     return str;
 }
 
-c_string hal::platform()
+c_string hal::platform::name()
 {
     return ::SDL_GetPlatform();
-}
-
-c_string hal::base_path()
-{
-    return ::SDL_GetBasePath();
 }
 
 int hal::total_ram()

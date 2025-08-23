@@ -174,8 +174,14 @@ namespace hal
         ref<const hal::window> window() const;
         ref<hal::window>       window();
 
+        enum : int
+        {
+            vsync_disabled = SDL_RENDERER_VSYNC_DISABLED,
+            vsync_adaptive = SDL_RENDERER_VSYNC_ADAPTIVE,
+        };
+
         // Get/set vertical sync.
-        // Can be used with `SDL_RENDERER_VSYNC_{DISABLED, ADAPTIVE}`.
+        // Can be used with `renderer::vsync_{disabled, adaptive}`.
         result<int> vsync() const;
         bool        vsync(int v);
 
