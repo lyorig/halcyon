@@ -8,16 +8,18 @@
 //  - HAL_DEBUG_ADVANCED additionally provides timestamps and logs to an output file.
 //  - if NDEBUG is defined, HAL_DEBUG_ENABLED gets implicitly enabled as well.
 
+#ifdef _MSC_VER
+    #define HAL_NO_SIZE [[msvc::no_unique_address]]
+#else
+    #define HAL_NO_SIZE [[no_unique_address]]
+#endif
+
 #if !defined NDEBUG || defined HAL_DEBUG_ADVANCED
     #define HAL_DEBUG_ENABLED
 #endif
 
-#if defined HAL_DEBUG_ADVANCED || defined HAL_DEBUG_ENABLED && !defined _WIN32
-    #define HAL_DEBUG_MAKES_SENSE
-#endif
-
 // Necessary include files.
-#ifdef HAL_DEBUG_MAKES_SENSE
+#ifdef HAL_DEBUG_ENABLED
 
     #include <halcyon/utility/printing.hpp>
     #include <halcyon/utility/strutil.hpp>
@@ -49,11 +51,6 @@ namespace hal
     namespace compile_settings
     {
         // `true` if `HAL_DEBUG_ENABLED` is defined.
-        // WARNING: This doesn't guarantee debugging is actually gonna work.
-        // On Windows, debugging is disabled unless `HAL_DEBUG_ADVANCED` is
-        // defined, as the GUI subsystem disables any console logging.
-        // To check whether you're actually gonna get any output to a
-        // console or file, use `HAL_DEBUG_MAKES_SENSE` or `hal::compile_settings::debug_makes_sense`.
         constexpr bool debug_enabled {
 #ifdef HAL_DEBUG_ENABLED
             true
@@ -65,17 +62,6 @@ namespace hal
         // `true` if `HAL_DEBUG_ADVANCED` is defined.
         constexpr bool debug_advanced {
 #ifdef HAL_DEBUG_ADVANCED
-            true
-#else
-            false
-#endif
-        };
-
-        // `true` if you'll actually get any visible debug output.
-        // See documentation for `hal::compile_settings::debug_enabled`
-        // to find out why this is a thing.
-        constexpr bool debug_makes_sense {
-#ifdef HAL_DEBUG_MAKES_SENSE
             true
 #else
             false
@@ -103,7 +89,7 @@ namespace hal
         debug(const debug&) = delete;
         debug(debug&&)      = delete;
 
-#ifdef HAL_DEBUG_MAKES_SENSE
+#ifdef HAL_DEBUG_ENABLED
         // Output any amount of arguments to stdout/stderr and an output file.
         template <meta::printable... Args>
         static void print(Args&&... extra_info)
@@ -155,7 +141,7 @@ namespace hal
         template <meta::printable... Args>
         static void print_severity([[maybe_unused]] severity type, [[maybe_unused]] Args&&... extra_info)
         {
-    #ifdef HAL_DEBUG_MAKES_SENSE
+    #ifdef HAL_DEBUG_ENABLED
             std::stringstream fwd;
 
         #ifdef HAL_DEBUG_ADVANCED
@@ -198,9 +184,7 @@ namespace hal
             m_output << with_info << std::endl;
         #endif
 
-        #ifndef _WIN32 // The Windows subsystem disables printing to console.
             (type == error ? std::cerr : std::cout) << with_info << std::endl;
-        #endif
     #endif
         }
 
@@ -208,11 +192,25 @@ namespace hal
         static std::ofstream m_output;
         static const timer   m_timer;
     #endif
+
+    #ifdef _WIN32
+        // A hacky way to get around the GUI subsystem disabling I/O handles.
+        class stream_opener
+        {
+        public:
+            stream_opener(std::int16_t stream_size);
+            ~stream_opener();
+
+            // Has a stream successfully opened?
+            // (`const` because it's not like this object's gonna move.)
+            const bool opened;
+        } static const m_streamGuard;
+    #endif
 #endif
     };
 }
 
-#ifdef HAL_DEBUG_MAKES_SENSE
+#ifdef HAL_DEBUG_ENABLED
 
     #define HAL_PRINT      ::hal::debug::print
     #define HAL_PANIC(...) ::hal::debug::panic(__PRETTY_FUNCTION__, __FILE_NAME__, __LINE__, __VA_ARGS__)
