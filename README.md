@@ -6,14 +6,18 @@ Namespaces are not cluttered, everything is neatly organized—proper C++ design
 # Installation
 Halcyon is included into your project via CMake—link against `Halcyon::Halcyon`.
 
+The following libraries are required:
+- SDL3
+- SDL3_image
+- SDL3_ttf
+
 # Usage
 Halcyon wraps SDL with several concepts:
 - **Init:** Manages SDL subsystem initialization via RAII.
 - **Proxy:** Provides subsystem functionality.
-> [!TIP]
-These are empty classes. You are encouraged to use them with `[[no_unique_address]]` (also defined as `HAL_NO_SIZE`).
 
-[^1]: Currently SDL3, SDL3_image, and SDL3_ttf.
+> [!TIP]
+> These are empty classes. You are encouraged to use them with `[[no_unique_address]]` (also defined as `HAL_NO_SIZE`).
 
 # Example program
 This library is still under heavy developement; some namespaces etc. might not be up-to-date, but the structure should remain the same.
@@ -56,8 +60,12 @@ If NDEBUG is not defined, debugging is implicitly enabled.
 - `HAL_DEBUG_ENABLED`: Enables all of the aforementioned macros.
 - `HAL_DEBUG_ADVANCED`: Enables time logging, and outputs to an additional file. This adds static variables to your program.
 
+> [!IMPORTANT]
+> On Windows, GUI applications don't get visible console output by default. As such, if debugging is not completely disabled, `HAL_DEBUG_ADVANCED` gets automatically defined there, so that you have _some_ kind of visible debug output, no matter what platform you're on. I'll try to make this more bearable soon.
+
 # Wishlist
 Some things I'd like to eventually implement. 
+- Re-enabling console output on Windows.
 - Audio subsystem
 - GPU subsystem
 - Overload accessing/outputting for lvalues and rvalues
