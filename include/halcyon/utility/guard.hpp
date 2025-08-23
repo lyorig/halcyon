@@ -4,7 +4,7 @@
 
 // utility/guard.hpp:
 // RAII-based guards for various uses.
-// Not useable with CTAD since references are in play.
+// Not always usable with CTAD since references are in play.
 
 namespace hal
 {
@@ -32,8 +32,8 @@ namespace hal
         class blend
         {
         public:
-            blend(T& obj, blend_mode bm)
-                : m_ref { obj }
+            blend(lref<T> ref, blend_mode bm)
+                : m_ref { ref }
                 , m_old { m_ref->blend().get() }
             {
                 set(bm);
@@ -58,8 +58,8 @@ namespace hal
         class color_mod
         {
         public:
-            color_mod(T& obj, color c)
-                : m_ref { obj }
+            color_mod(lref<T> ref, color c)
+                : m_ref { ref }
                 , m_old { m_ref->color_mod().get() }
             {
                 set(c);
