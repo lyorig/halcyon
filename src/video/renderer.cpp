@@ -184,7 +184,7 @@ bool renderer::draw(std::span<const coord::rect> areas, struct color c)
 
 copyer renderer::draw(ref<const texture> tx)
 {
-    return { *this, tx };
+    return { tx, *this };
 }
 
 bool renderer::fill(coord::rect area)

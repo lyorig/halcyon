@@ -67,8 +67,8 @@ namespace hal
         bool save(outputter dst) const;
 
         // Create a blitter.
-        // Not all pixel formats can be blitted,
-        [[nodiscard]] blitter blit(surface& dst) const;
+        // Not all pixel formats can be blitted.
+        [[nodiscard]] blitter blit(ref<surface> dst) const;
 
         // Convert this surface into a blittable format.
         // Use with text.

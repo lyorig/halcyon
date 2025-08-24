@@ -26,7 +26,10 @@ namespace hal::detail
 
         using this_ref = This&;
 
-        consteval static pos_t unset_pos() { return std::numeric_limits<pos_t>::max(); }
+        consteval static pos_t unset_pos()
+        {
+            return std::numeric_limits<pos_t>::max();
+        }
 
         static pixel::point get_point(pixel::point pt)
         {
@@ -39,12 +42,12 @@ namespace hal::detail
         }
 
     public:
-        [[nodiscard]] drawer(ref<Dst> ths, ref<Src> src)
-            : m_drawDst { ths }
-            , m_drawSrc { src }
+        [[nodiscard]] drawer(ref<Src> src, ref<Dst> dst)
+            : m_drawSrc { src }
+            , m_drawDst { dst }
+            , m_posSrc { unset_pos(), 0, 0, 0 }
             , m_posDst { tag::as_size, get_point(src->size()) }
         {
-            m_posSrc.pos.x = unset_pos();
         }
 
         // Set where to draw.
@@ -87,7 +90,6 @@ namespace hal::detail
         [[nodiscard]] this_ref scale(F&& scale_func)
         {
             m_posDst.size = scale_func(m_posDst.size);
-
             return get_this();
         }
 
@@ -96,7 +98,6 @@ namespace hal::detail
         [[nodiscard]] this_ref anchor(anchor anch)
         {
             m_posDst.pos = m_posDst.pos.anchor(anch, m_posDst.size);
-
             return get_this();
         }
 
@@ -130,9 +131,9 @@ namespace hal::detail
             return static_cast<this_ref>(*this);
         }
 
-        ref<Dst> m_drawDst;
         ref<Src> m_drawSrc;
+        ref<Dst> m_drawDst;
 
-        pos_rect m_posDst, m_posSrc;
+        pos_rect m_posSrc, m_posDst;
     };
 }
