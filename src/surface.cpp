@@ -2,6 +2,8 @@
 
 #include <halcyon/utility/guard.hpp>
 
+#include <iostream>
+
 using namespace hal;
 
 namespace
@@ -70,9 +72,9 @@ bool surface::save(outputter dst) const
     return ::SDL_SaveBMP_IO(get(), dst.get(), false);
 }
 
-blitter surface::blit(surface& dst) const
+blitter surface::blit(ref<surface> dst) const
 {
-    return { dst, *this };
+    return { *this, dst };
 }
 
 surface surface::convert(pixel::format fmt) const
@@ -178,25 +180,54 @@ Uint32 surface::map_rgba(color c) const
 
 bool blitter::blit() const
 {
-    return ::SDL_BlitSurface(m_drawSrc.get(), m_posSrc.sdl_ptr(), m_drawDst.get(), m_posDst.sdl_ptr());
+    return ::SDL_BlitSurface(
+        m_drawSrc.get(),
+        m_posSrc.pos.x == unset_pos() ? nullptr : m_posSrc.sdl_ptr(),
+        m_drawDst.get(),
+        m_posDst.pos.x == unset_pos() ? nullptr : m_posDst.sdl_ptr());
 }
 
 bool blitter::scaled(scale_mode sm) const
 {
-    return ::SDL_BlitSurfaceScaled(m_drawSrc.get(), m_posSrc.sdl_ptr(), m_drawDst.get(), m_posDst.sdl_ptr(), static_cast<SDL_ScaleMode>(sm));
+    return ::SDL_BlitSurfaceScaled(
+        m_drawSrc.get(),
+        m_posSrc.pos.x == unset_pos() ? nullptr : m_posSrc.sdl_ptr(),
+        m_drawDst.get(),
+        m_posDst.pos.x == unset_pos() ? nullptr : m_posDst.sdl_ptr(),
+        static_cast<SDL_ScaleMode>(sm));
 }
 
 bool blitter::tiled() const
 {
-    return ::SDL_BlitSurfaceTiled(m_drawSrc.get(), m_posSrc.sdl_ptr(), m_drawDst.get(), m_posDst.sdl_ptr());
+    return ::SDL_BlitSurfaceTiled(
+        m_drawSrc.get(),
+        m_posSrc.pos.x == unset_pos() ? nullptr : m_posSrc.sdl_ptr(),
+        m_drawDst.get(),
+        m_posDst.pos.x == unset_pos() ? nullptr : m_posDst.sdl_ptr());
 }
 
 bool blitter::tiled_scale(float scale, scale_mode sm) const
 {
-    return ::SDL_BlitSurfaceTiledWithScale(m_drawSrc.get(), m_posSrc.sdl_ptr(), scale, static_cast<SDL_ScaleMode>(sm), m_drawDst.get(), m_posDst.sdl_ptr());
+    return ::SDL_BlitSurfaceTiledWithScale(
+        m_drawSrc.get(),
+        m_posSrc.pos.x == unset_pos() ? nullptr : m_posSrc.sdl_ptr(),
+        scale,
+        static_cast<SDL_ScaleMode>(sm),
+        m_drawDst.get(),
+        m_posDst.pos.x == unset_pos() ? nullptr : m_posDst.sdl_ptr());
 }
 
 bool blitter::nine_grid(pixel_t width_left, pixel_t width_right, pixel_t height_top, pixel_t height_bottom, float scale, scale_mode sm) const
 {
-    return ::SDL_BlitSurface9Grid(m_drawSrc.get(), m_posSrc.sdl_ptr(), width_left, width_right, height_top, height_bottom, scale, static_cast<SDL_ScaleMode>(sm), m_drawDst.get(), m_posDst.sdl_ptr());
+    return ::SDL_BlitSurface9Grid(
+        m_drawSrc.get(),
+        m_posSrc.pos.x == unset_pos() ? nullptr : m_posSrc.sdl_ptr(),
+        width_left,
+        width_right,
+        height_top,
+        height_bottom,
+        scale,
+        static_cast<SDL_ScaleMode>(sm),
+        m_drawDst.get(),
+        m_posDst.pos.x == unset_pos() ? nullptr : m_posDst.sdl_ptr());
 }

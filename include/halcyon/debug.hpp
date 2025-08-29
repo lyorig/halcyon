@@ -5,7 +5,6 @@
 
 // Debugging functionality is configured as such:
 //  - HAL_DEBUG_ENABLED enables debugging.
-//  - HAL_DEBUG_ADVANCED additionally provides timestamps and logs to an output file.
 //  - if NDEBUG is defined, HAL_DEBUG_ENABLED gets implicitly enabled as well.
 
 #ifdef _MSC_VER
@@ -14,7 +13,7 @@
     #define HAL_NO_SIZE [[no_unique_address]]
 #endif
 
-#if !defined NDEBUG || defined HAL_DEBUG_ADVANCED
+#ifndef NDEBUG
     #define HAL_DEBUG_ENABLED
 #endif
 
@@ -24,10 +23,6 @@
     #include <halcyon/utility/printing.hpp>
     #include <halcyon/utility/strutil.hpp>
     #include <halcyon/utility/timer.hpp>
-
-    #ifdef HAL_DEBUG_ADVANCED
-        #include <fstream>
-    #endif
 
     #include <iostream>
     #include <utility>
@@ -53,15 +48,6 @@ namespace hal
         // `true` if `HAL_DEBUG_ENABLED` is defined.
         constexpr bool debug_enabled {
 #ifdef HAL_DEBUG_ENABLED
-            true
-#else
-            false
-#endif
-        };
-
-        // `true` if `HAL_DEBUG_ADVANCED` is defined.
-        constexpr bool debug_advanced {
-#ifdef HAL_DEBUG_ADVANCED
             true
 #else
             false
@@ -144,11 +130,6 @@ namespace hal
     #ifdef HAL_DEBUG_ENABLED
             std::stringstream fwd;
 
-        #ifdef HAL_DEBUG_ADVANCED
-            fwd << std::fixed << std::setprecision(3) << '[' << m_timer.get()
-                << "s] ";
-        #endif
-
             using enum severity;
 
             switch (type)
@@ -179,19 +160,9 @@ namespace hal
             }
 
             const std::string with_info { fwd.str() + string_from_pack(std::forward<Args>(extra_info)...) };
-
-        #ifdef HAL_DEBUG_ADVANCED
-            m_output << with_info << std::endl;
-        #endif
-
             (type == error ? std::cerr : std::cout) << with_info << std::endl;
     #endif
         }
-
-    #ifdef HAL_DEBUG_ADVANCED
-        static std::ofstream m_output;
-        static const timer   m_timer;
-    #endif
 
     #ifdef _WIN32
         // A hacky way to get around the GUI subsystem disabling I/O handles.

@@ -155,11 +155,6 @@ debug::stream_opener::~stream_opener()
 const debug::stream_opener debug::m_streamGuard { 1024 };
 #endif
 
-#ifdef HAL_DEBUG_ADVANCED
-std::ofstream debug::m_output { "halcyon_debug_output.txt" };
-const timer   debug::m_timer {};
-#endif
-
 c_string debug::last_error()
 {
     if (const char* const err { ::SDL_GetError() }; err[0] == '\0')

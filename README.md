@@ -23,8 +23,9 @@ Halcyon wraps SDL with several concepts:
 This library is still under heavy developement; some namespaces etc. might not be up-to-date, but the structure should remain the same.
 ```
 #include <halcyon/video.hpp>
+#include <halcyon/main.hpp>
 
-int main(int argc, char* argv[]) {
+int main(int, char*[]) {
   static_assert(hal::is_correct_main<main>);
 
   hal::cleanup_init<hal::system::video> vid;
@@ -55,17 +56,12 @@ Halcyon provides several macro functions for a better debugging experience.
 - `HAL_WARN_IF[_VITAL]` - Print a warning message if a condition is true.
 - `HAL_PANIC` - Print where the panic occurred along with variadic user-supplied information, then exit.
 
-These debugging facilities are configured via macros.  
-If NDEBUG is not defined, debugging is implicitly enabled.
-- `HAL_DEBUG_ENABLED`: Enables all of the aforementioned macros.
-- `HAL_DEBUG_ADVANCED`: Enables time logging, and outputs to an additional file. This adds static variables to your program.
+These debugging facilities are configured via the `HAL_DEBUG_ENABLED` macro, which also gets automatically defined if `NDEBUG` isn't defined.
 
 > [!IMPORTANT]
-> On Windows, GUI applications don't get visible console output by default. As such, if debugging is not completely disabled, `HAL_DEBUG_ADVANCED` gets automatically defined there, so that you have _some_ kind of visible debug output, no matter what platform you're on. I'll try to make this more bearable soon.
+> On Windows, GUI applications don't get visible console output by default. As such, Halcyon creates one for you if debugging is enabled. I think this is a sensible workaround, but if you'd like this to be opt-out, feel free to submit an issue.
 
 # Wishlist
 Some things I'd like to eventually implement. 
-- Re-enabling console output on Windows
 - Audio subsystem
 - GPU subsystem
-- Overload accessing/outputting for lvalues and rvalues

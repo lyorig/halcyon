@@ -115,7 +115,7 @@ namespace hal
             hurd          = 1ull << 11,
             ios           = 1ull << 12,
             irix          = 1ull << 13,
-            linux         = 1ull << 14,
+            linux_        = 1ull << 14, // Macro shadowing
             macos         = 1ull << 15,
             netbsd        = 1ull << 16,
             ngage         = 1ull << 17,
@@ -128,7 +128,7 @@ namespace hal
             riscos        = 1ull << 24,
             solaris       = 1ull << 25,
             tvos          = 1ull << 26,
-            unix          = 1ull << 27,
+            unix_         = 1ull << 27, // Macro shadowing
             visionos      = 1ull << 28,
             vita          = 1ull << 29,
             win32         = 1ull << 30,
@@ -183,7 +183,7 @@ namespace hal
             type::irix,
 #endif
 #if SDL_PLATFORM_LINUX
-            type::linux,
+            type::linux_,
 #endif
 #if SDL_PLATFORM_MACOS
             type::macos,
@@ -222,7 +222,7 @@ namespace hal
             type::tvos,
 #endif
 #if SDL_PLATFORM_UNIX
-            type::unix,
+            type::unix_,
 #endif
 #if SDL_PLATFORM_VISIONOS
             type::visionos,

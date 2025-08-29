@@ -48,16 +48,12 @@ namespace hal
         struct sub_to_proxy<subsystem::video>
         {
             using type = proxy::video;
-
-            sub_to_proxy() = default;
         };
 
         template <>
         struct sub_to_proxy<subsystem::events>
         {
             using type = proxy::events;
-
-            sub_to_proxy() = default;
         };
 
         template <subsystem... Subs>
@@ -88,7 +84,7 @@ namespace hal
             }
 
             // Initialize chosen subsystems.
-            // Writes success state to res.
+            // Writes success state to `res`.
             init_base(bool& res)
             {
                 res = sdl_init();

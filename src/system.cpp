@@ -5,7 +5,6 @@
 #include <halcyon/utility/printing.hpp>
 
 #include "SDL3/SDL_cpuinfo.h"
-#include "SDL3/SDL_filesystem.h"
 #include "SDL3/SDL_platform.h"
 
 #include <string_view>
