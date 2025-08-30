@@ -32,7 +32,7 @@ namespace hal
             resource(pointer ptr)
                 : m_ptr { ptr }
             {
-                HAL_WARN_IF(!valid(), "Resource initialized with nullptr");
+                HAL_WARN_IF(!valid(), "Resource initialized with nullptr: ", debug::last_error());
             }
 
         public:
