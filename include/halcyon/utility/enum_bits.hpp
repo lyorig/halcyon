@@ -13,13 +13,6 @@
 
 namespace hal
 {
-    template <typename T>
-        requires std::is_enum_v<T>
-    std::underlying_type_t<T> to_underlying(T val)
-    {
-        return static_cast<std::underlying_type_t<T>>(val);
-    }
-
     // A bitset-like class for (scoped) enums defined as bit masks (i.e. 0b1, 0b10, 0b100...).
     // Has restricted functionality compared to pure ints to prevent excessive foot-shooting.
     template <typename Enum, typename Value = meta::underlying_type<Enum>>

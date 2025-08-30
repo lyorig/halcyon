@@ -19,7 +19,7 @@ keyboard::state_reference::state_reference(pass_key<proxy::events>)
 
 bool keyboard::state_reference::operator[](button b) const
 {
-    return static_cast<bool>(m_arr[to_underlying(b)]);
+    return static_cast<bool>(m_arr[std::to_underlying(b)]);
 }
 
 bool keyboard::state_reference::operator[](key k) const
