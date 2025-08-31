@@ -270,7 +270,15 @@ result<pixel::point> renderer::size() const
     return { ::SDL_GetCurrentRenderOutputSize(get(), &ret.x, &ret.y), ret };
 }
 
-bool renderer::size(pixel::point sz, presentation p)
+result<std::pair<pixel::point, renderer::scaling>> renderer::presentation() const
+{
+    pixel::point                    sz;
+    SDL_RendererLogicalPresentation scl;
+
+    return { ::SDL_GetRenderLogicalPresentation(get(), &sz.x, &sz.y, &scl), { sz, static_cast<scaling>(scl) } };
+}
+
+bool renderer::presentation(pixel::point sz, scaling p)
 {
     return ::SDL_SetRenderLogicalPresentation(get(), sz.x, sz.y, static_cast<SDL_RendererLogicalPresentation>(p));
 }

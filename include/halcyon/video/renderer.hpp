@@ -72,7 +72,8 @@ namespace hal
             const pixel::format* formats() const;
         };
 
-        enum class presentation : std::uint8_t
+        // Maps `SDL_RendererLogicalPresentation`.
+        enum class scaling : std::uint8_t
         {
             disabled      = SDL_LOGICAL_PRESENTATION_DISABLED,
             stretch       = SDL_LOGICAL_PRESENTATION_STRETCH,
@@ -168,8 +169,12 @@ namespace hal
         result<blend_mode> blend() const;
         bool               blend(blend_mode bm);
 
+        // There's only a getter here; to set the output size, use
+        // `renderer::presentation()`.
         result<pixel::point> size() const;
-        bool                 size(pixel::point sz, presentation p);
+
+        result<std::pair<pixel::point, scaling>> presentation() const;
+        bool                                     presentation(pixel::point sz, scaling p);
 
         ref<const hal::window> window() const;
         ref<hal::window>       window();

@@ -106,5 +106,19 @@ namespace hal
         private:
             lref<renderer> m_ref;
         };
+
+        class presentation
+        {
+        public:
+            presentation(lref<renderer> rnd, pixel::point sz, renderer::scaling scl);
+            ~presentation();
+
+            void set(pixel::point sz, renderer::scaling scl);
+
+        private:
+            lref<renderer> m_ref;
+
+            std::pair<pixel::point, renderer::scaling> m_old;
+        };
     }
 }

@@ -51,3 +51,20 @@ void guard::target::set(ref<target_texture> tx)
 {
     m_ref->target(tx);
 }
+
+guard::presentation::presentation(lref<renderer> rnd, pixel::point sz, renderer::scaling scl)
+    : m_ref { rnd }
+    , m_old { rnd->presentation().get() }
+{
+    set(sz, scl);
+}
+
+guard::presentation::~presentation()
+{
+    set(m_old.first, m_old.second);
+}
+
+void guard::presentation::set(pixel::point sz, renderer::scaling scl)
+{
+    m_ref->presentation(sz, scl);
+}

@@ -250,6 +250,27 @@ namespace hal
 #endif
         };
 
+        // Convenience function to check whether you're
+        // compiling for Windows. Mirrors `SDL_PLATFORM_WINDOWS`.
+        constexpr bool is_windows()
+        {
+            return current[type::windows];
+        }
+
+        // Convenience function to check whether you're
+        // compiling for Linux. Mirrors `SDL_PLATFORM_LINUX`.
+        constexpr bool is_linux()
+        {
+            return current[type::linux_];
+        }
+
+        // Convenience function to check whether you're
+        // compiling for macOS. Mirrors `SDL_PLATFORM_MACOS`.
+        constexpr bool is_macos()
+        {
+            return current[type::macos];
+        }
+
         c_string name();
     }
 
