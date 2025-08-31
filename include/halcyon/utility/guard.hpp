@@ -110,15 +110,15 @@ namespace hal
         class presentation
         {
         public:
-            presentation(lref<renderer> rnd, pixel::point sz, renderer::scaling scl);
+            presentation(lref<renderer> rnd, renderer::presentation_info);
             ~presentation();
 
-            void set(pixel::point sz, renderer::scaling scl);
+            void set(renderer::presentation_info pi);
 
         private:
             lref<renderer> m_ref;
 
-            std::pair<pixel::point, renderer::scaling> m_old;
+            renderer::presentation_info m_old;
         };
     }
 }

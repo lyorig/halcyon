@@ -72,16 +72,6 @@ namespace hal
             const pixel::format* formats() const;
         };
 
-        // Maps `SDL_RendererLogicalPresentation`.
-        enum class scaling : std::uint8_t
-        {
-            disabled      = SDL_LOGICAL_PRESENTATION_DISABLED,
-            stretch       = SDL_LOGICAL_PRESENTATION_STRETCH,
-            letterbox     = SDL_LOGICAL_PRESENTATION_LETTERBOX,
-            overscan      = SDL_LOGICAL_PRESENTATION_OVERSCAN,
-            integer_scale = SDL_LOGICAL_PRESENTATION_INTEGER_SCALE
-        };
-
         renderer() = default;
 
         // Create a renderer for a window.
@@ -173,8 +163,24 @@ namespace hal
         // `renderer::presentation()`.
         result<pixel::point> size() const;
 
-        result<std::pair<pixel::point, scaling>> presentation() const;
-        bool                                     presentation(pixel::point sz, scaling p);
+        // Maps `SDL_RendererLogicalPresentation`.
+        enum class scale_mode : std::uint8_t
+        {
+            disabled      = SDL_LOGICAL_PRESENTATION_DISABLED,
+            stretch       = SDL_LOGICAL_PRESENTATION_STRETCH,
+            letterbox     = SDL_LOGICAL_PRESENTATION_LETTERBOX,
+            overscan      = SDL_LOGICAL_PRESENTATION_OVERSCAN,
+            integer_scale = SDL_LOGICAL_PRESENTATION_INTEGER_SCALE
+        };
+
+        struct presentation_info
+        {
+            pixel::point size;
+            scale_mode   scale;
+        };
+
+        result<presentation_info> presentation() const;
+        bool                      presentation(presentation_info pi);
 
         ref<const hal::window> window() const;
         ref<hal::window>       window();
