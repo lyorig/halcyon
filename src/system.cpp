@@ -122,8 +122,6 @@ std::ostream& cpu::supported(std::ostream& str)
         { "SSE4.2", sse4_2 },
         { "NEON", neon },
         { "ARM SIMD", armsimd },
-        { "3DNow!", _3dnow },
-        { "RDTSC", rdtsc },
         { "AltiVec", altivec },
     };
 

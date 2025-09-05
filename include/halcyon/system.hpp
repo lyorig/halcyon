@@ -284,7 +284,7 @@ namespace hal
         bool lsx(), mmx(), lasx();
         bool sse(), sse2(), sse3(), sse4_1(), sse4_2();
         bool neon(), armsimd();
-        bool _3dnow(), rdtsc(), altivec();
+        bool altivec();
 
         int logical_cores(), cache_line();
 
