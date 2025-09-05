@@ -10,6 +10,9 @@ namespace hal
     template <typename Return_type, typename... Args>
     using func_ptr = Return_type (*)(Args...);
 
+    template <typename Return_type, typename... Args>
+    using func_ref = Return_type (&)(Args...);
+
     namespace detail
     {
         // Primary template.
