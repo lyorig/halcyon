@@ -1,95 +1,88 @@
-# Halcyon CMake target file. add_subdirectory() and you should be good to go.
-
 cmake_minimum_required(VERSION 3.20.0)
 
 project(Halcyon VERSION 1.0 LANGUAGES CXX)
 
-# Make sure SDL is present on the system.
 find_package(SDL3 CONFIG REQUIRED COMPONENTS SDL3)
 find_package(SDL3_image CONFIG REQUIRED)
 find_package(SDL3_ttf CONFIG REQUIRED)
 
-option(BUILD_SHARED_LIBS
-	"Build Halcyon as a shared library (.so/.dylib/.dll)."
-	OFF
-)
-
 option(Halcyon_BUILD_TESTS
-	"Build the test executable (in the test/ directory) for use with CTest."
-	OFF
+    "Build tests (see test/main.cpp) for use with CTest."
+    OFF
 )
 
 option(Halcyon_BUILD_EXAMPLES
-	"Build examples (in the examples/ directory)."
-	OFF
+    "Build examples (see the examples/ directory)."
+    OFF
 )
 
-if (BUILD_SHARED_LIBS)
-	message("Halcyon: Enabled building as shared library.")
-endif()
-
-# Sources.
 set(Halcyon_SOURCES
-    events/variant.cpp
-    events/keyboard.cpp
-    events/mouse.cpp
-    internal/iostream.cpp
-    types/color.cpp
-    types/string.cpp
-	utility/guard.cpp
-    utility/timer.cpp
-    video/display.cpp
-    video/driver.cpp
-    video/message_box.cpp
-    video/renderer.cpp
-    video/texture.cpp
-    video/window.cpp
-    debug.cpp
-    events.cpp
-	filesystem.cpp
-    hint.cpp
-    image.cpp
-	library.cpp
-	misc.cpp
-	properties.cpp
-	subsystem.cpp
-    surface.cpp
-	system.cpp
-    templates.cpp
-    ttf.cpp
-    video.cpp
+    events/variant
+    events/keyboard
+    events/mouse
+    internal/iostream
+    types/color
+    types/string
+    utility/guard
+    utility/timer
+    video/display
+    video/driver
+    video/message_box
+    video/renderer
+    video/texture
+    video/window
+    debug
+    events
+    filesystem
+    hint
+    image
+    library
+    misc
+    properties
+    subsystem
+    surface
+    system
+    templates
+    ttf
+    video
 )
 
 list(TRANSFORM Halcyon_SOURCES PREPEND src/)
+list(TRANSFORM Halcyon_SOURCES APPEND .cpp)
 
-# Create the library itself...
 add_library(Halcyon)
 add_library(Halcyon::Halcyon ALIAS Halcyon)
+
+if (WIN32)
+    option(Halcyon_WIN32_AUX_CONSOLE
+        "Create an auxiliary console in debug mode on Windows."
+        OFF
+    )
+
+    if (Halcyon_WIN32_AUX_CONSOLE)
+        target_compile_definitions(Halcyon PRIVATE HAL_WIN32_AUX_CONSOLE)
+    endif()
+endif()
 
 target_compile_features(Halcyon PUBLIC cxx_std_23)
 
 if (MSVC)
-	set(WarningFlags /Wall)
+    set(WarningFlags /Wall)
 else()
-	set(WarningFlags -Wall -Wpedantic)
+    set(WarningFlags -Wall -Wpedantic)
 endif()
 
-# Might as well add these flags to everything.
-add_compile_options(${WarningFlags})
-
+target_compile_options(Halcyon PRIVATE ${WarningFlags})
 target_include_directories(Halcyon PUBLIC include/)
-
 target_sources(Halcyon PRIVATE
     ${Halcyon_SOURCES}
 )
 
 target_link_libraries(Halcyon PUBLIC
-	$<IF:$<TARGET_EXISTS:SDL3::SDL3>,SDL3::SDL3,SDL3::SDL3-static>
-	$<IF:$<TARGET_EXISTS:SDL3_image::SDL3_image>,SDL3_image::SDL3_image,SDL3_image::SDL3_image-static>
-    $<IF:$<TARGET_EXISTS:SDL3_ttf::SDL3_ttf>,SDL3_ttf::SDL3_ttf,SDL3_ttf::SDL3_ttf-static>
+    SDL3::SDL3
+    SDL3_image::SDL3_image
+    SDL3_ttf::SDL3_ttf
 )
-
-# Okay, that's it for the library.
 
 # Testing.
 if(Halcyon_BUILD_TESTS)
@@ -99,7 +92,7 @@ if(Halcyon_BUILD_TESTS)
 
     add_executable(HalTest WIN32 test/main.cpp)
 
-	target_link_libraries(HalTest PUBLIC Halcyon)
+    target_link_libraries(HalTest PUBLIC Halcyon)
 
     set(ExeName $<TARGET_FILE:HalTest>)
 
@@ -115,9 +108,9 @@ if(Halcyon_BUILD_TESTS)
     add_test(NAME Outputter COMMAND ${ExeName} --outputter)
     add_test(NAME PngCheck COMMAND ${ExeName} --png-check)
     add_test(NAME References COMMAND ${ExeName} --references)
-	add_test(NAME Shared COMMAND ${ExeName} --shared)
-	add_test(NAME Utilities COMMAND ${ExeName} --utilities)
-	add_test(NAME TextureManipulation COMMAND ${ExeName} --texture-manipulation)
+    add_test(NAME Shared COMMAND ${ExeName} --shared)
+    add_test(NAME Utilities COMMAND ${ExeName} --utilities)
+    add_test(NAME TextureManipulation COMMAND ${ExeName} --texture-manipulation)
     add_test(NAME InvalidBuffer COMMAND ${ExeName} --invalid-buffer)
     add_test(NAME InvalidTexture COMMAND ${ExeName} --invalid-texture)
     add_test(NAME InvalidEvent COMMAND ${ExeName} --invalid-event)
@@ -137,7 +130,7 @@ if(Halcyon_BUILD_EXAMPLES)
         safety.cpp
         events.cpp
         text_render.cpp
-		update.cpp
+        update.cpp
     )
 
     list(TRANSFORM EXAMPLE_SOURCES PREPEND examples/)
@@ -145,7 +138,7 @@ if(Halcyon_BUILD_EXAMPLES)
     foreach(FILE IN LISTS EXAMPLE_SOURCES)
         cmake_path(GET FILE STEM TGT_NAME)
         add_executable(${TGT_NAME} WIN32 ${FILE})
-		target_link_libraries(${TGT_NAME} PRIVATE Halcyon::Halcyon)
+        target_link_libraries(${TGT_NAME} PRIVATE Halcyon::Halcyon)
         set_target_properties(${TGT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin/)
     endforeach()
 endif()

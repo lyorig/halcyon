@@ -3,7 +3,7 @@
 #include "SDL3/SDL_error.h"
 
 // https://stackoverflow.com/a/55875595
-#if defined HAL_DEBUG_ENABLED && defined _WIN32
+#ifdef HAL_WIN32_AUX_CONSOLE
     #define WIN32_LEAN_AND_MEAN
     #define NOMINMAX
     #include <windows.h>
@@ -11,7 +11,7 @@
 
 using namespace hal;
 
-#if defined HAL_DEBUG_ENABLED && defined _WIN32
+#ifdef HAL_WIN32_AUX_CONSOLE
 namespace
 {
     bool redirect_console_io()
