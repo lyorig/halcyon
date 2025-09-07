@@ -284,38 +284,15 @@ namespace hal
             // Check whether there are any pending event in the event queue.
             bool pending() const;
 
-            // This function uses const_cast since SDL doesn't use const pointers
-            // in some obviously non-mutating functions.
-            SDL_Event& get(pass_key<proxy::events>) const;
+            const SDL_Event& get(pass_key<proxy::events>) const;
+            SDL_Event&       get(pass_key<proxy::events>);
 
         private:
-            // A union that impersonates SDL_Event.
-            struct dummy_event
-            {
-                union
-                {
-                    std::uint32_t type;
-
-                    SDL_CommonEvent common;
-
-                    event::display  display;
-                    event::window   window;
-                    event::keyboard key;
-
-                    event::text_input text_input;
-
-                    event::mouse_motion motion;
-                    event::mouse_button button;
-                    event::mouse_wheel  wheel;
-                } data;
-
-                std::byte padding[sizeof(SDL_Event) - sizeof(data)];
-            } m_event;
-
-            static_assert(sizeof(m_event) == sizeof(SDL_Event));
+            SDL_Event m_event;
         };
     }
 
+    // TODO
     constexpr std::string_view to_string(event::type)
     {
         return "[TODO]";

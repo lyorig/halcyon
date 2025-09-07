@@ -66,13 +66,9 @@ endif()
 
 target_compile_features(Halcyon PUBLIC cxx_std_23)
 
-if (MSVC)
-    set(WarningFlags /Wall)
-else()
-    set(WarningFlags -Wall -Wpedantic)
-endif()
-
-target_compile_options(Halcyon PRIVATE ${WarningFlags})
+target_compile_options(Halcyon PRIVATE
+    $<IF:$<CXX_COMPILER_FRONTEND_VARIANT:MSVC>,/Wall,-Wall -Wpedantic -Wextra -Wno-c++98-compat>
+)
 target_include_directories(Halcyon PUBLIC include/)
 target_sources(Halcyon PRIVATE
     ${Halcyon_SOURCES}

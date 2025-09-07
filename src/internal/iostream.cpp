@@ -2,8 +2,6 @@
 
 #include <halcyon/internal/iostream.hpp>
 
-#include <halcyon/utility/buffer.hpp>
-
 using namespace hal;
 
 const char* detail::path_cvt(const char* path)
@@ -14,7 +12,7 @@ const char* detail::path_cvt(const char* path)
 detail::wchar_cvt::wchar_cvt(const wchar_t* path)
     : m_buf(std::wcslen(path) * sizeof(wchar_t) + 1)
 {
-    if (std::wcstombs(m_buf.data(), path, m_buf.size()) == -1)
+    if (std::wcstombs(m_buf.data(), path, m_buf.size()) == static_cast<std::size_t>(-1))
         m_buf = {};
 }
 

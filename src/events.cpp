@@ -104,7 +104,7 @@ void proxy::events::pump()
     ::SDL_PumpEvents();
 }
 
-event::push_outcome proxy::events::push(const event::variant& eh)
+event::push_outcome proxy::events::push(event::variant& eh)
 {
     eh.get(pass_key<events> {}).common.timestamp = SDL_GetTicksNS();
 

@@ -58,7 +58,7 @@ namespace hal
             result<event::variant> poll();
 
             // Push an event onto the queue.
-            event::push_outcome push(const event::variant& eh);
+            event::push_outcome push(event::variant& eh);
 
             // Remove all events of a given type from the queue.
             void flush(event::type t);

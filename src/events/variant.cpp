@@ -309,108 +309,108 @@ event::text_input& event::text_input::text(c_string t)
 // Event handler.
 
 event::variant::variant()
-    : m_event { { std::numeric_limits<std::uint32_t>::max() } } // Start with an invalid event.
+    : m_event { .type = std::numeric_limits<std::uint32_t>::max() } // Start with an invalid event.
 {
 }
 
 event::type event::variant::kind() const
 {
-    return static_cast<type>(m_event.data.type);
+    return static_cast<type>(m_event.type);
 }
 
 void event::variant::kind(event::type t)
 {
-    m_event.data.type = std::to_underlying(t);
+    m_event.type = std::to_underlying(t);
 }
 
 const event::display& event::variant::display() const
 {
-    return m_event.data.display;
+    return reinterpret_cast<const event::display&>(m_event.display);
 }
 
 event::display& event::variant::display()
 {
-    return m_event.data.display;
+    return reinterpret_cast<event::display&>(m_event.display);
 }
 
 const event::window& event::variant::window() const
 {
-    return m_event.data.window;
+    return reinterpret_cast<const event::window&>(m_event.window);
 }
 
 event::window& event::variant::window()
 {
-    return m_event.data.window;
+    return reinterpret_cast<event::window&>(m_event.window);
 }
 
 const event::keyboard& event::variant::keyboard() const
 {
     HAL_ASSERT(kind() == type::key_pressed || kind() == type::key_released, "Invalid type");
 
-    return m_event.data.key;
+    return reinterpret_cast<const event::keyboard&>(m_event.key);
 }
 
 event::keyboard& event::variant::keyboard()
 {
     HAL_ASSERT(kind() == type::key_pressed || kind() == type::key_released, "Invalid type");
 
-    return m_event.data.key;
+    return reinterpret_cast<event::keyboard&>(m_event.key);
 }
 
 const event::text_input& event::variant::text_input() const
 {
     HAL_ASSERT(kind() == type::text_input, "Invalid type");
 
-    return m_event.data.text_input;
+    return reinterpret_cast<const event::text_input&>(m_event.text);
 }
 
 event::text_input& event::variant::text_input()
 {
     HAL_ASSERT(kind() == type::text_input, "Invalid type");
 
-    return m_event.data.text_input;
+    return reinterpret_cast<event::text_input&>(m_event.text);
 }
 
 const event::mouse_motion& event::variant::mouse_motion() const
 {
     HAL_ASSERT(kind() == type::mouse_moved, "Invalid type");
 
-    return m_event.data.motion;
+    return reinterpret_cast<const event::mouse_motion&>(m_event.motion);
 }
 
 event::mouse_motion& event::variant::mouse_motion()
 {
     HAL_ASSERT(kind() == type::mouse_moved, "Invalid type");
 
-    return m_event.data.motion;
+    return reinterpret_cast<event::mouse_motion&>(m_event.motion);
 }
 
 const event::mouse_button& event::variant::mouse_button() const
 {
     HAL_ASSERT(kind() == type::mouse_pressed || kind() == type::mouse_released, "Invalid type");
 
-    return m_event.data.button;
+    return reinterpret_cast<const event::mouse_button&>(m_event.button);
 }
 
 event::mouse_button& event::variant::mouse_button()
 {
     HAL_ASSERT(kind() == type::mouse_pressed || kind() == type::mouse_released, "Invalid type");
 
-    return m_event.data.button;
+    return reinterpret_cast<event::mouse_button&>(m_event.button);
 }
 
 const event::mouse_wheel& event::variant::mouse_wheel() const
 {
     HAL_ASSERT(kind() == type::mouse_wheel_moved, "Invalid type");
 
-    return m_event.data.wheel;
+    return reinterpret_cast<const event::mouse_wheel&>(m_event.wheel);
 }
 
 event::mouse_wheel& event::variant::mouse_wheel()
 {
     HAL_ASSERT(kind() == type::mouse_wheel_moved, "Invalid type");
 
-    return m_event.data.wheel;
+    return reinterpret_cast<event::mouse_wheel&>(m_event.wheel);
 }
 
 bool event::variant::pending() const
@@ -418,7 +418,12 @@ bool event::variant::pending() const
     return ::SDL_PollEvent(nullptr) == 1;
 }
 
-SDL_Event& event::variant::get(pass_key<proxy::events>) const
+const SDL_Event& event::variant::get(pass_key<proxy::events>) const
 {
-    return reinterpret_cast<SDL_Event&>(const_cast<dummy_event&>(m_event));
+    return m_event;
+}
+
+SDL_Event& event::variant::get(pass_key<proxy::events>)
+{
+    return m_event;
 }
