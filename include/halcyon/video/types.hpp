@@ -35,13 +35,16 @@ namespace hal
         }
     }
 
-    enum class blend_mode : std::uint8_t
+    enum class blend_mode : std::uint32_t
     {
-        none           = SDL_BLENDMODE_NONE,
-        alpha          = SDL_BLENDMODE_BLEND,
-        additive       = SDL_BLENDMODE_ADD,
-        color_modulate = SDL_BLENDMODE_MOD,
-        color_multiply = SDL_BLENDMODE_MUL
+        none            = SDL_BLENDMODE_NONE,
+        alpha           = SDL_BLENDMODE_BLEND,
+        alpha_premul    = SDL_BLENDMODE_BLEND_PREMULTIPLIED,
+        additive        = SDL_BLENDMODE_ADD,
+        additive_premul = SDL_BLENDMODE_ADD_PREMULTIPLIED,
+        color_modulate  = SDL_BLENDMODE_MOD,
+        color_multiply  = SDL_BLENDMODE_MUL,
+        invalid         = SDL_BLENDMODE_INVALID
     };
 
     constexpr c_string to_string(blend_mode bm)
