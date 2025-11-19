@@ -208,7 +208,7 @@ void window::always_on_top(bool set)
 
 bool window::fullscreen(bool set)
 {
-    return ::SDL_SetWindowFullscreen(get(), set * std::to_underlying(window::flag::fullscreen));
+    return ::SDL_SetWindowFullscreen(get(), set && std::to_underlying(window::flag::fullscreen));
 }
 
 ref<const renderer> window::renderer() const
