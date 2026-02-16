@@ -2,10 +2,6 @@ cmake_minimum_required(VERSION 3.20.0)
 
 project(Halcyon VERSION 1.0 LANGUAGES CXX)
 
-find_package(SDL3 CONFIG REQUIRED COMPONENTS SDL3)
-find_package(SDL3_image CONFIG REQUIRED)
-find_package(SDL3_ttf CONFIG REQUIRED)
-
 option(Halcyon_BUILD_TESTS
     "Build tests (see test/main.cpp) for use with CTest."
     OFF
@@ -13,6 +9,11 @@ option(Halcyon_BUILD_TESTS
 
 option(Halcyon_BUILD_EXAMPLES
     "Build examples (see the examples/ directory)."
+    OFF
+)
+
+option(Halcyon_WIN32_AUX_CONSOLE
+    "Create an auxiliary console in debug mode on Windows."
     OFF
 )
 
@@ -51,28 +52,10 @@ list(TRANSFORM Halcyon_SOURCES PREPEND src/)
 list(TRANSFORM Halcyon_SOURCES APPEND .cpp)
 
 add_library(Halcyon)
-add_library(Halcyon::Halcyon ALIAS Halcyon)
 
-if (WIN32)
-    option(Halcyon_WIN32_AUX_CONSOLE
-        "Create an auxiliary console in debug mode on Windows."
-        OFF
-    )
-
-    if (Halcyon_WIN32_AUX_CONSOLE)
-        target_compile_definitions(Halcyon PRIVATE HAL_WIN32_AUX_CONSOLE)
-    endif()
-endif()
-
-target_compile_features(Halcyon PUBLIC cxx_std_23)
-
-target_compile_options(Halcyon PRIVATE
-    $<IF:$<CXX_COMPILER_FRONTEND_VARIANT:MSVC>,/Wall,-Wall -Wpedantic -Wextra -Wno-c++98-compat>
-)
-target_include_directories(Halcyon PUBLIC include/)
-target_sources(Halcyon PRIVATE
-    ${Halcyon_SOURCES}
-)
+find_package(SDL3 REQUIRED)
+find_package(SDL3_image REQUIRED)
+find_package(SDL3_ttf REQUIRED)
 
 target_link_libraries(Halcyon PUBLIC
     SDL3::SDL3
@@ -80,10 +63,29 @@ target_link_libraries(Halcyon PUBLIC
     SDL3_ttf::SDL3_ttf
 )
 
+if (Halcyon_WIN32_AUX_CONSOLE)
+    target_compile_definitions(Halcyon PRIVATE HAL_WIN32_AUX_CONSOLE)
+endif()
+
+# Halcyon uses C++23.
+target_compile_features(Halcyon PUBLIC
+    cxx_std_23
+)
+
+target_compile_options(Halcyon PRIVATE
+    $<IF:$<CXX_COMPILER_FRONTEND_VARIANT:MSVC>,/Wall,-Wall -Wpedantic -Wextra -Wno-c++98-compat>
+)
+
+target_include_directories(Halcyon PUBLIC
+    include/
+)
+
+target_sources(Halcyon PRIVATE
+    ${Halcyon_SOURCES}
+)
+
 # Testing.
 if(Halcyon_BUILD_TESTS)
-    message("Halcyon: Enabled tests.")
-
     include(CTest)
 
     add_executable(HalTest WIN32 test/main.cpp)
@@ -117,8 +119,6 @@ endif()
 
 # Examples.
 if(Halcyon_BUILD_EXAMPLES)
-    message("Halcyon: Enabled examples.")
-
     set(EXAMPLE_SOURCES
         invertor.cpp
         message_box.cpp
@@ -138,3 +138,5 @@ if(Halcyon_BUILD_EXAMPLES)
         set_target_properties(${TGT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin/)
     endforeach()
 endif()
+
+add_library(Halcyon::Halcyon ALIAS Halcyon)

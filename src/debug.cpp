@@ -2,6 +2,12 @@
 
 #include "SDL3/SDL_error.h"
 
+// The auxiliary console option shouldn't cause errors
+// on non-Windows builds.
+#ifndef _WIN32
+    #undef HAL_WIN32_AUX_CONSOLE
+#endif
+
 // https://stackoverflow.com/a/55875595
 #ifdef HAL_WIN32_AUX_CONSOLE
     #define WIN32_LEAN_AND_MEAN
@@ -120,7 +126,7 @@ namespace
         return result;
     }
 
-    bool AttachParentConsole(std::int16_t minLength)
+    bool attach_parent_console(std::int16_t minLength)
     {
         bool result { false };
 
