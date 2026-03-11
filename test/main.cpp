@@ -7,6 +7,7 @@
 #include <halcyon/utility/shared.hpp>
 
 #include "data.hpp"
+#include "halcyon/debug.hpp"
 #include "halcyon/filesystem.hpp"
 #include "halcyon/subsystem.hpp"
 
@@ -24,11 +25,11 @@
         FAIL(__VA_ARGS__); \
     }
 
-namespace test
+namespace
 {
     // Compile-time tests first.
     // You know that these tests pass when this file compiles.
-    consteval void scaler()
+    [[maybe_unused]] consteval void scaler()
     {
         constexpr hal::pixel::point src { 50, 100 };
         constexpr hal::pixel::point dst { 100, 200 };
@@ -38,7 +39,7 @@ namespace test
         static_assert(src * 2 == dst);
     }
 
-    consteval void metaprogramming()
+    [[maybe_unused]] consteval void metaprogramming()
     {
         using ret_t    = std::string;
         using first_t  = std::tuple<int, double, short>;
@@ -53,7 +54,7 @@ namespace test
         static_assert(std::is_same_v<ret_t, info::return_type> && std::is_same_v<first_t, info::args::at<0>> && std::is_same_v<second_t, info::args::at<1>>);
     }
 
-    consteval void colors()
+    [[maybe_unused]] consteval void colors()
     {
         constexpr hal::color
             first { hal::colors::black, 0 },
@@ -136,7 +137,7 @@ namespace test
     // Checking pixel colors in a 2x1 surface.
     int surface_color()
     {
-        hal::surface s { hal::image::load(hal::as_bytes(png_2x1)) };
+        hal::surface s { hal::image::load(hal::as_bytes(test::png_2x1)) };
 
         FAIL_IF((s.pixel({ 0, 0 }).get() != hal::colors::red || s.pixel({ 1, 0 }).get() != hal::colors::blue), "Surface color mismatch");
 
@@ -151,7 +152,7 @@ namespace test
         s2 = s1;
         const SDL_Surface &sr1 { *s1 }, sr2 { *s2 };
 
-        FAIL_IF(std::memcmp(sr1.pixels, sr2.pixels, sr1.h * sr1.pitch) != 0, "Surface pixels don't match");
+        FAIL_IF(std::memcmp(sr1.pixels, sr2.pixels, static_cast<size_t>(sr1.h * sr1.pitch)) != 0, "Surface pixels don't match");
 
         return EXIT_SUCCESS;
     }
@@ -185,7 +186,7 @@ namespace test
 
         FAIL_IF(eh.kind() != text_input, "Event type mismatch (desired \"text_input\", actual ", eh.kind(), ')');
 
-        evt.filter_add([](void* data, hal::event::variant* v)
+        evt.filter_add([](void*, hal::event::variant*)
             { return 0; }, nullptr);
 
         FAIL_IF(!evt.push(eh).filtered(), "Event should have been filtered but wasn't");
@@ -247,7 +248,7 @@ namespace test
     {
         using enum hal::image::load_format;
 
-        const hal::image::load_format ret { hal::image::query(hal::as_bytes(png_2x1)) };
+        const hal::image::load_format ret { hal::image::query(hal::as_bytes(test::png_2x1)) };
 
         FAIL_IF(ret != hal::image::load_format::png, "PNG data not recognized as PNG data");
 
@@ -377,37 +378,48 @@ int main(int argc, char* argv[])
 {
     static_assert(hal::compile_settings::debug_enabled, "HalTest requires debug mode to be enabled");
 
-    struct
+    struct test
     {
+        constexpr test(std::string_view name, hal::func_ptr<int> runner)
+            : name { name }
+            , runner { runner }
+        {
+        }
+
         std::string_view   name;
-        hal::func_ptr<int> test;
-    } constexpr tests[] {
-        { "--assert-fail", test::assert_fail },
-        { "--window-resize", test::window_resize },
-        { "--basic-init", test::basic_init },
-        { "--clipboard", test::clipboard },
-        { "--surface-color", test::surface_color },
-        { "--surface-copy", test::surface_copy },
-        { "--events", test::events },
-        { "--ttf-init", test::ttf_init },
-        { "--rvalues", test::rvalues },
-        { "--outputter", test::outputter },
-        { "--png-check", test::png_check },
-        { "--references", test::references },
-        { "--shared", test::shared },
-        { "--utilities", test::utilities },
-        { "--texture-manipulation", test::texture_manipulation },
-        { "--invalid-buffer", test::invalid_buffer },
-        { "--invalid-texture", test::invalid_texture },
-        { "--invalid-event", test::invalid_event }
+        hal::func_ptr<int> runner;
     };
 
-    FAIL_IF(argc == 1, "No test name given.");
+    constexpr std::array tests {
+        test { "--assert-fail", assert_fail },
+        test { "--window-resize", window_resize },
+        test { "--basic-init", basic_init },
+        test { "--clipboard", clipboard },
+        test { "--surface-color", surface_color },
+        test { "--surface-copy", surface_copy },
+        test { "--events", events },
+        test { "--ttf-init", ttf_init },
+        test { "--rvalues", rvalues },
+        test { "--outputter", outputter },
+        test { "--png-check", png_check },
+        test { "--references", references },
+        test { "--shared", shared },
+        test { "--utilities", utilities },
+        test { "--texture-manipulation", texture_manipulation },
+        test { "--invalid-buffer", invalid_buffer },
+        test { "--invalid-texture", invalid_texture },
+        test { "--invalid-event", invalid_event },
+        test { "--text-engines", text_engines }
+    };
 
-    const auto iter = std::ranges::find_if(tests, [&](const auto& pair)
-        { return pair.name == argv[1]; });
+    const std::span args { argv, static_cast<std::size_t>(argc) };
+
+    FAIL_IF(args.size() < 2, "No test name given.");
+
+    const test* const iter = std::ranges::find_if(tests, [&](const auto& pair)
+        { return pair.name == args[1]; });
 
     FAIL_IF(iter == std::end(tests), "Invalid option specified: ", argv[1]);
 
-    return iter->test();
+    return iter->runner();
 }
