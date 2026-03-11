@@ -18,9 +18,9 @@ option(Halcyon_WIN32_AUX_CONSOLE
 )
 
 set(Halcyon_SOURCES
-    events/variant
     events/keyboard
     events/mouse
+    events/variant
     internal/iostream
     types/color
     types/string
@@ -51,7 +51,59 @@ set(Halcyon_SOURCES
 list(TRANSFORM Halcyon_SOURCES PREPEND src/)
 list(TRANSFORM Halcyon_SOURCES APPEND .cpp)
 
+set(Halcyon_HEADERS
+    events/keyboard
+    events/mouse
+    events/variant
+    internal/drawer
+    internal/iostream
+    internal/resource
+    internal/tags
+    internal/video_basic_types
+    types/c_string
+    types/exception
+    types/point
+    types/rectangle
+    types/result
+    types/string
+    utility/buffer
+    utility/enum_bits
+    utility/guard
+    utility/metaprogramming
+    utility/pass_key
+    utility/printing
+    utility/shared
+    utility/strutil
+    utility/timer
+    video/display
+    video/driver
+    video/message_box
+    video/palette
+    video/renderer
+    video/texture
+    video/types
+    video/window
+    debug
+    events
+    filesystem
+    hint
+    image
+    library
+    main
+    misc
+    properties
+    subsystem
+    surface
+    system
+    ttf
+    video
+)
+
+list(TRANSFORM Halcyon_HEADERS PREPEND include/halcyon/)
+list(TRANSFORM Halcyon_HEADERS APPEND .hpp)
+
 add_library(Halcyon)
+add_library(Halcyon::Halcyon ALIAS Halcyon)
 
 find_package(SDL3 REQUIRED)
 find_package(SDL3_image REQUIRED)
@@ -76,21 +128,26 @@ target_compile_options(Halcyon PRIVATE
     $<IF:$<CXX_COMPILER_FRONTEND_VARIANT:MSVC>,/Wall,-Wall -Wpedantic -Wextra -Wno-c++98-compat>
 )
 
-target_include_directories(Halcyon PUBLIC
-    include/
-)
+target_sources(Halcyon
+    PRIVATE ${Halcyon_SOURCES}
+    PUBLIC
+        FILE_SET HEADERS
+        BASE_DIRS include
+        FILES ${Halcyon_HEADERS}
 
-target_sources(Halcyon PRIVATE
-    ${Halcyon_SOURCES}
 )
 
 # Testing.
 if(Halcyon_BUILD_TESTS)
     include(CTest)
 
+    if (NOT CMAKE_BUILD_TYPE STREQUAL Debug)
+        message(WARNING "[HalTest] Halcyon is being compiled with optimizations. This might cause some tests relying on debug checks inside source files to fail.")
+    endif()
+
     add_executable(HalTest WIN32 test/main.cpp)
 
-    target_link_libraries(HalTest PUBLIC Halcyon)
+    target_link_libraries(HalTest PUBLIC Halcyon::Halcyon)
 
     set(ExeName $<TARGET_FILE:HalTest>)
 
@@ -112,6 +169,7 @@ if(Halcyon_BUILD_TESTS)
     add_test(NAME InvalidBuffer COMMAND ${ExeName} --invalid-buffer)
     add_test(NAME InvalidTexture COMMAND ${ExeName} --invalid-texture)
     add_test(NAME InvalidEvent COMMAND ${ExeName} --invalid-event)
+    add_test(NAME TextEngines COMMAND ${ExeName} --text-engines)
 
     # Set which tests are expected to fail.
     set_tests_properties(AssertFail InvalidEvent PROPERTIES WILL_FAIL TRUE)
@@ -138,5 +196,3 @@ if(Halcyon_BUILD_EXAMPLES)
         set_target_properties(${TGT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin/)
     endforeach()
 endif()
-
-add_library(Halcyon::Halcyon ALIAS Halcyon)
