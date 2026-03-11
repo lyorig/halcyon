@@ -99,6 +99,7 @@ set(Halcyon_HEADERS
     video
 )
 
+
 list(TRANSFORM Halcyon_HEADERS PREPEND include/halcyon/)
 list(TRANSFORM Halcyon_HEADERS APPEND .hpp)
 
@@ -177,22 +178,5 @@ endif()
 
 # Examples.
 if(Halcyon_BUILD_EXAMPLES)
-    set(EXAMPLE_SOURCES
-        invertor.cpp
-        message_box.cpp
-        metaprogramming.cpp
-        safety.cpp
-        events.cpp
-        text_render.cpp
-        update.cpp
-    )
-
-    list(TRANSFORM EXAMPLE_SOURCES PREPEND examples/)
-
-    foreach(FILE IN LISTS EXAMPLE_SOURCES)
-        cmake_path(GET FILE STEM TGT_NAME)
-        add_executable(${TGT_NAME} WIN32 ${FILE})
-        target_link_libraries(${TGT_NAME} PRIVATE Halcyon::Halcyon)
-        set_target_properties(${TGT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin/)
-    endforeach()
+    add_subdirectory(examples)
 endif()
