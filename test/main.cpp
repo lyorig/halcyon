@@ -1,15 +1,16 @@
 #include <halcyon/video.hpp>
 
+#include <halcyon/filesystem.hpp>
 #include <halcyon/image.hpp>
+#include <halcyon/subsystem.hpp>
 #include <halcyon/ttf.hpp>
 
 #include <halcyon/utility/guard.hpp>
 #include <halcyon/utility/shared.hpp>
 
+#include <halcyon/main.hpp>
+
 #include "data.hpp"
-#include "halcyon/debug.hpp"
-#include "halcyon/filesystem.hpp"
-#include "halcyon/subsystem.hpp"
 
 // Halcyon testing.
 // A single test-runner executable that contains all tests.
