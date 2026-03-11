@@ -381,14 +381,14 @@ int main(int argc, char* argv[])
 
     struct test
     {
-        constexpr test(std::string_view name, hal::func_ptr<int> runner)
+        constexpr test(std::string_view name, hal::func_ref<int> runner)
             : name { name }
             , runner { runner }
         {
         }
 
         std::string_view   name;
-        hal::func_ptr<int> runner;
+        hal::func_ref<int> runner;
     };
 
     constexpr std::array tests {
@@ -417,8 +417,8 @@ int main(int argc, char* argv[])
 
     FAIL_IF(args.size() < 2, "No test name given.");
 
-    const test* const iter = std::ranges::find_if(tests, [&](const auto& pair)
-        { return pair.name == args[1]; });
+    const auto iter = std::ranges::find_if(tests, [&](const test& t)
+        { return t.name == args[1]; });
 
     FAIL_IF(iter == std::end(tests), "Invalid option specified: ", argv[1]);
 
