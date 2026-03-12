@@ -43,8 +43,9 @@ int main(int argc, char* argv[])
 
         tex = { rnd, surf };
 
-        HAL_PRINT("Pixel format: ", tex.pixel_format().get(), ", type: ", hal::pixel::storage_of(tex.pixel_format().get()));
-        HAL_PRINT("Must lock? ", surf.must_lock());
+        const hal::pixel::format pf { tex.pixel_format().get() };
+        std::println("Pixel format: {}, type: {}", hal::to_string(pf), hal::to_string(hal::pixel::storage_of(pf)));
+        std::println("Must lock? {}", surf.must_lock());
 
         wnd.size(tex.size().get() + padding);
 

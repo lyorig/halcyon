@@ -14,6 +14,8 @@ int main(int, char*[])
     hal::renderer       rnd { wnd };
     hal::event::variant eh;
 
+    rnd.vsync(1);
+
     // The application's main loop starts here.
     while (true) // As long as the program is running...
     {
@@ -26,8 +28,7 @@ int main(int, char*[])
                 using enum hal::event::type;
 
             case terminating:
-                HAL_PRINT("Program has been terminated!");
-                // intentional fallthrough...
+                std::println("Program has been terminated!"); // fallthrough
 
             case quit_requested:
                 return EXIT_SUCCESS;
@@ -55,7 +56,7 @@ int main(int, char*[])
                     break;
 
                 default:
-                    HAL_PRINT("Unhandled key press: ", eh.keyboard().key(), eh.keyboard().repeat() ? " [REPEAT]" : "");
+                    std::println("Unhandled key press: {}{}", hal::to_string(eh.keyboard().key()).data(), eh.keyboard().repeat() ? " [REPEAT]" : "");
                 }
                 break;
 
