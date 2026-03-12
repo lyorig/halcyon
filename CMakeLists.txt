@@ -6,22 +6,22 @@ if (NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Debug)
 endif()
 
-option(Halcyon_BUILD_TESTS
+option(HALCYON_BUILD_TESTS
     "Build tests (see test/main.cpp) for use with CTest."
     OFF
 )
 
-option(Halcyon_BUILD_EXAMPLES
+option(HALCYON_BUILD_EXAMPLES
     "Build examples (see the examples/ directory)."
     OFF
 )
 
-option(Halcyon_WIN32_AUX_CONSOLE
+option(HALCYON_WIN32_AUX_CONSOLE
     "Create an auxiliary console in debug mode on Windows."
     OFF
 )
 
-set(Halcyon_SOURCES
+set(HALCYON_SOURCES
     events/keyboard
     events/mouse
     events/variant
@@ -52,10 +52,10 @@ set(Halcyon_SOURCES
     video
 )
 
-list(TRANSFORM Halcyon_SOURCES PREPEND src/)
-list(TRANSFORM Halcyon_SOURCES APPEND .cpp)
+list(TRANSFORM HALCYON_SOURCES PREPEND src/)
+list(TRANSFORM HALCYON_SOURCES APPEND .cpp)
 
-set(Halcyon_HEADERS
+set(HALCYON_HEADERS
     events/keyboard
     events/mouse
     events/variant
@@ -103,9 +103,8 @@ set(Halcyon_HEADERS
     video
 )
 
-
-list(TRANSFORM Halcyon_HEADERS PREPEND include/halcyon/)
-list(TRANSFORM Halcyon_HEADERS APPEND .hpp)
+list(TRANSFORM HALCYON_HEADERS PREPEND include/halcyon/)
+list(TRANSFORM HALCYON_HEADERS APPEND .hpp)
 
 add_library(Halcyon)
 add_library(Halcyon::Halcyon ALIAS Halcyon)
@@ -120,7 +119,7 @@ target_link_libraries(Halcyon PUBLIC
     SDL3_ttf::SDL3_ttf
 )
 
-if (Halcyon_WIN32_AUX_CONSOLE)
+if (HALCYON_WIN32_AUX_CONSOLE)
     target_compile_definitions(Halcyon PRIVATE HAL_WIN32_AUX_CONSOLE)
 endif()
 
@@ -134,16 +133,16 @@ target_compile_options(Halcyon PRIVATE
 )
 
 target_sources(Halcyon
-    PRIVATE ${Halcyon_SOURCES}
+    PRIVATE ${HALCYON_SOURCES}
     PUBLIC
         FILE_SET HEADERS
         BASE_DIRS include
-        FILES ${Halcyon_HEADERS}
+        FILES ${HALCYON_HEADERS}
 )
 
 # Tests don't use a subdirectory (like examples), since they
 # need access to internal headers.
-if(Halcyon_BUILD_TESTS)
+if(HALCYON_BUILD_TESTS)
     if (NOT CMAKE_BUILD_TYPE STREQUAL Debug)
         message(WARNING "Halcyon tests can only be built with `CMAKE_BUILD_TYPE=Debug` (current is `${CMAKE_BUILD_TYPE}`).")
     else()
@@ -178,6 +177,6 @@ if(Halcyon_BUILD_TESTS)
     endif()
 endif()
 
-if(Halcyon_BUILD_EXAMPLES)
+if(HALCYON_BUILD_EXAMPLES)
     add_subdirectory(examples)
 endif()
