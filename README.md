@@ -4,7 +4,7 @@ Performance is the main priority here, but work has also been put into making su
 Namespaces are not cluttered, everything is neatly organized—proper C++ design, plain and simple.  
 
 # Installation
-Halcyon is included into your project via CMake—link against `Halcyon::Halcyon`.
+After including Halcyon via `add_subdirectory()`, link against `Halcyon::Halcyon`.
 
 The following libraries are required:
 - SDL3
@@ -17,10 +17,10 @@ Halcyon wraps SDL with several concepts:
 - **Proxy:** Provides subsystem functionality.
 
 > [!TIP]
-> These are empty classes. You are encouraged to use them with `[[no_unique_address]]` (also defined as `HAL_NO_SIZE`).
+> These are empty classes. You are encouraged to use them with `[[no_unique_address]]` (also defined as `HAL_NO_SIZE` for MSVC compatibility).
 
 # Example program
-This library is still under heavy developement; some namespaces etc. might not be up-to-date, but the structure should remain the same.
+This library is still under development; some namespaces etc. might not be up-to-date, but the structure should remain the same.
 ```
 #include <halcyon/video.hpp>
 #include <halcyon/main.hpp>
@@ -59,7 +59,7 @@ Halcyon provides several macro functions for a better debugging experience.
 These debugging facilities are configured via the `HAL_DEBUG_ENABLED` macro, which also gets automatically defined if `NDEBUG` isn't defined.
 
 > [!IMPORTANT]
-> On Windows, GUI applications don't get visible console output by default. As such, Halcyon creates one for you if debugging is enabled. I think this is a sensible workaround, but if you'd like this to be opt-out, feel free to submit an issue.
+> On Windows, GUI applications don't get visible console output by default. As such, Halcyon can create one for you via the `HALCYON_WIN32_AUX_CONSOLE` CMake variable.
 
 # Wishlist
 Some things I'd like to eventually implement. 
