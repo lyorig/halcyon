@@ -24,7 +24,7 @@ option(HALCYON_WIN32_AUX_CONSOLE
     OFF
 )
 
-set(HALCYON_SOURCES
+Halcyon_CreateSourceList(HALCYON_SOURCES src cpp
     events/keyboard
     events/mouse
     events/variant
@@ -55,10 +55,7 @@ set(HALCYON_SOURCES
     video
 )
 
-list(TRANSFORM HALCYON_SOURCES PREPEND src/)
-list(TRANSFORM HALCYON_SOURCES APPEND .cpp)
-
-set(HALCYON_HEADERS
+Halcyon_CreateSourceList(HALCYON_HEADERS include/halcyon hpp
     events/keyboard
     events/mouse
     events/variant
@@ -106,9 +103,6 @@ set(HALCYON_HEADERS
     video
 )
 
-list(TRANSFORM HALCYON_HEADERS PREPEND include/halcyon/)
-list(TRANSFORM HALCYON_HEADERS APPEND .hpp)
-
 add_library(Halcyon)
 add_library(Halcyon::Halcyon ALIAS Halcyon)
 
@@ -126,7 +120,7 @@ if (HALCYON_WIN32_AUX_CONSOLE)
     target_compile_definitions(Halcyon PRIVATE HAL_WIN32_AUX_CONSOLE)
 endif()
 
-set_std_no_ext(Halcyon 23)
+Halcyon_SetStandardWithoutExtensions(Halcyon 23)
 
 target_compile_options(Halcyon PRIVATE
     $<IF:$<CXX_COMPILER_FRONTEND_VARIANT:MSVC>,/Wall,-Wall -Wpedantic -Wextra -Wno-c++98-compat>
@@ -149,7 +143,7 @@ if(HALCYON_BUILD_TESTS)
         include(CTest)
 
         add_executable(HalTest WIN32 test/main.cpp)
-        set_std_no_ext(HalTest 23)
+        Halcyon_SetStandardWithoutExtensions(HalTest 23)
 
         target_link_libraries(HalTest PUBLIC Halcyon::Halcyon)
 
