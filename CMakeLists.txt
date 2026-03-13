@@ -2,8 +2,8 @@ cmake_minimum_required(VERSION 3.30.0)
 
 project(Halcyon VERSION 1.0 LANGUAGES CXX)
 
-list(APPEND CMAKE_MODULE_PATH cmake)
-include(Helpers)
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+include(HalcyonHelpers)
 
 if (NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Debug)
@@ -126,7 +126,7 @@ if (HALCYON_WIN32_AUX_CONSOLE)
     target_compile_definitions(Halcyon PRIVATE HAL_WIN32_AUX_CONSOLE)
 endif()
 
-std_no_ext(Halcyon 23)
+set_std_no_ext(Halcyon 23)
 
 target_compile_options(Halcyon PRIVATE
     $<IF:$<CXX_COMPILER_FRONTEND_VARIANT:MSVC>,/Wall,-Wall -Wpedantic -Wextra -Wno-c++98-compat>
@@ -149,7 +149,7 @@ if(HALCYON_BUILD_TESTS)
         include(CTest)
 
         add_executable(HalTest WIN32 test/main.cpp)
-        std_no_ext(HalTest 23)
+        set_std_no_ext(HalTest 23)
 
         target_link_libraries(HalTest PUBLIC Halcyon::Halcyon)
 
