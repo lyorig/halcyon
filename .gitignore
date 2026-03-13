@@ -1,7 +1,9 @@
 .vs/
 .cache/
 
+# The second line also ignores symlinks.
 build*/
+build*
 
 bin/*
 !bin/assets/
