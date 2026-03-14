@@ -13,7 +13,7 @@ int main(int argc, char* argv[])
     rnd.clear();
 
     {
-        const auto pref { hal::pixel::format::rgba32 };
+        constexpr auto pref { hal::pixel::format::rgba32 };
 
         hal::static_texture t { rnd, rnd.size().get(), pref };
 
@@ -38,35 +38,6 @@ int main(int argc, char* argv[])
     {
         while (v.events.poll(h))
         {
-            switch (h.kind())
-            {
-                using enum hal::event::type;
-
-            case quit_requested:
-                return EXIT_SUCCESS;
-
-            case key_pressed:
-                switch (h.keyboard().button())
-                {
-                    using enum hal::keyboard::button;
-
-                case Q:
-                    break;
-
-                case W:
-                    break;
-
-                case E:
-                    break;
-
-                default:
-                    break;
-                }
-                break;
-
-            default:
-                break;
-            }
         }
 
         using namespace std::chrono_literals;
