@@ -66,16 +66,6 @@ namespace
         static_assert(first != third);
     }
 
-    // Debug assertion testing.
-    // This test should fail.
-    int assert_fail()
-    {
-        // Failure should occur here.
-        HAL_ASSERT(false, "This is intentional.");
-
-        return EXIT_SUCCESS;
-    }
-
     // Resizing a window and checking whether the event handler was notified.
     int window_resize()
     {
@@ -347,20 +337,6 @@ namespace
         return rnd.draw(tex).render() ? EXIT_FAILURE : EXIT_SUCCESS;
     }
 
-    // Accessing an invalid event.
-    // This test should fail.
-    int invalid_event()
-    {
-        hal::cleanup_init<hal::subsystem::events> sys;
-
-        hal::event::variant eh;
-
-        // Failure should occur here.
-        eh.text_input().text("amogus sus").window_id(69);
-
-        return EXIT_SUCCESS;
-    }
-
     int text_engines()
     {
         hal::text_engine::surface s;
@@ -373,12 +349,36 @@ namespace
 
         return EXIT_SUCCESS;
     }
+
+#ifdef HAL_DEBUG_ENABLED
+    // Debug assertion testing. Requires debug mode.
+    // This test should fail.
+    int assert_fail()
+    {
+        // Failure should occur here.
+        HAL_ASSERT(false, "This is intentional.");
+
+        return EXIT_SUCCESS;
+    }
+
+    // Accessing an invalid event. Requires debug mode.
+    // This test should fail.
+    int invalid_event()
+    {
+        hal::cleanup_init<hal::subsystem::events> sys;
+
+        hal::event::variant eh;
+
+        // Failure should occur here.
+        eh.text_input().text("amogus sus").window_id(69);
+
+        return EXIT_SUCCESS;
+    }
+#endif
 }
 
 int main(int argc, char* argv[])
 {
-    static_assert(hal::compile_settings::debug_enabled, "HalTest requires debug mode to be enabled");
-
     struct test
     {
         constexpr test(std::string_view name, hal::func_ref<int> runner)
@@ -392,7 +392,6 @@ int main(int argc, char* argv[])
     };
 
     constexpr std::array tests {
-        test { "--assert-fail", assert_fail },
         test { "--window-resize", window_resize },
         test { "--basic-init", basic_init },
         test { "--clipboard", clipboard },
@@ -409,8 +408,11 @@ int main(int argc, char* argv[])
         test { "--texture-manipulation", texture_manipulation },
         test { "--invalid-buffer", invalid_buffer },
         test { "--invalid-texture", invalid_texture },
+        test { "--text-engines", text_engines },
+#ifdef HAL_DEBUG_ENABLED
+        test { "--assert-fail", assert_fail },
         test { "--invalid-event", invalid_event },
-        test { "--text-engines", text_engines }
+#endif
     };
 
     const std::span args { argv, static_cast<std::size_t>(argc) };

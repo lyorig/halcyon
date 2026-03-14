@@ -4,6 +4,20 @@ function(Halcyon_SetStandardWithoutExtensions target standard)
 	set_target_properties("${target}" PROPERTIES CXX_EXTENSIONS OFF)
 endfunction()
 
+# Set `CMAKE_BUILD_TYPE` to a default value, if none is specified
+# on the command line.
+#
+# Inspired by [Kitware's blog](https://www.kitware.com/cmake-and-the-default-build-type/).
+function(Halcyon_SetupBuildType default)
+	if(NOT CMAKE_BUILD_TYPE)
+		if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+			set(CMAKE_BUILD_TYPE "${default}" CACHE STRING "Build type" FORCE)
+			set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS
+				Debug Release MinSizeRel RelWithDebInfo)
+		endif()
+	endif()
+endfunction()
+
 # Create a list of file paths sharing a common parent directory and extension.
 # This is used to simplify creation of source file lists, where
 # you'd otherwise have to repeat the same directory prefix and
