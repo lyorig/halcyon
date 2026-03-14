@@ -141,29 +141,42 @@ if(HALCYON_BUILD_TESTS)
     include(CTest)
 
     add_executable(HalTest WIN32 test/main.cpp)
-    Halcyon_SetStandardWithoutExtensions(HalTest 23)
+    target_sources(HalTest
+        PRIVATE
+            test/main.cpp
+        PUBLIC
+            FILE_SET HEADERS
+            BASE_DIRS test/include
+            FILES test/include/data.hpp
+    )
 
     target_link_libraries(HalTest PUBLIC Halcyon::Halcyon)
 
+    Halcyon_SetStandardWithoutExtensions(HalTest 23)
+
     set(ExeName $<TARGET_FILE:HalTest>)
 
-    add_test(NAME WindowResize COMMAND ${ExeName} --window-resize)
-    add_test(NAME BasicInit COMMAND ${ExeName} --basic-init)
-    add_test(NAME Clipboard COMMAND ${ExeName} --clipboard)
-    add_test(NAME SurfaceColor COMMAND ${ExeName} --surface-color)
-    add_test(NAME SurfaceCopy COMMAND ${ExeName} --surface-copy)
-    add_test(NAME Events COMMAND ${ExeName} --events)
-    add_test(NAME TTFInit COMMAND ${ExeName} --ttf-init)
-    add_test(NAME RValues COMMAND ${ExeName} --rvalues)
-    add_test(NAME Outputter COMMAND ${ExeName} --outputter)
-    add_test(NAME PngCheck COMMAND ${ExeName} --png-check)
-    add_test(NAME References COMMAND ${ExeName} --references)
-    add_test(NAME Shared COMMAND ${ExeName} --shared)
-    add_test(NAME Utilities COMMAND ${ExeName} --utilities)
-    add_test(NAME TextureManipulation COMMAND ${ExeName} --texture-manipulation)
-    add_test(NAME InvalidBuffer COMMAND ${ExeName} --invalid-buffer)
-    add_test(NAME InvalidTexture COMMAND ${ExeName} --invalid-texture)
-    add_test(NAME TextEngines COMMAND ${ExeName} --text-engines)
+    function(AddTest name cmd)
+        add_test(NAME "${name}" COMMAND "${ExeName}" "${cmd}")
+    endfunction()
+
+    AddTest(WindowResize --window-resize)
+    AddTest(BasicInit --basic-init)
+    AddTest(Clipboard --clipboard)
+    AddTest(SurfaceColor --surface-color)
+    AddTest(SurfaceCopy --surface-copy)
+    AddTest(Events --events)
+    AddTest(TTFInit --ttf-init)
+    AddTest(RValues --rvalues)
+    AddTest(Outputter --outputter)
+    AddTest(PngCheck --png-check)
+    AddTest(References --references)
+    AddTest(Shared --shared)
+    AddTest(Utilities --utilities)
+    AddTest(TextureManipulation --texture-manipulation)
+    AddTest(InvalidBuffer --invalid-buffer)
+    AddTest(InvalidTexture --invalid-texture)
+    AddTest(TextEngines --text-engines)
 
     # These tests rely on debug-mode asserts.
     if(CMAKE_BUILD_TYPE STREQUAL Debug)
