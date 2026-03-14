@@ -28,6 +28,9 @@ namespace hal::fs
         // Default constructor; gets and stores the application directory.
         resource_loader();
 
+        // Constructor that lets you use a custom base path.
+        resource_loader(std::string_view base);
+
         // Resolve a path relative to the application directory.
         // This is basically just a string concatenation, so if
         // you use an absolute path instead of a relative one, it'll

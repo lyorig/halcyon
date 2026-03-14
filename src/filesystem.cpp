@@ -15,9 +15,14 @@ c_string fs::pref_path(c_string org, c_string app)
 }
 
 // SDL caches this string so it's okay
-// to use it with a std::string_view.
+// to use it with a `std::string_view`.
 fs::resource_loader::resource_loader()
-    : m_base { base_path() }
+    : resource_loader { base_path() }
+{
+}
+
+fs::resource_loader::resource_loader(std::string_view base)
+    : m_base { base }
 {
 }
 
