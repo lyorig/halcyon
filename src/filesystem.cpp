@@ -28,14 +28,19 @@ fs::resource_loader::resource_loader(std::string_view base)
 
 std::string fs::resource_loader::resolve(std::string_view path) const
 {
+    return resolve(m_base, path);
+}
+
+std::string fs::resource_loader::resolve(std::string_view base, std::string_view path)
+{
     std::string       ret;
-    const std::size_t new_size { m_base.size() + path.size() };
+    const std::size_t new_size { base.size() + path.size() };
 
     ret.resize_and_overwrite(new_size,
-        [this, path, new_size](char* buf, std::size_t)
+        [base, path, new_size](char* buf, std::size_t)
         {
-            std::memcpy(buf, m_base.data(), m_base.size());
-            std::memcpy(buf + m_base.size(), path.data(), path.size());
+            std::memcpy(buf, base.data(), base.size());
+            std::memcpy(buf + base.size(), path.data(), path.size());
 
             return new_size;
         });

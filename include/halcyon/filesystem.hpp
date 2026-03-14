@@ -37,6 +37,12 @@ namespace hal::fs
         // probably result in an invalid or otherwise garbled path.
         std::string resolve(std::string_view path) const;
 
+        // Resolve a path relative to a given base path (must end in a path separator).
+        // This is basically just a string concatenation, so if
+        // you use an absolute path instead of a relative one, it'll
+        // probably result in an invalid or otherwise garbled path.
+        static std::string resolve(std::string_view base, std::string_view path);
+
         // Create a file accessor with a path relative to the application directory.
         accessor access(std::string_view path) const;
 
