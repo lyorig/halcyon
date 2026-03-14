@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.30.0)
 
-project(Halcyon VERSION 1.0 LANGUAGES CXX)
+project(Halcyon
+    VERSION 1.0
+    LANGUAGES CXX
+)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 include(HalcyonHelpers)
@@ -104,6 +107,24 @@ Halcyon_CreateSourceList(HALCYON_HEADERS include/halcyon hpp
 add_library(Halcyon)
 add_library(Halcyon::Halcyon ALIAS Halcyon)
 
+target_sources(Halcyon
+    PRIVATE ${HALCYON_SOURCES}
+    PUBLIC
+        FILE_SET HEADERS
+        BASE_DIRS include
+        FILES ${HALCYON_HEADERS}
+)
+
+Halcyon_SetStandardWithoutExtensions(Halcyon 23)
+
+target_compile_options(Halcyon PRIVATE
+    $<IF:$<CXX_COMPILER_FRONTEND_VARIANT:MSVC>,/Wall,-Wall -Wpedantic -Wextra -Wno-c++98-compat>
+)
+
+if(HALCYON_WIN32_AUX_CONSOLE)
+    target_compile_definitions(Halcyon PRIVATE HAL_WIN32_AUX_CONSOLE)
+endif()
+
 find_package(SDL3 REQUIRED)
 find_package(SDL3_image REQUIRED)
 find_package(SDL3_ttf REQUIRED)
@@ -112,24 +133,6 @@ target_link_libraries(Halcyon PUBLIC
     SDL3::SDL3
     SDL3_image::SDL3_image
     SDL3_ttf::SDL3_ttf
-)
-
-if(HALCYON_WIN32_AUX_CONSOLE)
-    target_compile_definitions(Halcyon PRIVATE HAL_WIN32_AUX_CONSOLE)
-endif()
-
-Halcyon_SetStandardWithoutExtensions(Halcyon 23)
-
-target_compile_options(Halcyon PRIVATE
-    $<IF:$<CXX_COMPILER_FRONTEND_VARIANT:MSVC>,/Wall,-Wall -Wpedantic -Wextra -Wno-c++98-compat>
-)
-
-target_sources(Halcyon
-    PRIVATE ${HALCYON_SOURCES}
-    PUBLIC
-        FILE_SET HEADERS
-        BASE_DIRS include
-        FILES ${HALCYON_HEADERS}
 )
 
 # Tests don't use a subdirectory (like examples), since they
