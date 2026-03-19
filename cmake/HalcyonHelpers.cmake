@@ -12,10 +12,12 @@ function(Halcyon_SetupBuildType default)
 	if(NOT CMAKE_BUILD_TYPE)
 		if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
 			set(CMAKE_BUILD_TYPE "${default}" CACHE STRING "Build type" FORCE)
-			set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS
-				Debug Release MinSizeRel RelWithDebInfo)
 		endif()
 	endif()
+
+	set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS
+		Debug Release MinSizeRel RelWithDebInfo
+	)
 endfunction()
 
 # Create a list of file paths sharing a common parent directory and extension.
