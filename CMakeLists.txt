@@ -65,7 +65,6 @@ Halcyon_CreateSourceList(HALCYON_HEADERS include/halcyon hpp
     internal/resource
     internal/tags
     internal/video_basic_types
-    types/c_string
     types/exception
     types/point
     types/rectangle

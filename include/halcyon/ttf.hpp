@@ -3,9 +3,7 @@
 #include <halcyon/internal/iostream.hpp>
 #include <halcyon/surface.hpp>
 
-#include <halcyon/types/c_string.hpp>
-
-#include "SDL3_ttf/SDL_ttf.h"
+#include <SDL3_ttf/SDL_ttf.h>
 
 // ttf.hpp:
 // SDL_ttf wrappers for font loading and text rendering.

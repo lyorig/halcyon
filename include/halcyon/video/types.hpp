@@ -1,11 +1,11 @@
 #pragma once
 
-#include <SDL3/SDL_surface.h>
-#include <halcyon/types/c_string.hpp>
 #include <halcyon/types/rectangle.hpp>
 
-#include "SDL3/SDL_blendmode.h"
-#include "SDL3/SDL_pixels.h"
+#include <SDL3/SDL_blendmode.h>
+#include <SDL3/SDL_pixels.h>
+#include <SDL3/SDL_surface.h>
+#include <string_view>
 
 // video/types.hpp:
 // Rendering-related types used throughout Halcyon.
@@ -47,29 +47,30 @@ namespace hal
         invalid         = SDL_BLENDMODE_INVALID
     };
 
-    constexpr c_string to_string(blend_mode bm)
+    constexpr std::string_view to_string(blend_mode bm)
     {
         switch (bm)
         {
             using enum blend_mode;
+            using namespace std::string_view_literals;
 
         case none:
-            return "No blend";
+            return "No blend"sv;
 
         case alpha:
-            return "Alpha";
+            return "Alpha"sv;
 
         case additive:
-            return "Additive";
+            return "Additive"sv;
 
         case color_modulate:
-            return "Color modulate";
+            return "Color modulate"sv;
 
         case color_multiply:
-            return "Color multiply";
+            return "Color multiply"sv;
 
         default:
-            return "[unknown]";
+            return "[unknown]"sv;
         }
     }
 
@@ -263,312 +264,318 @@ namespace hal
         }
     }
 
-    constexpr c_string to_string(pixel::format fmt)
+    constexpr std::string_view to_string(pixel::format fmt)
     {
         using enum pixel::format;
+        using namespace std::string_view_literals;
 
         switch (fmt)
         {
         case unknown:
-            return "Unknown";
+            return "Unknown"sv;
 
         case index1_lsb:
-            return "Index 1 LSB";
+            return "Index 1 LSB"sv;
 
         case index1_msb:
-            return "Index 1 MSB";
+            return "Index 1 MSB"sv;
 
         case index2_lsb:
-            return "Index 2 LSB";
+            return "Index 2 LSB"sv;
 
         case index2_msb:
-            return "Index 2 MSB";
+            return "Index 2 MSB"sv;
 
         case index4_lsb:
-            return "Index 4 LSB";
+            return "Index 4 LSB"sv;
 
         case index4_msb:
-            return "Index 4 MSB";
+            return "Index 4 MSB"sv;
 
         case index8:
-            return "Index 8";
+            return "Index 8"sv;
 
         case rgb332:
-            return "RGB332";
+            return "RGB332"sv;
 
         case rgb565:
-            return "RGB565";
+            return "RGB565"sv;
 
         case bgr565:
-            return "BGR565";
+            return "BGR565"sv;
 
         case rgb24:
-            return "RGB24";
+            return "RGB24"sv;
 
         case bgr24:
-            return "BGR24";
+            return "BGR24"sv;
 
         case rgba4444:
-            return "RGBA4444";
+            return "RGBA4444"sv;
 
         case rgba5551:
-            return "RGBA5551";
+            return "RGBA5551"sv;
 
         case rgba8888:
-            return "RGBA8888";
+            return "RGBA8888"sv;
 
         case rgbx8888:
-            return "RGBX8888";
+            return "RGBX8888"sv;
 
         case xrgb4444:
-            return "XRGB4444";
+            return "XRGB4444"sv;
 
         case xrgb1555:
-            return "XRGB1555";
+            return "XRGB1555"sv;
 
         case xrgb8888:
-            return "XRGB8888";
+            return "XRGB8888"sv;
 
         case argb4444:
-            return "ARGB4444";
+            return "ARGB4444"sv;
 
         case argb1555:
-            return "ARGB1555";
+            return "ARGB1555"sv;
 
         case argb8888:
-            return "ARGB8888";
+            return "ARGB8888"sv;
 
         case abgr4444:
-            return "ABGR4444";
+            return "ABGR4444"sv;
 
         case abgr1555:
-            return "ABGR1555";
+            return "ABGR1555"sv;
 
         case abgr8888:
-            return "ABGR8888";
+            return "ABGR8888"sv;
 
         case bgra4444:
-            return "BGRA4444";
+            return "BGRA4444"sv;
 
         case bgra5551:
-            return "BGRA5551";
+            return "BGRA5551"sv;
 
         case bgra8888:
-            return "BGRA8888";
+            return "BGRA8888"sv;
 
         case bgrx8888:
-            return "BGRX8888";
+            return "BGRX8888"sv;
 
         case xbgr4444:
-            return "XBGR4444";
+            return "XBGR4444"sv;
 
         case xbgr1555:
-            return "XBGR1555";
+            return "XBGR1555"sv;
 
         case xbgr8888:
-            return "XBGR8888";
+            return "XBGR8888"sv;
 
         case argb2101010:
-            return "ARGB2101010";
+            return "ARGB2101010"sv;
 
         case yv12:
-            return "YV12";
+            return "YV12"sv;
 
         case iyuv:
-            return "IYUV";
+            return "IYUV"sv;
 
         case yuy2:
-            return "YUY2";
+            return "YUY2"sv;
 
         case uyvy:
-            return "UYVY";
+            return "UYVY"sv;
 
         case yvyu:
-            return "YVYU";
+            return "YVYU"sv;
 
         case nv12:
-            return "NV12";
+            return "NV12"sv;
 
         case nv21:
-            return "NV21";
+            return "NV21"sv;
 
         default:
-            return "[unknown]";
+            return "[unknown]"sv;
         }
     }
 
-    constexpr c_string to_string(pixel::storage tp)
+    constexpr std::string_view to_string(pixel::storage tp)
     {
         using enum pixel::storage;
+        using namespace std::string_view_literals;
 
         switch (tp)
         {
         case unknown:
-            return "Unknown";
+            return "Unknown"sv;
 
         case index1:
-            return "Index 1";
+            return "Index 1"sv;
 
         case index2:
-            return "Index 2";
+            return "Index 2"sv;
 
         case index4:
-            return "Index 4";
+            return "Index 4"sv;
 
         case index8:
-            return "Index 8";
+            return "Index 8"sv;
 
         case packed8:
-            return "Packed 8";
+            return "Packed 8"sv;
 
         case packed16:
-            return "Packed 16";
+            return "Packed 16"sv;
 
         case packed32:
-            return "Packed 32";
+            return "Packed 32"sv;
 
         case array_u8:
-            return "Array u8";
+            return "Array u8"sv;
 
         case array_u16:
-            return "Array u16";
+            return "Array u16"sv;
 
         case array_u32:
-            return "Array u32";
+            return "Array u32"sv;
 
         case array_f16:
-            return "Array f16";
+            return "Array f16"sv;
 
         case array_f32:
-            return "Array f32";
+            return "Array f32"sv;
 
         default:
-            return "[unknown]";
+            return "[unknown]"sv;
         }
     }
 
-    constexpr c_string to_string(pixel::bitmap_order o)
+    constexpr std::string_view to_string(pixel::bitmap_order o)
     {
         using enum pixel::bitmap_order;
+        using namespace std::string_view_literals;
 
         switch (o)
         {
         case none:
-            return "None";
+            return "None"sv;
 
         case _4321:
-            return "4321";
+            return "4321"sv;
 
         case _1234:
-            return "1234";
+            return "1234"sv;
 
         default:
-            return "[unknown]";
+            return "[unknown]"sv;
         }
     }
 
-    constexpr c_string to_string(pixel::packed_order o)
+    constexpr std::string_view to_string(pixel::packed_order o)
     {
         using enum pixel::packed_order;
+        using namespace std::string_view_literals;
 
         switch (o)
         {
         case none:
-            return "None";
+            return "None"sv;
 
         case xrgb:
-            return "XRGB";
+            return "XRGB"sv;
 
         case rgbx:
-            return "RGBX";
+            return "RGBX"sv;
 
         case argb:
-            return "ARGB";
+            return "ARGB"sv;
 
         case rgba:
-            return "RGBA";
+            return "RGBA"sv;
 
         case xbgr:
-            return "XBGR";
+            return "XBGR"sv;
 
         case bgrx:
-            return "BGRX";
+            return "BGRX"sv;
 
         case abgr:
-            return "ABGR";
+            return "ABGR"sv;
 
         case bgra:
-            return "BGRA";
+            return "BGRA"sv;
 
         default:
-            return "[unknown]";
+            return "[unknown]"sv;
         }
     }
 
-    constexpr c_string to_string(pixel::array_order o)
+    constexpr std::string_view to_string(pixel::array_order o)
     {
         using enum pixel::array_order;
+        using namespace std::string_view_literals;
 
         switch (o)
         {
         case none:
-            return "None";
+            return "None"sv;
 
         case rgb:
-            return "RGB";
+            return "RGB"sv;
 
         case rgba:
-            return "RGBA";
+            return "RGBA"sv;
 
         case argb:
-            return "ARGB";
+            return "ARGB"sv;
 
         case bgr:
-            return "BGR";
+            return "BGR"sv;
 
         case bgra:
-            return "BGRA";
+            return "BGRA"sv;
 
         case abgr:
-            return "ABGR";
+            return "ABGR"sv;
 
         default:
-            return "[unknown]";
+            return "[unknown]"sv;
         }
     }
 
-    constexpr c_string to_string(pixel::packed_layout pl)
+    constexpr std::string_view to_string(pixel::packed_layout pl)
     {
         using enum pixel::packed_layout;
+        using namespace std::string_view_literals;
 
         switch (pl)
         {
         case none:
-            return "None";
+            return "None"sv;
 
         case _332:
-            return "332";
+            return "332"sv;
 
         case _4444:
-            return "4444";
+            return "4444"sv;
 
         case _1555:
-            return "1555";
+            return "1555"sv;
 
         case _5551:
-            return "5551";
+            return "5551"sv;
 
         case _565:
-            return "565";
+            return "565"sv;
 
         case _8888:
-            return "8888";
+            return "8888"sv;
 
         case _2101010:
-            return "2101010";
+            return "2101010"sv;
 
         case _1010102:
-            return "1010102";
+            return "1010102"sv;
         }
     }
 
@@ -578,16 +585,18 @@ namespace hal
         linear  = SDL_SCALEMODE_LINEAR
     };
 
-    constexpr c_string to_string(scale_mode sm)
+    constexpr std::string_view to_string(scale_mode sm)
     {
+        using namespace std::string_view_literals;
+
         switch (sm)
         {
         case scale_mode::nearest:
-            return "Nearest";
+            return "Nearest"sv;
         case scale_mode::linear:
-            return "Linear";
+            return "Linear"sv;
         default:
-            return "[unknown]";
+            return "[unknown]"sv;
         }
     }
 

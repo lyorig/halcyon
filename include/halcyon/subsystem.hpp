@@ -1,12 +1,11 @@
 #pragma once
 
 #include <halcyon/types/exception.hpp>
+#include <halcyon/types/result.hpp>
 
 #include <halcyon/utility/enum_bits.hpp>
 
-#include <halcyon/types/result.hpp>
-
-#include "SDL3/SDL_init.h"
+#include <SDL3/SDL_init.h>
 
 // subsystem.hpp:
 // A representation of SDL subsystems.

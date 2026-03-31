@@ -43,9 +43,9 @@ cp& cp::parent(ref<window> val)
     return *this;
 }
 
-cp& cp::title(c_string val)
+cp& cp::title(const char* val)
 {
-    string_set(SDL_PROP_WINDOW_CREATE_TITLE_STRING, val.c_str());
+    string_set(SDL_PROP_WINDOW_CREATE_TITLE_STRING, val);
     return *this;
 }
 
@@ -98,8 +98,8 @@ float wp::sdr_white_level() const
 
 // ---- WINDOW ----
 
-window::window(proxy::video, c_string title, pixel::point size, flag_bitmask f)
-    : resource { ::SDL_CreateWindow(title.data(), size.x, size.y, f.mask()) }
+window::window(proxy::video, const char* title, pixel::point size, flag_bitmask f)
+    : resource { ::SDL_CreateWindow(title, size.x, size.y, f.mask()) }
 {
 }
 
@@ -186,7 +186,7 @@ void window::max_size(pixel::point pt)
     ::SDL_SetWindowMaximumSize(get(), pt.x, pt.y);
 }
 
-c_string window::title() const
+const char* window::title() const
 {
     return ::SDL_GetWindowTitle(get());
 }

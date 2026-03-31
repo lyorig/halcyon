@@ -2,12 +2,12 @@
 
 using namespace hal;
 
-c_string hint::get(c_string name)
+const char* hint::get(const char* name)
 {
-    return ::SDL_GetHint(name.c_str());
+    return ::SDL_GetHint(name);
 }
 
-void hint::set(c_string name, c_string value)
+void hint::set(const char* name, const char* value)
 {
-    ::SDL_SetHint(name.c_str(), value.c_str());
+    ::SDL_SetHint(name, value);
 }

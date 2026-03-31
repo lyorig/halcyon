@@ -1,8 +1,8 @@
 #pragma once
 
-#include "SDL3/SDL_pixels.h"
-
 #include <halcyon/internal/tags.hpp>
+
+#include <SDL3/SDL_pixels.h>
 
 #include <algorithm>
 #include <bit>

@@ -2,8 +2,6 @@
 
 #include <halcyon/utility/guard.hpp>
 
-#include <iostream>
-
 using namespace hal;
 
 namespace

@@ -6,7 +6,7 @@
 #include <halcyon/utility/metaprogramming.hpp>
 #include <halcyon/utility/pass_key.hpp>
 
-#include "SDL3/SDL_iostream.h"
+#include <SDL3/SDL_iostream.h>
 
 #include <filesystem>
 #include <span>
@@ -58,11 +58,6 @@ namespace hal
             }
 
             iostream(std::nullptr_t) = delete;
-
-            iostream(c_string path)
-                : iostream { path.data() }
-            {
-            }
 
             iostream(std::string_view path)
                 : iostream { path.data() }

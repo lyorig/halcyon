@@ -1,15 +1,13 @@
-#include <SDL3/SDL_cpuinfo.h>
 #include <halcyon/system.hpp>
 
 #include <halcyon/utility/metaprogramming.hpp>
 #include <halcyon/utility/printing.hpp>
 
-#include "SDL3/SDL_cpuinfo.h"
-#include "SDL3/SDL_platform.h"
-
-#include <string_view>
+#include <SDL3/SDL_cpuinfo.h>
+#include <SDL3/SDL_platform.h>
 
 #include <ostream>
+#include <string_view>
 
 using namespace hal;
 
@@ -60,7 +58,7 @@ std::ostream& hal::operator<<(std::ostream& str, power_state s)
     return str;
 }
 
-c_string hal::platform::name()
+const char* hal::platform::name()
 {
     return ::SDL_GetPlatform();
 }

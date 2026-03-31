@@ -3,7 +3,7 @@
 #include <halcyon/internal/resource.hpp>
 #include <halcyon/utility/pass_key.hpp>
 
-#include "SDL3/SDL_stdinc.h"
+#include <SDL3/SDL_stdinc.h>
 
 namespace hal
 {

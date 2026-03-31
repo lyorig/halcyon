@@ -144,8 +144,8 @@ namespace hal
             hal::window::id_t window_id() const;
             text_input&       window_id(hal::window::id_t id);
 
-            c_string    text() const;
-            text_input& text(c_string t);
+            const char* text() const;
+            text_input& text(const char* t);
         };
 
         static_assert(sizeof(text_input) == sizeof(SDL_TextInputEvent));

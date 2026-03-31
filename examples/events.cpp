@@ -56,7 +56,7 @@ int main(int, char*[])
                     break;
 
                 default:
-                    std::println("Unhandled key press: {}{}", hal::to_string(eh.keyboard().key()).data(), eh.keyboard().repeat() ? " [REPEAT]" : "");
+                    std::println("Unhandled key press: {}{}", hal::to_string(eh.keyboard().key()), eh.keyboard().repeat() ? " [REPEAT]" : "");
                 }
                 break;
 

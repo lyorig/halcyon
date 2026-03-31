@@ -1,12 +1,10 @@
 #pragma once
 
+#include <halcyon/subsystem.hpp>
+#include <halcyon/utility/pass_key.hpp>
 #include <halcyon/video/types.hpp>
 
-#include <halcyon/utility/pass_key.hpp>
-
-#include <halcyon/subsystem.hpp>
-
-#include "SDL3/SDL_mouse.h"
+#include <SDL3/SDL_mouse.h>
 
 // event/mouse.hpp:
 // Mouse button access and data.
@@ -57,26 +55,27 @@ namespace hal
         pixel::point pos_abs();
     }
 
-    constexpr c_string to_string(mouse::button btn)
+    constexpr std::string_view to_string(mouse::button btn)
     {
         using enum hal::mouse::button;
+        using namespace std::string_view_literals;
 
         switch (btn)
         {
         case left:
-            return "Left Mouse";
+            return "Left Mouse"sv;
 
         case right:
-            return "Right Mouse";
+            return "Right Mouse"sv;
 
         case middle:
-            return "Middle Mouse";
+            return "Middle Mouse"sv;
 
         case x1:
-            return "Mouse Extra 1";
+            return "Mouse Extra 1"sv;
 
         case x2:
-            return "Mouse Extra 2";
+            return "Mouse Extra 2"sv;
         }
     }
 

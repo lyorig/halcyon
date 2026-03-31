@@ -224,8 +224,8 @@ namespace hal
         };
     }
 
-    c_string to_string(keyboard::button btn);
-    c_string to_string(keyboard::key k);
+    const char* to_string(keyboard::button btn);
+    const char* to_string(keyboard::key k);
 
     namespace keyboard
     {

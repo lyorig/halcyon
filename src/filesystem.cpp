@@ -1,17 +1,17 @@
 #include <halcyon/filesystem.hpp>
 
-#include "SDL3/SDL_filesystem.h"
+#include <SDL3/SDL_filesystem.h>
 
 using namespace hal;
 
-c_string fs::base_path()
+const char* fs::base_path()
 {
     return ::SDL_GetBasePath();
 }
 
-c_string fs::pref_path(c_string org, c_string app)
+const char* fs::pref_path(const char* org, const char* app)
 {
-    return ::SDL_GetPrefPath(org.c_str(), app.c_str());
+    return ::SDL_GetPrefPath(org, app);
 }
 
 // SDL caches this string so it's okay

@@ -2,6 +2,9 @@
 
 #include <halcyon/debug.hpp>
 
+#include <string>
+#include <string_view>
+
 // types/exception.hpp:
 // This type exists purely to communicate failure.
 // Additional info should be collected via debug::last_error().

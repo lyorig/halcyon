@@ -1,10 +1,9 @@
 #pragma once
 
+#include <halcyon/utility/pass_key.hpp>
 #include <halcyon/video/types.hpp>
 
-#include <halcyon/utility/pass_key.hpp>
-
-#include "SDL3/SDL_video.h"
+#include <SDL3/SDL_video.h>
 
 // video/display.hpp:
 // A representation of a monitor.

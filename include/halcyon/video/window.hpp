@@ -55,7 +55,7 @@ namespace hal
 
             create_properties& parent(ref<window> val);
 
-            create_properties& title(c_string val);
+            create_properties& title(const char* val);
 
             create_properties& size(pixel::point val);
             create_properties& pos(pixel::point val);
@@ -111,7 +111,7 @@ namespace hal
 
         // Create a window with specific flags.
         // If `fullscreen` is included in the flags, the size is ignored.
-        window(proxy::video sys, c_string title, pixel::point size, flag_bitmask f = {});
+        window(proxy::video sys, const char* title, pixel::point size, flag_bitmask f = {});
 
         // Create a window with a set of properties.
         window(proxy::video sys, const create_properties& props);
@@ -140,8 +140,8 @@ namespace hal
         pixel::point max_size() const;
         void         max_size(pixel::point sz);
 
-        c_string title() const;
-        void     title(const char* val);
+        const char* title() const;
+        void        title(const char* val);
 
         // Returns true if the window is fullscreen or fullscreen borderless.
         bool fullscreen() const;

@@ -37,9 +37,7 @@
     #endif
 #endif
 
-// More necessary include files.
-// Separated to have all Halcyon includes before the STL.
-#include <halcyon/types/c_string.hpp>
+#include <cstdint>
 
 namespace hal
 {
@@ -67,7 +65,7 @@ namespace hal
             load
         };
 
-        static c_string last_error();
+        static const char* last_error();
 
         // This is a class just for the purpose of using private variables.
         // It is not meant to be constructed.

@@ -2,7 +2,7 @@
 
 #include <halcyon/utility/metaprogramming.hpp>
 
-#include "SDL3/SDL_rect.h"
+#include <SDL3/SDL_rect.h>
 
 // internal/video_basic_types.hpp:
 // This file is separate from video/types.hpp to prevent include errors.

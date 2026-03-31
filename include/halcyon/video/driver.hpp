@@ -1,6 +1,5 @@
 #pragma once
 
-#include <halcyon/types/c_string.hpp>
 #include <halcyon/types/result.hpp>
 
 // video/driver.hpp:
@@ -19,10 +18,10 @@ namespace hal
 
         // Get the name of the current video driver.
         // Returns an invalid string if none has been initialized.
-        c_string name();
+        const char* name();
 
         // Get the name of the video driver at [idx].
         // Returns an invalid string in case of failure.
-        c_string name(index_t idx);
+        const char* name(index_t idx);
     };
 }

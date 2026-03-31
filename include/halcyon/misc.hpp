@@ -1,6 +1,5 @@
 #pragma once
 
-#include <halcyon/types/c_string.hpp>
 #include <halcyon/types/result.hpp>
 
 // misc.hpp:
@@ -8,5 +7,5 @@
 
 namespace hal
 {
-    bool open_url(c_string url);
+    bool open_url(const char* url);
 }

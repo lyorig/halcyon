@@ -166,7 +166,7 @@ namespace
         FAIL_IF(!evt.poll(eh), "Couldn't poll event");
         FAIL_IF(eh.kind() != quit_requested, "Event type mismatch (desired \"quit_requested\", actual ", eh.kind(), ')');
 
-        constexpr std::string_view text { "aaaaaaaaaabbbbbbbbbbccccccccccd" };
+        constexpr const char* text { "aaaaaaaaaabbbbbbbbbbccccccccccd" };
 
         while (evt.poll(eh))
             ;

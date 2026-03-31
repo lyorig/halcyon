@@ -5,7 +5,7 @@
 #include <halcyon/types/result.hpp>
 #include <halcyon/video/types.hpp>
 
-#include "SDL3/SDL_render.h"
+#include <SDL3/SDL_render.h>
 
 // video/texture.cpp:
 // Proper textures that can be drawn to a window (or a target texture).

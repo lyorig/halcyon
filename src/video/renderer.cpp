@@ -13,12 +13,11 @@ using namespace hal;
 
 // ----- CREATE PROPERTIES -----
 
-// FBI, OPEN UP!
 using cp = renderer::create_properties;
 
-cp& cp::name(c_string val)
+cp& cp::name(const char* val)
 {
-    string_set(SDL_PROP_RENDERER_CREATE_NAME_STRING, val.c_str());
+    string_set(SDL_PROP_RENDERER_CREATE_NAME_STRING, val);
     return *this;
 }
 
@@ -49,7 +48,7 @@ rp::properties(SDL_PropertiesID id, pass_key<renderer>)
 {
 }
 
-c_string rp::name() const
+const char* rp::name() const
 {
     return string_get(SDL_PROP_RENDERER_NAME_STRING, {});
 }

@@ -7,7 +7,7 @@
 #include <halcyon/types/color.hpp>
 #include <halcyon/types/result.hpp>
 
-#include "SDL3/SDL_surface.h"
+#include <SDL3/SDL_surface.h>
 
 #include <span>
 

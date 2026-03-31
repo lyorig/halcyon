@@ -8,8 +8,6 @@
 #include <halcyon/utility/buffer.hpp>
 #include <halcyon/utility/enum_bits.hpp>
 
-#include <halcyon/types/c_string.hpp>
-
 #include <halcyon/properties.hpp>
 
 // video/renderer.hpp:
@@ -47,7 +45,7 @@ namespace hal
         public:
             create_properties() = default;
 
-            create_properties& name(c_string val);
+            create_properties& name(const char* val);
             create_properties& window(ref<window> val);
             create_properties& surface(ref<surface> val);
             create_properties& vsync(bool val);
@@ -59,7 +57,7 @@ namespace hal
         public:
             properties(SDL_PropertiesID id, pass_key<renderer>);
 
-            c_string name() const;
+            const char* name() const;
 
             ref<hal::window>  window() const;
             ref<hal::surface> surface() const;

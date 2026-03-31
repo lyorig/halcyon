@@ -4,9 +4,8 @@
 // Platform-dependent library routines.
 
 #include <halcyon/internal/resource.hpp>
-#include <halcyon/types/c_string.hpp>
 
-#include "SDL3/SDL_loadso.h"
+#include <SDL3/SDL_loadso.h>
 
 namespace hal
 {
@@ -14,13 +13,15 @@ namespace hal
     {
     public:
         library() = default;
-        library(c_string name);
+
+        library(const char* name);
+        library(std::nullptr_t) = delete;
 
         template <typename T>
             requires std::is_function_v<T>
-        T* function(c_string name)
+        T* function(const char* name)
         {
-            return reinterpret_cast<T*>(::SDL_LoadFunction(get(), name.c_str()));
+            return reinterpret_cast<T*>(::SDL_LoadFunction(get(), name));
         }
     };
 }

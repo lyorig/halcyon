@@ -1,7 +1,7 @@
 #include <halcyon/events.hpp>
 #include <halcyon/video.hpp>
 
-#include "SDL3/SDL_clipboard.h"
+#include <SDL3/SDL_clipboard.h>
 
 using namespace hal;
 

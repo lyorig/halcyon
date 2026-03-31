@@ -2,7 +2,7 @@
 
 using namespace hal;
 
-library::library(c_string name)
-    : resource { ::SDL_LoadObject(name.c_str()) }
+library::library(const char* name)
+    : resource { ::SDL_LoadObject(name) }
 {
 }

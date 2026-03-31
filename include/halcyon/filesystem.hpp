@@ -1,7 +1,6 @@
 #pragma once
 
 #include <halcyon/internal/iostream.hpp>
-#include <halcyon/types/c_string.hpp>
 
 namespace hal::fs
 {
@@ -15,10 +14,10 @@ namespace hal::fs
     // speed junkie, use `hal::fs::resource_loader`, which internally uses
     // a `std::string_view`, skipping any traversal and/or size calculations
     // required for constructing file paths.
-    c_string base_path();
+    const char* base_path();
 
     // See the SDL docs for `SDL_GetPrefPath()`.
-    c_string pref_path(c_string org, c_string app);
+    const char* pref_path(const char* org, const char* app);
 
     // A utility class which caches the base path for fast resolving
     // of relative paths.

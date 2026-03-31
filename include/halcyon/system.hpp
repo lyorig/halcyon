@@ -3,8 +3,8 @@
 #include <halcyon/types/string.hpp>
 #include <halcyon/utility/enum_bits.hpp>
 
-#include "SDL3/SDL_endian.h"
-#include "SDL3/SDL_power.h"
+#include <SDL3/SDL_endian.h>
+#include <SDL3/SDL_power.h>
 
 #include <iosfwd>
 
@@ -27,7 +27,7 @@ namespace hal
 #elif defined SDL_BIG_ENDIAN
             endian::big
 #else
-    #error "No byte order specified by SDL"
+    #error No byte order specified by SDL
 #endif
         };
     }
@@ -72,26 +72,27 @@ namespace hal
     constexpr std::string_view to_string(power_state::battery_state bs)
     {
         using enum power_state::battery_state;
+        using namespace std::string_view_literals;
 
         switch (bs)
         {
         case unknown:
-            return "unknown";
+            return "unknown"sv;
 
         case on_battery:
-            return "on battery";
+            return "on battery"sv;
 
         case no_battery:
-            return "no battery";
+            return "no battery"sv;
 
         case charging:
-            return "charging";
+            return "charging"sv;
 
         case charged:
-            return "charged";
+            return "charged"sv;
 
         default:
-            return "[unknown]";
+            return "[unknown]"sv;
         }
     }
 
@@ -271,7 +272,7 @@ namespace hal
             return current[type::macos];
         }
 
-        c_string name();
+        const char* name();
     }
 
     // How much RAM the system has, in MiB.

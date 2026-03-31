@@ -4,7 +4,7 @@
 #include <halcyon/types/color.hpp>
 #include <span>
 
-#include "SDL3/SDL_pixels.h"
+#include <SDL3/SDL_pixels.h>
 
 namespace hal
 {

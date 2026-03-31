@@ -290,19 +290,17 @@ window::id_t event::text_input::window_id() const
 event::text_input& event::text_input::window_id(hal::window::id_t id)
 {
     windowID = id;
-
     return *this;
 }
 
-c_string event::text_input::text() const
+const char* event::text_input::text() const
 {
     return SDL_TextInputEvent::text;
 }
 
-event::text_input& event::text_input::text(c_string t)
+event::text_input& event::text_input::text(const char* t)
 {
-    SDL_TextInputEvent::text = t.c_str();
-
+    SDL_TextInputEvent::text = t;
     return *this;
 }
 

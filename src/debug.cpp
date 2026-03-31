@@ -1,6 +1,6 @@
 #include <halcyon/debug.hpp>
 
-#include "SDL3/SDL_error.h"
+#include <SDL3/SDL_error.h>
 
 // The auxiliary console option shouldn't cause errors
 // on non-Windows builds.
@@ -161,7 +161,7 @@ debug::stream_opener::~stream_opener()
 const debug::stream_opener debug::m_streamGuard { 1024 };
 #endif
 
-c_string debug::last_error()
+const char* debug::last_error()
 {
     if (const char* const err { ::SDL_GetError() }; err[0] == '\0')
         return "[no SDL error]";

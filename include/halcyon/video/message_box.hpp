@@ -1,10 +1,9 @@
 #pragma once
 
+#include <halcyon/utility/buffer.hpp>
 #include <halcyon/video/window.hpp>
 
-#include <halcyon/utility/buffer.hpp>
-
-#include "SDL3/SDL_messagebox.h"
+#include <SDL3/SDL_messagebox.h>
 
 namespace hal
 {

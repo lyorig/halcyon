@@ -53,71 +53,72 @@ namespace hal
         // This modifies the accessor, but ultimately sets it back where it was.
         load_format query(const accessor& src);
 
-        constexpr c_string to_string(image::load_format fmt)
+        constexpr std::string_view to_string(image::load_format fmt)
         {
             using enum image::load_format;
+            using namespace std::string_view_literals;
 
             switch (fmt)
             {
             case avif:
-                return "AVIF";
+                return "AVIF"sv;
 
             case ico:
-                return "ICO";
+                return "ICO"sv;
 
             case cur:
-                return "CUR";
+                return "CUR"sv;
 
             case bmp:
-                return "BMP";
+                return "BMP"sv;
 
             case gif:
-                return "GIF";
+                return "GIF"sv;
 
             case jpg:
-                return "JPG";
+                return "JPG"sv;
 
             case jxl:
-                return "JXL";
+                return "JXL"sv;
 
             case lbm:
-                return "LBM";
+                return "LBM"sv;
 
             case pcx:
-                return "PCX";
+                return "PCX"sv;
 
             case png:
-                return "PNG";
+                return "PNG"sv;
 
             case pnm:
-                return "PNM";
+                return "PNM"sv;
 
             case svg:
-                return "SVG";
+                return "SVG"sv;
 
             case qoi:
-                return "QOI";
+                return "QOI"sv;
 
             case tif:
-                return "TIF";
+                return "TIF"sv;
 
             case xcf:
-                return "XCF";
+                return "XCF"sv;
 
             case xpm:
-                return "XPM";
+                return "XPM"sv;
 
             case xv:
-                return "XV";
+                return "XV"sv;
 
             case webp:
-                return "WebP";
+                return "WebP"sv;
 
             case unknown:
-                return "Unknown";
+                return "Unknown"sv;
 
             default:
-                return "[unknown]";
+                return "[unknown]"sv;
             }
         }
 
