@@ -102,25 +102,27 @@ int cpu::cache_line()
 
 std::ostream& cpu::supported(std::ostream& str)
 {
+    using namespace std::string_view_literals;
+
     struct
     {
         std::string_view name;
-        func_ptr<bool>   func;
+        func_ref<bool>   func;
     } constexpr checks[] {
-        { "AVX", avx },
-        { "AVX2", avx2 },
-        { "AVX512F", avx512f },
-        { "LSX", lsx },
-        { "MMX", mmx },
-        { "LASX", lasx },
-        { "SSE", sse },
-        { "SSE2", sse2 },
-        { "SSE3", sse3 },
-        { "SSE4.1", sse4_1 },
-        { "SSE4.2", sse4_2 },
-        { "NEON", neon },
-        { "ARM SIMD", armsimd },
-        { "AltiVec", altivec },
+        { "AVX"sv, avx },
+        { "AVX2"sv, avx2 },
+        { "AVX512F"sv, avx512f },
+        { "LSX"sv, lsx },
+        { "MMX"sv, mmx },
+        { "LASX"sv, lasx },
+        { "SSE"sv, sse },
+        { "SSE2"sv, sse2 },
+        { "SSE3"sv, sse3 },
+        { "SSE4.1"sv, sse4_1 },
+        { "SSE4.2"sv, sse4_2 },
+        { "NEON"sv, neon },
+        { "ARM SIMD"sv, armsimd },
+        { "AltiVec"sv, altivec },
     };
 
     str << '[';

@@ -197,6 +197,12 @@ namespace hal
         {
         };
 
+        // Adapter to get the info from a function reference.
+        template <typename Ret, typename... Args>
+        struct func_info<func_ref<Ret, Args...>> : func_info<Ret(Args...)>
+        {
+        };
+
         template <typename T>
         concept arithmetic = std::is_arithmetic_v<T> || std::is_enum_v<T>;
 

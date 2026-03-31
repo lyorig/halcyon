@@ -18,7 +18,7 @@ surface image::load(accessor src, load_format fmt)
     struct
     {
         load_format                           format;
-        func_ptr<SDL_Surface*, SDL_IOStream*> func;
+        func_ref<SDL_Surface*, SDL_IOStream*> func;
     } constexpr dispatch[] {
         { jpg, ::IMG_LoadPNG_IO },
         { png, ::IMG_LoadPNG_IO },
@@ -68,7 +68,7 @@ image::load_format image::query(const accessor& src)
 
     struct
     {
-        func_ptr<bool, SDL_IOStream*> func;
+        func_ref<bool, SDL_IOStream*> func;
         load_format                   format;
     } constexpr dispatch[] {
         { ::IMG_isAVIF, avif },

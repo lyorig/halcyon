@@ -136,14 +136,14 @@ bool proxy::events::enabled(event::type t) const
     return ::SDL_EventEnabled(static_cast<Uint32>(t));
 }
 
-void proxy::events::filter_add(func_ptr<int, void*, event::variant*> filter, void* data)
+void proxy::events::filter_add(func_ref<int, void*, event::variant*> filter, void* data)
 {
-    ::SDL_SetEventFilter(std::bit_cast<SDL_EventFilter>(filter), data);
+    ::SDL_SetEventFilter(std::bit_cast<SDL_EventFilter>(&filter), data);
 }
 
-void proxy::events::filter_run(func_ptr<int, void*, event::variant*> filter, void* data)
+void proxy::events::filter_run(func_ref<int, void*, event::variant*> filter, void* data)
 {
-    ::SDL_FilterEvents(std::bit_cast<SDL_EventFilter>(filter), data);
+    ::SDL_FilterEvents(std::bit_cast<SDL_EventFilter>(&filter), data);
 }
 
 void proxy::events::text_input_start(ref<window> wnd)
