@@ -75,12 +75,14 @@ namespace hal
             // Add a filter that checks all pushed events.
             // If [filter] returns 1, the event is pushed to the event queue.
             // If [filter] returns 0, the event is dropped and not added to the event queue.
-            void filter_add(func_ref<int, void*, event::variant*> filter, void* data);
+            void filter_add(func_ptr<int, void*, event::variant*> filter, void* data);
+            void filter_add(std::nullptr_t, void* data) = delete;
 
             // Filter all events in the queue immediately.
             // If [filter] returns 1, the event is kept in the event queue.
             // If [filter] returns 0, the event is dropped from the event queue.
-            void filter_run(func_ref<int, void*, event::variant*> filter, void* data);
+            void filter_run(func_ptr<int, void*, event::variant*> filter, void* data);
+            void filter_run(std::nullptr_t, void* data) = delete;
 
             keyboard::state_reference keyboard_state() const;
             keyboard::mod_state       keyboard_mod() const;
