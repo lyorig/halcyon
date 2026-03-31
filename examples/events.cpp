@@ -6,6 +6,8 @@
 
 constexpr hal::pixel::point window_size_mod { 20, 20 };
 
+using namespace std::string_view_literals;
+
 int main(int, char*[])
 {
     hal::cleanup_init<hal::subsystem::video> vid;
@@ -56,7 +58,7 @@ int main(int, char*[])
                     break;
 
                 default:
-                    std::println("Unhandled key press: {}{}", hal::to_string(eh.keyboard().key()), eh.keyboard().repeat() ? " [REPEAT]" : "");
+                    std::println("Unhandled key press: \"{}\"{}", hal::to_string(eh.keyboard().key()), eh.keyboard().repeat() ? " [REPEAT]"sv : ""sv);
                 }
                 break;
 
@@ -74,7 +76,11 @@ int main(int, char*[])
                 }
                 break;
 
+            case mouse_moved:
+                break;
+
             default:
+                std::println("Unhandled event type: \"{}\"", hal::to_string(eh.kind()));
                 break;
             }
         }

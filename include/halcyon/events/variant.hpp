@@ -292,10 +292,215 @@ namespace hal
         };
     }
 
-    // TODO
-    constexpr std::string_view to_string(event::type)
+    constexpr std::string_view to_string(event::type t)
     {
-        return "[TODO]";
+        using enum event::type;
+        using namespace std::string_view_literals;
+
+        switch (t)
+        {
+
+        case quit_requested:
+            return "Quit requested"sv;
+
+        case terminating:
+            return "Terminating"sv;
+
+        case low_memory:
+            return "Low memory"sv;
+
+        case background_will_enter:
+            return "Will enter background"sv;
+
+        case background_entered:
+            return "Entered background"sv;
+
+        case foreground_will_enter:
+            return "Will enter foreground"sv;
+
+        case foreground_entered:
+            return "Entered foreground"sv;
+
+        case locale_changed:
+            return "Locale changed"sv;
+
+        case system_theme_changed:
+            return "System theme changed"sv;
+
+        case display_orientation_changed:
+            return "Display orientation changed"sv;
+
+        case display_added:
+            return "Display added"sv;
+
+        case display_removed:
+            return "Display removed"sv;
+
+        case display_moved:
+            return "Display moved"sv;
+
+        case display_desktop_mode_changed:
+            return "Display desktop mode changed"sv;
+
+        case display_current_mode_changed:
+            return "Display current mode changed"sv;
+
+        case display_content_scale_changed:
+            return "Display content scale changed"sv;
+
+        case window_shown:
+            return "Window shown"sv;
+
+        case window_hidden:
+            return "Window hidden"sv;
+
+        case window_exposed:
+            return "Window exposed"sv;
+
+        case window_moved:
+            return "Window moved"sv;
+
+        case window_resized:
+            return "Window resized"sv;
+
+        case window_pixel_size_changed:
+            return "Window pixel size changed"sv;
+
+        case window_metal_view_resized:
+            return "Window Metal view resized"sv;
+
+        case window_minimized:
+            return "Window minimized"sv;
+
+        case window_maximized:
+            return "Windowm maximized"sv;
+
+        case window_restored:
+            return "Window restored"sv;
+
+        case window_mouse_enter:
+            return "Mouse entered window"sv;
+
+        case window_mouse_leave:
+            return "Mouse left window"sv;
+
+        case window_focus_gained:
+            return "Window gained focus"sv;
+
+        case window_focus_lost:
+            return "Window lost focus"sv;
+
+        case window_close_requested:
+            return "Window close requested"sv;
+
+        case window_hit_test:
+            return "Window hit test"sv;
+
+        case window_icc_profile_changed:
+            return "Window ICC profile changed"sv;
+
+        case window_display_changed:
+            return "Window display changed"sv;
+
+        case window_display_scale_changed:
+            return "Window display scale changed"sv;
+
+        case window_safe_area_changed:
+            return "Window safe area changed"sv;
+
+        case window_occluded:
+            return "Window occluded"sv;
+
+        case window_fullscreen_entered:
+            return "Window entered fullscreen"sv;
+
+        case window_fullscreen_left:
+            return "Window left fullscreen"sv;
+
+        case window_destroyed:
+            return "Window destroyed"sv;
+
+        case window_hdr_state_changed:
+            return "Window HDR state changed"sv;
+
+        case key_pressed:
+            return "Key preesed"sv;
+
+        case key_released:
+            return "Key released"sv;
+
+        case text_composiion:
+            return "Text composition"sv;
+
+        case text_input:
+            return "Text input"sv;
+
+        case keymap_changed:
+            return "Keymap changed"sv;
+
+        case keyboard_added:
+            return "Keyboard added"sv;
+
+        case keyboard_removed:
+            return "Keyboard removed"sv;
+
+        case text_composition_candidates:
+            return "Text composition candidates"sv;
+
+        case mouse_moved:
+            return "Mouse moved"sv;
+
+        case mouse_pressed:
+            return "Mouse pressed"sv;
+
+        case mouse_released:
+            return "Mouse released"sv;
+
+        case mouse_wheel_moved:
+            return "Mouse wheel moved"sv;
+
+        case mouse_added:
+            return "Mouse added"sv;
+
+        case mouse_removed:
+            return "Mouse removed"sv;
+
+        case clipboard_updated:
+            return "Clipboard updated"sv;
+
+        case drop_file:
+            return "File drop"sv;
+
+        case drop_text:
+            return "Text drop"sv;
+
+        case drop_begin:
+            return "Drop begin"sv;
+
+        case drop_complete:
+            return "Drop completed"sv;
+
+        case drop_position:
+            return "Drop position"sv;
+
+        case audio_device_added:
+            return "Audio device added"sv;
+
+        case audio_device_removed:
+            return "Audio device removed"sv;
+
+        case audio_device_format_changed:
+            return "Audio device format changed"sv;
+
+        case render_targets_reset:
+            return "Render targets reset"sv;
+
+        case render_device_reset:
+            return "Render device reset"sv;
+
+        case render_device_lost:
+            return "Render device lost"sv;
+        }
     }
 
     namespace event

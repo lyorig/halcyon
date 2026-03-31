@@ -39,19 +39,21 @@ power_state& power_state::update()
 
 std::ostream& hal::operator<<(std::ostream& str, power_state s)
 {
-    str << "[state: " << to_string(s.battery) << ", ";
+    using namespace std::string_view_literals;
+
+    str << "[state: "sv << to_string(s.battery) << ", "sv;
 
     if (s.percent == power_state::unknown_percent)
-        str << "percentage unknown";
+        str << "percentage unknown"sv;
     else
-        str << to_printable_int(s.percent) << " % charge";
+        str << to_printable_int(s.percent) << " % charge"sv;
 
-    str << ", ";
+    str << ", "sv;
 
     if (s.seconds == power_state::unknown_seconds)
-        str << "seconds unknown";
+        str << "seconds unknown"sv;
     else
-        str << to_printable_int(s.seconds) << " s left";
+        str << to_printable_int(s.seconds) << " s left"sv;
 
     str << ']';
 
@@ -147,9 +149,11 @@ std::ostream& cpu::supported(std::ostream& str)
 
 std::ostream& cpu::info(std::ostream& str)
 {
+    using namespace std::string_view_literals;
+
     str << '['
-        << logical_cores() << " logical cores, "
-        << cache_line() << " B cache line, features: "
+        << logical_cores() << " logical cores, "sv
+        << cache_line() << " B cache line, features: "sv
         << supported
         << ']';
 
