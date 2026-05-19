@@ -419,8 +419,7 @@ int main(int argc, char* argv[])
 
     FAIL_IF(args.size() < 2, "No test name given.");
 
-    const auto iter = std::ranges::find_if(tests, [&](const test& t)
-        { return t.name == args[1]; });
+    const auto iter = std::ranges::find(tests, args[1], &test::name);
 
     FAIL_IF(iter == std::end(tests), "Invalid option specified: ", argv[1]);
 
