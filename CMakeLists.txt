@@ -108,8 +108,14 @@ add_library(Halcyon::Halcyon ALIAS Halcyon)
 
 target_sources(
     Halcyon
-    PRIVATE FILE_SET SOURCES BASE_DIRS src FILES ${HALCYON_SOURCES}
-    PUBLIC FILE_SET HEADERS BASE_DIRS include FILES ${HALCYON_HEADERS}
+    PRIVATE
+        FILE_SET SOURCES #
+            BASE_DIRS src
+            FILES ${HALCYON_SOURCES}
+    PUBLIC
+        FILE_SET HEADERS #
+            BASE_DIRS include
+            FILES ${HALCYON_HEADERS}
 )
 
 halcyon_setstandardwithoutextensions(Halcyon 23)
@@ -144,9 +150,14 @@ if(HALCYON_BUILD_TESTS)
     add_executable(HalTest WIN32 test/main.cpp)
     target_sources(
         HalTest
-        PRIVATE FILE_SET SOURCES BASE_DIRS test FILES test/main.cpp
+        PRIVATE
+            FILE_SET SOURCES #
+                BASE_DIRS test
+                FILES test/main.cpp
         PUBLIC
-            FILE_SET HEADERS BASE_DIRS test/include FILES test/include/data.hpp
+            FILE_SET HEADERS #
+                BASE_DIRS test/include
+                FILES test/include/data.hpp
     )
 
     target_link_libraries(HalTest PUBLIC Halcyon::Halcyon)
