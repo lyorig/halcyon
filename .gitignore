@@ -1,12 +1,12 @@
 .vs/
 .cache/
 
-# The second line also ignores symlinks.
-build*/
-build*
+build/
 
 bin/*
 !bin/assets/
 
 .DS_Store
 .clangd
+
+/compile_commands.json

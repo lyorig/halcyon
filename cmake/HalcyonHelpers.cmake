@@ -1,23 +1,24 @@
 # Set a target's `PUBLIC` C++ standard, and disable extensions.
-function(Halcyon_SetStandardWithoutExtensions target standard)
-	target_compile_features("${target}" PUBLIC "cxx_std_${standard}")
-	set_target_properties("${target}" PROPERTIES CXX_EXTENSIONS OFF)
+function(halcyon_setstandardwithoutextensions target standard)
+    target_compile_features("${target}" PUBLIC "cxx_std_${standard}")
+    set_target_properties("${target}" PROPERTIES CXX_EXTENSIONS OFF)
 endfunction()
 
 # Set `CMAKE_BUILD_TYPE` to a default value, if none is specified
 # on the command line.
 #
 # Inspired by [Kitware's blog](https://www.kitware.com/cmake-and-the-default-build-type/).
-function(Halcyon_SetupBuildType default)
-	if(NOT CMAKE_BUILD_TYPE)
-		if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
-			set(CMAKE_BUILD_TYPE "${default}" CACHE STRING "Build type" FORCE)
-		endif()
-	endif()
+function(halcyon_setupbuildtype default)
+    if(NOT CMAKE_BUILD_TYPE)
+        if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+            set(CMAKE_BUILD_TYPE "${default}" CACHE STRING "Build type" FORCE)
+        endif()
+    endif()
 
-	set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS
-		Debug Release MinSizeRel RelWithDebInfo
-	)
+    set_property(
+        CACHE CMAKE_BUILD_TYPE
+        PROPERTY STRINGS Debug Release MinSizeRel RelWithDebInfo
+    )
 endfunction()
 
 # Create a list of file paths sharing a common parent directory and extension.
@@ -47,9 +48,9 @@ endfunction()
 #   foo bar baz
 # )
 # ```
-function(Halcyon_CreateSourceList result_var dir extension)
-	set(${result_var} ${ARGN})
-	list(TRANSFORM ${result_var} PREPEND "${dir}/")
-	list(TRANSFORM ${result_var} APPEND ".${extension}")
-	return(PROPAGATE ${result_var})
+function(halcyon_createsourcelist result_var dir extension)
+    set(${result_var} ${ARGN})
+    list(TRANSFORM ${result_var} PREPEND "${dir}/")
+    list(TRANSFORM ${result_var} APPEND ".${extension}")
+    return(PROPAGATE ${result_var})
 endfunction()

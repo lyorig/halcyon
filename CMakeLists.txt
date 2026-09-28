@@ -1,31 +1,31 @@
 cmake_minimum_required(VERSION 3.28...4.3)
 
-project(Halcyon
-    VERSION 1.0
-    LANGUAGES CXX
-)
+project(Halcyon VERSION 1.0 LANGUAGES CXX)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 include(HalcyonHelpers)
 
-Halcyon_SetupBuildType(Debug)
+halcyon_setupbuildtype(Debug)
 
-option(HALCYON_BUILD_TESTS
+option(
+    HALCYON_BUILD_TESTS
     "Build tests (see test/main.cpp) for use with CTest."
     OFF
 )
 
-option(HALCYON_BUILD_EXAMPLES
+option(
+    HALCYON_BUILD_EXAMPLES
     "Build examples (see the examples/ directory)."
     OFF
 )
 
-option(HALCYON_WIN32_AUX_CONSOLE
+option(
+    HALCYON_WIN32_AUX_CONSOLE
     "Create an auxiliary console in debug mode on Windows."
     OFF
 )
 
-Halcyon_CreateSourceList(HALCYON_SOURCES src cpp
+halcyon_createsourcelist(HALCYON_SOURCES src cpp
     events/keyboard
     events/mouse
     events/variant
@@ -56,7 +56,7 @@ Halcyon_CreateSourceList(HALCYON_SOURCES src cpp
     video
 )
 
-Halcyon_CreateSourceList(HALCYON_HEADERS include/halcyon hpp
+halcyon_createsourcelist(HALCYON_HEADERS include/halcyon hpp
     events/keyboard
     events/mouse
     events/variant
@@ -106,18 +106,21 @@ Halcyon_CreateSourceList(HALCYON_HEADERS include/halcyon hpp
 add_library(Halcyon)
 add_library(Halcyon::Halcyon ALIAS Halcyon)
 
-target_sources(Halcyon
-    PRIVATE ${HALCYON_SOURCES}
-    PUBLIC
-        FILE_SET HEADERS
-        BASE_DIRS include
-        FILES ${HALCYON_HEADERS}
+target_sources(
+    Halcyon
+    PRIVATE FILE_SET SOURCES BASE_DIRS src FILES ${HALCYON_SOURCES}
+    PUBLIC FILE_SET HEADERS BASE_DIRS include FILES ${HALCYON_HEADERS}
 )
 
-Halcyon_SetStandardWithoutExtensions(Halcyon 23)
+halcyon_setstandardwithoutextensions(Halcyon 23)
 
-target_compile_options(Halcyon PRIVATE
-    $<IF:$<CXX_COMPILER_FRONTEND_VARIANT:MSVC>,/Wall,-Wall -Wpedantic -Wextra -Wno-c++98-compat>
+target_compile_options(
+    Halcyon
+    PRIVATE
+        $<IF:$<CXX_COMPILER_FRONTEND_VARIANT:MSVC>,/Wall,-Wall
+        -Wpedantic
+        -Wextra
+        -Wno-c++98-compat>
 )
 
 if(HALCYON_WIN32_AUX_CONSOLE)
@@ -128,10 +131,9 @@ find_package(SDL3 REQUIRED)
 find_package(SDL3_image REQUIRED)
 find_package(SDL3_ttf REQUIRED)
 
-target_link_libraries(Halcyon PUBLIC
-    SDL3::SDL3
-    SDL3_image::SDL3_image
-    SDL3_ttf::SDL3_ttf
+target_link_libraries(
+    Halcyon
+    PUBLIC SDL3::SDL3 SDL3_image::SDL3_image SDL3_ttf::SDL3_ttf
 )
 
 # Tests don't use a subdirectory (like examples), since they
@@ -140,42 +142,40 @@ if(HALCYON_BUILD_TESTS)
     include(CTest)
 
     add_executable(HalTest WIN32 test/main.cpp)
-    target_sources(HalTest
-        PRIVATE
-            test/main.cpp
+    target_sources(
+        HalTest
+        PRIVATE FILE_SET SOURCES BASE_DIRS test FILES test/main.cpp
         PUBLIC
-            FILE_SET HEADERS
-            BASE_DIRS test/include
-            FILES test/include/data.hpp
+            FILE_SET HEADERS BASE_DIRS test/include FILES test/include/data.hpp
     )
 
     target_link_libraries(HalTest PUBLIC Halcyon::Halcyon)
 
-    Halcyon_SetStandardWithoutExtensions(HalTest 23)
+    halcyon_setstandardwithoutextensions(HalTest 23)
 
     set(ExeName $<TARGET_FILE:HalTest>)
 
-    function(AddTest name cmd)
+    function(addtest name cmd)
         add_test(NAME "${name}" COMMAND "${ExeName}" "${cmd}")
     endfunction()
 
-    AddTest(WindowResize --window-resize)
-    AddTest(BasicInit --basic-init)
-    AddTest(Clipboard --clipboard)
-    AddTest(SurfaceColor --surface-color)
-    AddTest(SurfaceCopy --surface-copy)
-    AddTest(Events --events)
-    AddTest(TTFInit --ttf-init)
-    AddTest(RValues --rvalues)
-    AddTest(Outputter --outputter)
-    AddTest(PngCheck --png-check)
-    AddTest(References --references)
-    AddTest(Shared --shared)
-    AddTest(Utilities --utilities)
-    AddTest(TextureManipulation --texture-manipulation)
-    AddTest(InvalidBuffer --invalid-buffer)
-    AddTest(InvalidTexture --invalid-texture)
-    AddTest(TextEngines --text-engines)
+    addtest(WindowResize --window-resize)
+    addtest(BasicInit --basic-init)
+    addtest(Clipboard --clipboard)
+    addtest(SurfaceColor --surface-color)
+    addtest(SurfaceCopy --surface-copy)
+    addtest(Events --events)
+    addtest(TTFInit --ttf-init)
+    addtest(RValues --rvalues)
+    addtest(Outputter --outputter)
+    addtest(PngCheck --png-check)
+    addtest(References --references)
+    addtest(Shared --shared)
+    addtest(Utilities --utilities)
+    addtest(TextureManipulation --texture-manipulation)
+    addtest(InvalidBuffer --invalid-buffer)
+    addtest(InvalidTexture --invalid-texture)
+    addtest(TextEngines --text-engines)
 
     # These tests rely on debug-mode asserts.
     if(CMAKE_BUILD_TYPE STREQUAL Debug)
@@ -188,4 +188,15 @@ endif()
 
 if(HALCYON_BUILD_EXAMPLES)
     add_subdirectory(examples)
+endif()
+
+# Put compile commands somewhere clangd etc. can see them.
+if(CMAKE_EXPORT_COMPILE_COMMANDS)
+    execute_process(
+        COMMAND
+            ${CMAKE_COMMAND} -E create_symlink
+            "${CMAKE_BINARY_DIR}/compile_commands.json"
+            "${CMAKE_SOURCE_DIR}/compile_commands.json"
+        COMMAND_ERROR_IS_FATAL ANY
+    )
 endif()
