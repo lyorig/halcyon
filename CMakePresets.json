@@ -27,6 +27,16 @@
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Release"
       }
+    },
+    {
+      "name": "test",
+      "displayName": "Test",
+      "inherits": "debug",
+      "description": "Configuration for testing purposes",
+      "binaryDir": "${sourceDir}/build/test",
+      "cacheVariables": {
+        "HALCYON_BUILD_TESTS": "ON"
+      }
     }
   ],
 
@@ -38,6 +48,24 @@
     {
       "name": "release",
       "configurePreset": "release"
+    },
+    {
+      "name": "test",
+      "configurePreset": "test"
+    }
+  ],
+
+  "testPresets": [
+    {
+      "name": "default",
+      "configurePreset": "test",
+      "output": {
+        "outputOnFailure": true
+      },
+      "execution": {
+        "noTestsAction": "error",
+        "stopOnFailure": true
+      }
     }
   ],
 
@@ -65,6 +93,23 @@
         {
           "type": "build",
           "name": "release"
+        }
+      ]
+    },
+    {
+      "name": "test",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "test"
+        },
+        {
+          "type": "build",
+          "name": "test"
+        },
+        {
+          "type": "test",
+          "name": "default"
         }
       ]
     }

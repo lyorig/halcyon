@@ -147,7 +147,7 @@ target_link_libraries(
 if(HALCYON_BUILD_TESTS)
     include(CTest)
 
-    add_executable(HalTest WIN32 test/main.cpp)
+    add_executable(HalTest WIN32)
     target_sources(
         HalTest
         PRIVATE
