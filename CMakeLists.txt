@@ -133,18 +133,45 @@ if(HALCYON_WIN32_AUX_CONSOLE)
     target_compile_definitions(Halcyon PRIVATE HAL_WIN32_AUX_CONSOLE)
 endif()
 
-find_package(SDL3 REQUIRED)
-find_package(SDL3_image REQUIRED)
-find_package(SDL3_ttf REQUIRED)
+option(HALCYON_VENDORED_SDL "Pull in SDL via CMake's `FetchContent` module" OFF)
+
+if(HALCYON_VENDORED_SDL)
+    include(FetchContent)
+    FetchContent_Declare(
+        SDL
+        URL
+            https://github.com/libsdl-org/SDL/releases/download/release-3.4.18/SDL3-3.4.18.tar.gz
+    )
+
+    FetchContent_Declare(
+        SDL_image
+        URL
+            https://github.com/libsdl-org/SDL_image/releases/download/release-3.4.8/SDL3_image-3.4.8.tar.gz
+    )
+
+    FetchContent_Declare(
+        SDL_ttf
+        URL
+            https://github.com/libsdl-org/SDL_ttf/releases/download/release-3.2.2/SDL3_ttf-3.2.2.tar.gz
+    )
+
+    FetchContent_MakeAvailable(SDL SDL_image SDL_ttf)
+else()
+    find_package(SDL3 REQUIRED)
+    find_package(SDL3_image REQUIRED)
+    find_package(SDL3_ttf REQUIRED)
+endif()
 
 target_link_libraries(
     Halcyon
     PUBLIC SDL3::SDL3 SDL3_image::SDL3_image SDL3_ttf::SDL3_ttf
 )
 
+option(BUILD_TESTING "Build the testing tree." OFF)
+
 # Tests don't use a subdirectory (like examples), since they
 # need access to internal headers.
-if(HALCYON_BUILD_TESTS)
+if(BUILD_TESTING)
     include(CTest)
 
     add_executable(HalTest WIN32)
@@ -164,7 +191,7 @@ if(HALCYON_BUILD_TESTS)
 
     halcyon_setstandardwithoutextensions(HalTest 23)
 
-    set(ExeName $<TARGET_FILE:HalTest>)
+    set(ExeName "$<TARGET_FILE:HalTest>")
 
     function(addtest name cmd)
         add_test(NAME "${name}" COMMAND "${ExeName}" "${cmd}")
@@ -189,12 +216,10 @@ if(HALCYON_BUILD_TESTS)
     addtest(TextEngines --text-engines)
 
     # These tests rely on debug-mode asserts.
-    if(CMAKE_BUILD_TYPE STREQUAL Debug)
-        add_test(NAME AssertFail COMMAND ${ExeName} --assert-fail)
-        add_test(NAME InvalidEvent COMMAND ${ExeName} --invalid-event)
+    add_test(NAME AssertFail COMMAND ${ExeName} --assert-fail)
+    add_test(NAME InvalidEvent COMMAND ${ExeName} --invalid-event)
 
-        set_tests_properties(AssertFail InvalidEvent PROPERTIES WILL_FAIL TRUE)
-    endif()
+    set_tests_properties(AssertFail InvalidEvent PROPERTIES WILL_FAIL TRUE)
 endif()
 
 if(HALCYON_BUILD_EXAMPLES)
