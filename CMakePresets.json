@@ -60,14 +60,6 @@
       "jobs": 4
     },
     {
-<<<<<<< Updated upstream
-      "name": "release",
-      "configurePreset": "release"
-    },
-    {
-      "name": "test",
-      "configurePreset": "test"
-=======
       "name": "Debug",
       "inherits": "Common",
       "configurePreset": "Debug"
@@ -91,7 +83,6 @@
       "name": "Test",
       "inherits": "Common",
       "configurePreset": "Test"
->>>>>>> Stashed changes
     }
   ],
 
