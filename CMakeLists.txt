@@ -120,22 +120,22 @@ target_sources(
 
 halcyon_setstandardwithoutextensions(Halcyon 23)
 
-target_compile_options(
-    Halcyon
-    PRIVATE
-        $<IF:$<CXX_COMPILER_FRONTEND_VARIANT:MSVC>,/Wall,-Wall
-        -Wpedantic
-        -Wextra
-        -Wno-c++98-compat>
-)
+if(MSVC)
+    target_compile_options(Halcyon PRIVATE /Wall)
+else()
+    target_compile_options(
+        Halcyon
+        PRIVATE -Wall -Wpedantic -Wextra -Wno-c++98-compat
+    )
+endif()
 
 if(HALCYON_WIN32_AUX_CONSOLE)
     target_compile_definitions(Halcyon PRIVATE HAL_WIN32_AUX_CONSOLE)
 endif()
 
-option(HALCYON_VENDORED_SDL "Pull in SDL via CMake's `FetchContent` module" OFF)
+option(HALCYON_SDL_VENDORED "Pull in SDL via CMake's `FetchContent` module" OFF)
 
-if(HALCYON_VENDORED_SDL)
+if(HALCYON_SDL_VENDORED)
     include(FetchContent)
     FetchContent_Declare(
         SDL
@@ -157,6 +157,8 @@ if(HALCYON_VENDORED_SDL)
 
     FetchContent_MakeAvailable(SDL SDL_image SDL_ttf)
 else()
+    # These are aliases for the shared/static variant.
+    # You can link SDL statically by specifying `-DSDL_STATIC=ON` on the command line.
     find_package(SDL3 REQUIRED)
     find_package(SDL3_image REQUIRED)
     find_package(SDL3_ttf REQUIRED)
@@ -227,12 +229,17 @@ if(HALCYON_BUILD_EXAMPLES)
 endif()
 
 # Put compile commands somewhere clangd etc. can see them.
-if(CMAKE_EXPORT_COMPILE_COMMANDS)
+if(CMAKE_EXPORT_COMPILE_COMMANDS AND PROJECT_IS_TOP_LEVEL)
+    cmake_path(APPEND LINK_FROM "${CMAKE_BINARY_DIR}" "compile_commands.json")
+    cmake_path(
+        APPEND LINK_TO
+        "${CMAKE_SOURCE_DIR}"
+        "build"
+        "compile_commands.json"
+    )
+
     execute_process(
-        COMMAND
-            ${CMAKE_COMMAND} -E create_symlink
-            "${CMAKE_BINARY_DIR}/compile_commands.json"
-            "${CMAKE_SOURCE_DIR}/compile_commands.json"
+        COMMAND ${CMAKE_COMMAND} -E create_symlink "${LINK_FROM}" "${LINK_TO}"
         COMMAND_ERROR_IS_FATAL ANY
     )
 endif()
