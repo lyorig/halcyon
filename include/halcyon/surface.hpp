@@ -24,22 +24,16 @@ namespace hal
     class surface : public detail::resource<SDL_Surface, ::SDL_DestroySurface>
     {
     public:
-        consteval static pixel::format default_pixel_format()
-        {
-            return pixel::format::rgba32;
-        }
+        constexpr static pixel::format default_pixel_format { pixel::format::rgba32 };
 
-        consteval static scale_mode default_scale_mode()
-        {
-            return scale_mode::nearest;
-        }
+        constexpr static scale_mode default_scale_mode { scale_mode::nearest };
 
         surface() = default;
 
         surface(pointer ptr);
 
         // Create a sized surface with an optional pixel format.
-        surface(pixel::point sz, pixel::format fmt = default_pixel_format());
+        surface(pixel::point sz, pixel::format fmt = default_pixel_format);
 
         // Load a BMP image. This works natively without having to initialize anything.
         surface(accessor src);
@@ -82,7 +76,7 @@ namespace hal
 
         // Get a resized copy of the surface. Useful for saving
         // memory after converting to a texture.
-        surface resize(pixel::point sz, scale_mode sm = default_scale_mode()) const;
+        surface resize(pixel::point sz, scale_mode sm = default_scale_mode) const;
 
         // Whether the surface must be locked before reading/writing pixels.
         bool must_lock() const;

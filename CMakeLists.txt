@@ -1,8 +1,9 @@
-cmake_minimum_required(VERSION 3.28...4.3)
+cmake_minimum_required(VERSION 3.28...4.4)
 
 project(Halcyon VERSION 1.0 LANGUAGES CXX)
 
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+cmake_path(APPEND module_dir ${CMAKE_CURRENT_SOURCE_DIR} cmake)
+list(APPEND CMAKE_MODULE_PATH ${module_dir})
 include(HalcyonHelpers)
 
 halcyon_setupbuildtype(Debug)
@@ -25,7 +26,7 @@ option(
     OFF
 )
 
-halcyon_createsourcelist(HALCYON_SOURCES src cpp
+halcyon_createsourcelist(sources src cpp
     events/keyboard
     events/mouse
     events/variant
@@ -56,7 +57,7 @@ halcyon_createsourcelist(HALCYON_SOURCES src cpp
     video
 )
 
-halcyon_createsourcelist(HALCYON_HEADERS include/halcyon hpp
+halcyon_createsourcelist(headers include/halcyon hpp
     events/keyboard
     events/mouse
     events/variant
@@ -109,24 +110,18 @@ add_library(Halcyon::Halcyon ALIAS Halcyon)
 target_sources(
     Halcyon
     PRIVATE
-        FILE_SET SOURCES #
-            BASE_DIRS src
-            FILES ${HALCYON_SOURCES}
+        FILE_SET SOURCES BASE_DIRS src FILES ${sources}
     PUBLIC
-        FILE_SET HEADERS #
-            BASE_DIRS include
-            FILES ${HALCYON_HEADERS}
+        FILE_SET HEADERS BASE_DIRS include FILES ${headers}
 )
 
 halcyon_setstandardwithoutextensions(Halcyon 23)
 
-if(MSVC)
+set(cxx_frontend ${CMAKE_CXX_COMPILER_FRONTEND_VARIANT})
+if(cxx_frontend STREQUAL "MSVC")
     target_compile_options(Halcyon PRIVATE /Wall)
-else()
-    target_compile_options(
-        Halcyon
-        PRIVATE -Wall -Wpedantic -Wextra -Wno-c++98-compat
-    )
+elseif(cxx_frontend STREQUAL "GNU")
+    target_compile_options(Halcyon PRIVATE -Wall -Wpedantic)
 endif()
 
 if(HALCYON_WIN32_AUX_CONSOLE)
@@ -193,10 +188,10 @@ if(BUILD_TESTING)
 
     halcyon_setstandardwithoutextensions(HalTest 23)
 
-    set(ExeName "$<TARGET_FILE:HalTest>")
+    set(exe_name $<TARGET_FILE:HalTest>)
 
     function(addtest name cmd)
-        add_test(NAME "${name}" COMMAND "${ExeName}" "${cmd}")
+        add_test(NAME "${name}" COMMAND "${exe_name}" "${cmd}")
     endfunction()
 
     addtest(WindowResize --window-resize)
@@ -218,8 +213,8 @@ if(BUILD_TESTING)
     addtest(TextEngines --text-engines)
 
     # These tests rely on debug-mode asserts.
-    add_test(NAME AssertFail COMMAND ${ExeName} --assert-fail)
-    add_test(NAME InvalidEvent COMMAND ${ExeName} --invalid-event)
+    add_test(NAME AssertFail COMMAND ${exe_name} --assert-fail)
+    add_test(NAME InvalidEvent COMMAND ${exe_name} --invalid-event)
 
     set_tests_properties(AssertFail InvalidEvent PROPERTIES WILL_FAIL TRUE)
 endif()
@@ -230,16 +225,16 @@ endif()
 
 # Put compile commands somewhere clangd etc. can see them.
 if(CMAKE_EXPORT_COMPILE_COMMANDS AND PROJECT_IS_TOP_LEVEL)
-    cmake_path(APPEND LINK_FROM "${CMAKE_BINARY_DIR}" "compile_commands.json")
+    cmake_path(APPEND link_from ${CMAKE_BINARY_DIR} compile_commands.json)
     cmake_path(
-        APPEND LINK_TO
-        "${CMAKE_SOURCE_DIR}"
-        "build"
-        "compile_commands.json"
+        APPEND link_to
+        ${CMAKE_SOURCE_DIR}
+        build
+        compile_commands.json
     )
 
     execute_process(
-        COMMAND ${CMAKE_COMMAND} -E create_symlink "${LINK_FROM}" "${LINK_TO}"
+        COMMAND ${CMAKE_COMMAND} -E create_symlink "${link_from}" "${link_to}"
         COMMAND_ERROR_IS_FATAL ANY
     )
 endif()

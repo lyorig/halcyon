@@ -40,16 +40,6 @@
       "cacheVariables": {
         "BUILD_TESTING": "ON"
       }
-    },
-    {
-      "name": "test",
-      "displayName": "Test",
-      "inherits": "debug",
-      "description": "Configuration for testing purposes",
-      "binaryDir": "${sourceDir}/build/test",
-      "cacheVariables": {
-        "HALCYON_BUILD_TESTS": "ON"
-      }
     }
   ],
 
@@ -164,23 +154,6 @@
         {
           "type": "test",
           "name": "Default"
-        }
-      ]
-    },
-    {
-      "name": "test",
-      "steps": [
-        {
-          "type": "configure",
-          "name": "test"
-        },
-        {
-          "type": "build",
-          "name": "test"
-        },
-        {
-          "type": "test",
-          "name": "default"
         }
       ]
     }
